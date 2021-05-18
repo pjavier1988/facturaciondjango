@@ -75,7 +75,7 @@ def Home(request):
     print(f"MES {facturasMes}")
     #print(f"facturas {facturasMes}")
     contexto={
-        'ventas_mes':f"${ganancias_mensual}",
+        'ventas_mes':f"${totalFacturasMes}",
         'ventas_anual':f"${facturasAnio.get('total__sum')}",
         'ganancias_mensual':f"${ganancias_mensual}",
         'ganancias_anual':f"${ganancias_anual}",

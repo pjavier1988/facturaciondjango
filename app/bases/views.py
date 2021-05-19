@@ -53,18 +53,36 @@ def Home(request):
     facturasMes=FacturaEnc.objects.filter(fecha__gte=fechagte,fecha__lte=fechalte,tipo="factura").aggregate(Sum('total'))
     comprasMes=FacturaEnc.objects.filter(fecha__gte=fechagte,fecha__lte=fechalte,tipo="compra").aggregate(Sum('total'))
     ganancias_mensual = facturasMes.get('total__sum') -comprasMes.get('total__sum')
+    totalFacturasMes= facturasMes.get('total__sum');
+    totalComprasMes= comprasMes.get('total__sum');
+    if totalFacturasMes is not None:
+        print("entre a None facturaMes")
+        print(facturasMes)
+        totalFacturasMes = facturasMes.get('total__sum')
+    else:
+        totalFacturasMes = 0
+
+    if totalComprasMes is not None:
+        print("entre a None comprasMes")
+        print(comprasMes)
+        totalComprasMes = comprasMes.get('total__sum')
+    else:
+        totalComprasMes = 0
+
+    ganancias_mensual = totalFacturasMes - totalComprasMes
 
     productos = Producto.objects.filter(existencia__lte=5)
     print(f"MES {facturasMes}")
     #print(f"facturas {facturasMes}")
     contexto={
-        'ventas_mes':f"${facturasMes.get('total__sum')}",
+        'ventas_mes':f"${totalFacturasMes}",
         'ventas_anual':f"${facturasAnio.get('total__sum')}",
         'ganancias_mensual':f"${ganancias_mensual}",
         'ganancias_anual':f"${ganancias_anual}",
         'obj':productos
 
     }
+
     return render(request,template_name,contexto)
 
 

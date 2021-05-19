@@ -150,16 +150,28 @@ def getTransacciones(request):
 
         return qs
         '''
+        
     if request.method == 'GET':
         qs = FacturaEnc.objects.all()
         total_compras = FacturaEnc.objects.filter(tipo='compra').aggregate(Sum('total'))
         total_ventas = FacturaEnc.objects.filter(tipo='factura').aggregate(Sum('total'))
-        balance = total_ventas.get('total__sum')-total_compras.get('total__sum')
-        print(total_compras)
+
+        if total_compras.get('total__sum'):
+            total_compras = total_compras.get('total__sum')
+        else: 
+            total_compras = 0
+
+        if total_ventas.get('total__sum'):
+            total_ventas.get('total__sum')
+        else:
+            total_ventas = 0
+
+        balance = total_ventas - total_compras
+
         context = {
             'obj': qs,
-            'total_compras':total_compras.get('total__sum'),
-            'total_ventas':total_ventas.get('total__sum'),
+            'total_compras':total_compras,
+            'total_ventas':total_ventas,
             'balance':balance
         }
         return render(request, 'fac/transacciones_list.html', context)

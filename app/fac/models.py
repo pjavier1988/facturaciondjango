@@ -1,7 +1,6 @@
 
 from cmp.models import Proveedor
 from django.db import models
-
 #Para los signals
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -50,7 +49,12 @@ class Cliente(ClaseModelo):
 
     
 class FacturaEnc(ClaseModelo2):
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE,null=True)
+
+    cliente = models.ForeignKey(
+        Cliente,
+        on_delete=models.CASCADE,
+        null=True
+    )
     fecha = models.DateTimeField(auto_now_add=True,editable=True)
     sub_total=models.FloatField(default=0)
     faciva = models.FloatField(default=0)

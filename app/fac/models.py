@@ -92,6 +92,7 @@ class FacturaEnc(ClaseModelo2):
     
 
 class FacturaDet(ClaseModelo2):
+
     factura = models.ForeignKey(FacturaEnc,on_delete=models.CASCADE)
     producto=models.ForeignKey(Producto,on_delete=models.CASCADE)
     cantidad=models.BigIntegerField(default=0)
@@ -130,6 +131,7 @@ class FacturaDet(ClaseModelo2):
 
 @receiver(post_save, sender=FacturaDet)
 def detalle_fac_guardar(sender,instance,**kwargs):
+    
     factura_id = instance.factura.id
     producto_id = instance.producto.id
 

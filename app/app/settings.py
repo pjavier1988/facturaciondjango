@@ -21,19 +21,28 @@ ALLOWED_HOSTS = ["127.0.0.1",".herokuapp.com"]
 
 # Application definition
 
-INSTALLED_APPS = [
+BASE_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crispy_forms',
+]
+
+LOCAL_APPS = [
     'bases',
     'inv',
     'cmp',
-    'fac'
+    'fac',
+    'param',
 ]
+
+THIRD_APPS = [
+    'crispy_forms',
+]
+
+INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -115,6 +124,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+AUTH_USER_MODEL = 'param.User'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -131,3 +141,4 @@ LOGOUT_REDIRECT_URL = '/login'
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+

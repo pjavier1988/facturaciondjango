@@ -5,7 +5,8 @@ from django.urls import reverse_lazy,reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from .models import Categoria, Producto,SubCategoria,Marca,UnidadMedida
 from .forms import CategoriaForm, ProductoForm,SubCategoriaForm,MarcaForm,UnidadMedidaForm
-# Create your views here.
+
+#Categorias ************************************************************************************************************************************
 
 class CategoriaView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListView):
     permission_required= "inv.view.categoria"
@@ -47,7 +48,8 @@ class CategoriaDelete(LoginRequiredMixin,generic.DeleteView):
     context_object_name = "obj"
     success_url = reverse_lazy("inv:categoria_list")
 
-'''TODAS LAS VISTAS DE SUBCATEGORIA'''
+# Sub Categoria ********************************************************************************************************************************
+
 class SubCategoriaView(LoginRequiredMixin, generic.ListView):
     model = SubCategoria
     template_name = "inv/subcategoria_list.html"
@@ -84,7 +86,8 @@ class SubCategoriaDelete(LoginRequiredMixin,generic.DeleteView):
     context_object_name = "obj"
     success_url = reverse_lazy("inv:subcategoria_list")
 
-'''TODAS LAS VISTAS DE MARCA'''
+#Marca *****************************************************************************************************************************************
+
 class MarcaView(LoginRequiredMixin, generic.ListView):
     model = Marca
     template_name = "inv/marca_list.html"
@@ -119,6 +122,7 @@ class MarcaEdit(LoginRequiredMixin,generic.UpdateView):
 
 
 def marca_inactivar(request,id):
+    
     marca = Marca.objects.filter(pk=id).first()
     contexto = {}
     template_name = "inv/catalogos_del.html"
@@ -137,9 +141,8 @@ def marca_inactivar(request,id):
 
     return render(request,template_name,contexto)
 
+#Unidades de Medida ****************************************************************************************************************************
 
-
-'''TODAS LAS VISTAS DE UNIDADES DE MEDIDA'''
 class UnidadMedidaView(LoginRequiredMixin, generic.ListView):
     model = UnidadMedida
     template_name = "inv/unidadmedida_list.html"

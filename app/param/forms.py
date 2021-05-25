@@ -7,7 +7,6 @@ class EmpresaForm(forms.ModelForm):
     class Meta:
         model = Empresa
         fields = ['logo', 'nombre','nombre_completo', 'telefono', 'direccion', 'correo', 'ruc']
-        exclude =["um","fm","uc","fc"]
         labels = {
             "nombre" : "Nombre",
             "nombre_completo" : "Nombre Completo",

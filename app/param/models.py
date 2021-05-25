@@ -13,7 +13,7 @@ class Empresa(ClaseModelo):
     ruc = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return f'{self.nombre}'
+        return f'{self.nombre}' 
 
     class Meta:
         verbose_name_plural = "Empresas"

@@ -30,6 +30,12 @@
 
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Empresa Detail CSS -->
+    <link rel="stylesheet" href="{% static 'base/css/empresa_det.css' %}">
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.6.95/css/materialdesignicons.css'>
+
 </head>
 
 <body id="page-top" class="bg-gradient-primary">
@@ -58,7 +64,7 @@
                     <span>Dashboard</span>
                 </a>
                 <a class="nav-link" href="{% if user.company %} 
-                                            {% url 'param:empresa_det' user.company %}
+                                            {% url 'param:empresa_det' user.company.id %}
                                           {% else %}
                                             {% url 'param:empresa_new' %}
                                           {% endif %}">
@@ -76,7 +82,6 @@
             </div>
 
             {% url 'inv:categoria_list' as cat_url %} {% url 'inv:subcategoria_list' as s_cat_url %} {% url 'cmp:compras_list' as cmp_url %}
-
 
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item {% if cat_url in request.path or s_cat_url in request.path  %} active {% endif %}">
@@ -217,7 +222,18 @@
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Notificaciones</span>
+                                <img class="img-profile rounded-circle" src="https://indyme.com/wp-content/uploads/2020/11/notification-icon.png" alt="Notificación">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
+                                </a>
+                            </div>
+                        </li>
                         <!-- Nav Item - Search Dropdown (Visible Only XS) 
             <li class="nav-item dropdown no-arrow d-sm-none">
               <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -461,6 +477,9 @@
 
     <script src="{% static  'base/js/jquery.chained.min.js' %}"></script>
 
+    <!-- Empresa Detail JS -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js'></script>
 
     <script>
         $(document).ready(function() {

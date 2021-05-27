@@ -1,5 +1,6 @@
 from inv.models import Producto
 from fac.models import FacturaEnc
+from api.views import ProductosAgotados
 from django.db.models.aggregates import Sum
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse
@@ -8,7 +9,6 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
 from datetime import datetime
-
 
 class MixinFormInvalid:
 
@@ -66,7 +66,8 @@ def Home(request):
         'ventas_anual':f"${facturas_year}",
         'ganancias_mensual':f"${ganancias_mensual}",
         'ganancias_anual':f"${ganancias_anual}",
-        'obj':productos
+        'obj':productos,
+        'agotados': ProductosAgotados.as_view()
     }
 
     return render(request,template_name,contexto)

@@ -33,8 +33,7 @@
 
     <!-- Empresa Detail CSS -->
     <link rel="stylesheet" href="{% static 'base/css/empresa_det.css' %}">
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/3.6.95/css/materialdesignicons.css'>
+    <link rel="stylesheet" href="{% static 'base/css/notification.css' %}">
 
 </head>
 
@@ -51,7 +50,11 @@
                 <!-- <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div> -->
-                <div class="sidebar-brand-text mx-3">ROSTIK </div>
+                {% if user.company %}
+                <div class="sidebar-brand-text mx-3">{{ user.company.nombre }}</div>
+                {% else %}
+                <div class="sidebar-brand-text mx-3">ROSTIK</div>
+                {% endif %}
             </a>
 
             <!-- Divider -->
@@ -224,15 +227,27 @@
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Notificaciones</span>
-                                <img class="img-profile rounded-circle" src="https://indyme.com/wp-content/uploads/2020/11/notification-icon.png" alt="Notificación">
+
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small"></span>
+
+                                <div class="icon" id="bell">
+                                    Notificaciones (0)<img src="{% static 'base/img/notificacion-black.png' %}" alt="">
+                                </div>
+
+                                <div class="notifications" id="box">
+
+                                    <h2>Notifications - <span id="n-notifications">2</span></h2>
+
+                                    <!-- MODEL ITEM
+                                      <div class="notifications-item"> <img src="https://i.imgur.com/uIgDDDd.jpg" alt="img">
+                                        <div class="text">
+                                          <h4>Samso aliao</h4>
+                                          <p>Samso Nagaro Like your home work</p>
+                                        </div>
+                                      </div>
+                                    -->
+                                </div>
                             </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
-                                </a>
-                            </div>
                         </li>
                         <!-- Nav Item - Search Dropdown (Visible Only XS) 
             <li class="nav-item dropdown no-arrow d-sm-none">
@@ -365,7 +380,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.username }}</span>
-                                <img class="img-profile rounded-circle" src="{% static 'base/img/user.png' %}">
+                                <img class="img-profile rounded-circle" src="{% static 'base/img/user.png' %}" alt="">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -476,10 +491,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
 
     <script src="{% static  'base/js/jquery.chained.min.js' %}"></script>
+    <script src="{% static  'base/js/notification.js' %}"></script>
 
-    <!-- Empresa Detail JS -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-    <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js'></script>
 
     <script>
         $(document).ready(function() {
@@ -531,6 +544,42 @@
           {% endfor %}
         {% endif %}
         */
+    </script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "{% url 'api:producto_agotado' %}",
+                dataType: 'JSON',
+                success: function(data) {
+
+                    document.getElementById('bell').innerHTML = `Notificaciones (${data.length}) <img src="{% static 'base/img/notification-yellow.png' %}" alt="">`;
+
+                    document.getElementById('n-notifications').innerHTML = `${data.length}`;
+
+                    for (let d of data) {
+
+                        var row;
+
+                        if (d.existencia <= 0) {
+                            row = $(`<div class="notifications-item"> <img src="{% static 'base/img/advertencia-rojo.png' %}" alt="img">
+                                    <div class="text">
+                                      <h4>${d.descripcion} está agotado</h4>
+                                        <p>${d.existencia} en stock - ${d.min_stock} como mínimo</p>
+                                    </div>
+                                </div>`)
+                        } else {
+                            row = $(`<div class="notifications-item"> <img src="{% static 'base/img/advertencia-amarillo.png' %}" alt="img">
+                                    <div class="text">
+                                      <h4>${d.descripcion} próximo a agotarse</h4>
+                                        <p>${d.existencia} en stock - ${d.min_stock} como mínimo</p>
+                                    </div>
+                                </div>`)
+                        }
+                        $('#box').append(row)
+                    }
+                }
+            });
+        });
     </script>
     {% endblock%} {% block js_page %} {% endblock %}
 </body>

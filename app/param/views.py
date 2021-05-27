@@ -68,4 +68,4 @@ def set_user_company(user_id, company):
             user.save()
             return True
         else:
-            return False        
+            return False

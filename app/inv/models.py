@@ -1,14 +1,13 @@
 from django.db import models
 from bases.models import ClaseModelo
+from param.models import Empresa
 
 # Create your models here.
 
 class Categoria(ClaseModelo):
-    descripcion = models.CharField(
-        max_length =100,
-        help_text = 'Descripción',
-        unique = True
-    )
+
+    descripcion = models.CharField(max_length =100, help_text = 'Descripción', unique = True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self) :
         return '{}'.format(self.descripcion)
@@ -21,11 +20,11 @@ class Categoria(ClaseModelo):
         verbose_name_plural = "Categorías"
 
 class SubCategoria(ClaseModelo):
+
     categoria = models.ForeignKey(Categoria,on_delete=models.CASCADE)
-    descripcion = models.CharField(
-        max_length =100,
-        help_text = 'Descripción'
-    )
+    descripcion = models.CharField(max_length =100, help_text = 'Descripción')
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
+
     def __str__(self) :
         return '{}:{}'.format(self.categoria.descripcion,self.descripcion)
     
@@ -39,11 +38,9 @@ class SubCategoria(ClaseModelo):
 
 
 class Marca(ClaseModelo):
-    descripcion = models.CharField(
-        max_length =100,
-        help_text = 'Descripción',
-        unique = True
-    )
+
+    descripcion = models.CharField(max_length =100, help_text = 'Descripción', unique = True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self) :
         return '{}'.format(self.descripcion)
@@ -58,11 +55,9 @@ class Marca(ClaseModelo):
 
 
 class UnidadMedida(ClaseModelo):
-    descripcion = models.CharField(
-        max_length =100,
-        help_text = 'Descripción',
-        unique = True
-    )
+
+    descripcion = models.CharField(max_length =100, help_text = 'Descripción', unique = True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self) :
         return '{}'.format(self.descripcion)
@@ -76,21 +71,20 @@ class UnidadMedida(ClaseModelo):
     
 
 class Producto(ClaseModelo):
-    codigo = models.CharField(
-        max_length =20,
-        unique = True
-    )
+
+    codigo = models.CharField(max_length =20, unique = True)
     codigo_barras = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=200)
     precio = models.FloatField(default=0)
     existencia = models.IntegerField(default=0)
-    ultima_compra = models.DateField(null=True,blank=True)
+    min_stock = models.IntegerField(default=0)
+    ultima_compra = models.DateField(null=True, blank=True)
     tiene_iva = models.BooleanField(default=False)
-    marca = models.ForeignKey(Marca,on_delete=models.CASCADE)
-    unidad_medida = models.ForeignKey(UnidadMedida,on_delete=models.CASCADE,blank=True)
-    subcategoria = models.ForeignKey(SubCategoria,on_delete=models.CASCADE)
+    marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
+    unidad_medida = models.ForeignKey(UnidadMedida, on_delete=models.CASCADE, blank=True)
+    subcategoria = models.ForeignKey(SubCategoria, on_delete=models.CASCADE)
     es_servicio = models.BooleanField(default=False)
-
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self) :
         return '{}'.format(self.descripcion)

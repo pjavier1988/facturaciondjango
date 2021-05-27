@@ -36,10 +36,12 @@ LOCAL_APPS = [
     'cmp',
     'fac',
     'param',
+    'api',
 ]
 
 THIRD_APPS = [
     'crispy_forms',
+    'rest_framework',
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -141,4 +143,3 @@ LOGOUT_REDIRECT_URL = '/login'
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
-

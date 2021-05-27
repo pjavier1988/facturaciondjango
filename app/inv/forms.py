@@ -81,11 +81,12 @@ class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
         fields = ['codigo','codigo_barras','descripcion',\
-            'estado','precio','existencia','ultima_compra',\
+            'estado','precio','existencia', 'min_stock','ultima_compra',\
                 'marca','subcategoria','unidad_medida','tiene_iva']
         labels = {
             "descripcion" : "Descripción del Producto'",
-            "estado" : "Estado"
+            "estado" : "Estado",
+            "min_stock":"Mínima Existencia"
         }
         exclude =["um","fm","uc","fc"]
         widgets={"descripcion":forms.TextInput}

@@ -1,33 +1,40 @@
+import datetime
+import json
 from fac.models import FacturaDet
 from fac.models import FacturaEnc
 from django.http.response import HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.views import generic
 from django.urls import reverse_lazy,reverse
-import datetime
 from django.http import HttpResponse, JsonResponse
-
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponse
-import json
-from django.db.models import Sum
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-
+from django.db.models import Sum
 from .models import Proveedor, ComprasEnc, ComprasDet
 from cmp.forms import ProveedorForm,ComprasEncForm
 from bases.views import SinPrivilegios
 from inv.models import Producto
 
+#Proveedor **************************************************************************************************************************************
 
 class ProveedorView(SinPrivilegios, generic.ListView):
+
     model = Proveedor
     template_name = "cmp/proveedor_list.html"
     context_object_name = "obj"
     permission_required="cmp.view_proveedor"
 
-class ProveedorNew(SuccessMessageMixin, SinPrivilegios,\
-                   generic.CreateView):
+    def get_queryset(self):
+        
+        if self.request.user.company:
+            return Proveedor.objects.filter(empresa = self.request.user.company)
+        else:
+            return None
+
+class ProveedorNew(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
+
     model=Proveedor
     template_name="cmp/proveedor_form.html"
     context_object_name = 'obj'
@@ -38,12 +45,13 @@ class ProveedorNew(SuccessMessageMixin, SinPrivilegios,\
 
     def form_valid(self, form):
         form.instance.uc = self.request.user
+        form.instance.empresa = self.request.user.company
         #print(self.request.user.id)
         return super().form_valid(form)
 
 
-class ProveedorEdit(SuccessMessageMixin, SinPrivilegios,\
-                   generic.UpdateView):
+class ProveedorEdit(SuccessMessageMixin, SinPrivilegios, generic.UpdateView):
+
     model=Proveedor
     template_name="cmp/proveedor_form.html"
     context_object_name = 'obj'
@@ -61,6 +69,7 @@ class ProveedorEdit(SuccessMessageMixin, SinPrivilegios,\
 @login_required(login_url="/login/")
 @permission_required("cmp.change_proveedor",login_url="/login/")
 def proveedorInactivar(request,id):
+
     template_name='cmp/inactivar_prv.html'
     contexto={}
     prv = Proveedor.objects.filter(pk=id).first()
@@ -80,44 +89,60 @@ def proveedorInactivar(request,id):
 
     return render(request,template_name,contexto)
 
+#Compras ***************************************************************************************************************************************
 
 class ComprasView(SinPrivilegios, generic.ListView):
+
     model = FacturaEnc
     template_name = "cmp/compras_list.html"
     context_object_name = "obj"
     permission_required="cmp.view_comprasenc"
+
     def get_queryset(self):
+
         user = self.request.user
         # print(user,"usuario")
-        qs = super().get_queryset()
-        for q in qs:
-            print(q.uc,q.id)
         
-        if not user.is_superuser:
-            qs = qs.filter(uc=user,tipo='compra')
+        if self.request.user.company:
+            qs = FacturaEnc.objects.filter(empresa = self.request.user.company)
         else:
-            qs = qs.filter(tipo='compra')
+            qs = None
 
+        #qs = super().get_queryset()
 
-        for q in qs:
-            print(q.uc,q.id)
+        if qs:            
+            for q in qs:
+                print(q.uc,q.id)
+        
+            if not user.is_superuser:
+                qs = qs.filter(uc=user,tipo='compra')
+            else:
+                qs = qs.filter(tipo='compra')
 
-        return qs
+            for q in qs:    
+                print(q.uc,q.id)
+
+            return qs
+        else:
+            return None
 
 
 @login_required(login_url='/login/')
 @permission_required('cmp.view_comprasenc', login_url='bases:sin_privilegios')
 def compras(request,compra_id=None):
-    template_name="cmp/compras.html"
-    prod=Producto.objects.filter(estado=True,es_servicio=False)
-    form_compras={}
-    contexto={}
 
-    if request.method=='GET':
-        form_compras=ComprasEncForm()
+    template_name = "cmp/compras.html"
+    prod = Producto.objects.filter(estado=True,es_servicio=False, empresa=request.user.company)
+    form_compras = {}
+    contexto = {}
+
+    if request.method == 'GET':
+
+        form_compras = ComprasEncForm(request.user)
         enc = FacturaEnc.objects.filter(pk=compra_id).first()
 
         if enc:
+
             det = FacturaDet.objects.filter(factura=enc)
             fecha_compra = datetime.date.isoformat(enc.fecha_compra)
             fecha_factura = datetime.date.isoformat(enc.fecha_factura)
@@ -131,13 +156,14 @@ def compras(request,compra_id=None):
                 'descuento': enc.descuento,
                 'total':enc.total
             }
-            form_compras = ComprasEncForm(e)
+            form_compras = ComprasEncForm(request.user, e)
         else:
             det=None
         
         contexto={'productos':prod,'encabezado':enc,'detalle':det,'form_enc':form_compras}
 
     if request.method=='POST':
+
         fecha_compra = request.POST.get("fecha_compra")
         observacion = request.POST.get("observacion")
         no_factura = request.POST.get("no_factura")
@@ -148,31 +174,36 @@ def compras(request,compra_id=None):
         total = 0
 
         if not compra_id:
+
             prov=Proveedor.objects.get(pk=proveedor)
 
             enc = FacturaEnc(
-                fecha_compra=fecha_compra,
-                observacion=observacion,
-                no_factura=no_factura,
-                fecha_factura=fecha_factura,
-                proveedor=prov,
+                fecha_compra = fecha_compra,
+                observacion = observacion,
+                no_factura = no_factura,
+                fecha_factura = fecha_factura,
+                proveedor = prov,
                 uc = request.user,
+                empresa = request.user.company,
                 tipo = 'compra' 
             )
             if enc:
                 enc.save()
-                compra_id=enc.id
+                compra_id = enc.id
         else:
-            enc=FacturaEnc.objects.filter(pk=compra_id).first()
+
+            enc = FacturaEnc.objects.filter(pk=compra_id).first()
+
             if enc:
                 enc.fecha_compra = fecha_compra
                 enc.observacion = observacion
-                enc.no_factura=no_factura
-                enc.fecha_factura=fecha_factura
-                enc.um=request.user.id
+                enc.no_factura = no_factura
+                enc.fecha_factura = fecha_factura
+                enc.um = request.user.id
                 enc.save()
 
         if not compra_id:
+
             return redirect("cmp:compras_list")
         
         producto = request.POST.get("id_id_producto")
@@ -185,23 +216,27 @@ def compras(request,compra_id=None):
         prod = Producto.objects.get(pk=producto)
 
         det = FacturaDet(
-            factura=enc,
-            producto=prod,
-            cantidad=cantidad,
-            precio_prv=precio,
-            descuento=descuento_detalle,
-            costo=0,
-            uc = request.user
+
+            factura = enc,
+            producto = prod,
+            cantidad = cantidad,
+            precio_prv = precio,
+            descuento = descuento_detalle,
+            costo = 0,
+            uc = request.user,
+            empresa = request.user.company
         )
 
         if det:
+
             det.save()
 
-            sub_total=FacturaDet.objects.filter(factura=compra_id).aggregate(Sum('sub_total'))
-            descuento=FacturaDet.objects.filter(factura=compra_id).aggregate(Sum('descuento'))
+            sub_total = FacturaDet.objects.filter(factura=compra_id).aggregate(Sum('sub_total'))
+            descuento = FacturaDet.objects.filter(factura=compra_id).aggregate(Sum('descuento'))
             print(sub_total)
             enc.sub_total = sub_total["sub_total__sum"]
-            enc.descuento=descuento["descuento__sum"]
+            enc.descuento = descuento["descuento__sum"]
+
             enc.save()
 
         return redirect("cmp:compras_edit",compra_id=compra_id)
@@ -211,6 +246,7 @@ def compras(request,compra_id=None):
 
 
 class CompraDetDelete(SinPrivilegios, generic.DeleteView):
+
     permission_required = "cmp.delete_comprasdet"
     model = ComprasDet
     template_name = "cmp/compras_det_del.html"

@@ -34,6 +34,7 @@
       data-show-fullscreen="true"
       data-toolbar=".buttons-toolbar"
       data-locale="es-NI"
+      class="table-striped table-hover"
     >
       <thead>
           <th data-sortable="true" data-field="id">Id</th>        
@@ -52,7 +53,7 @@
           <td>{{ item.apellidos }}</td>
           <td>{{item.tipo}}</td>
           <td>{{ item.celular }}</td>
-          <td >{#item.estado|yesno:"Activo,Inactivo"#}
+          <td>{#item.estado|yesno:"Activo,Inactivo"#}
             <div onclick="inactivar({{item.id}})">
                 {% if item.estado %}
                 <i class="far fa-thumbs-up text-primary"></i>

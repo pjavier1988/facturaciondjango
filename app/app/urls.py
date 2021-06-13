@@ -23,5 +23,6 @@ urlpatterns = [
     path('fac/',include(('fac.urls','fac'),namespace='fac')),
     path('param/',include(('param.urls','param'),namespace='param')),
     path('api/',include(('api.urls','api'),namespace='api')),
+    path('vnt/',include(('vnt.urls','vnt'),namespace='vnt')),
     path('admin/', admin.site.urls),
 ]

@@ -50,12 +50,17 @@
     }
     </style>
 </head>
-<body>
+<body style="padding: 0px 50px;">
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h4>Sistema de Compras DEBS</h4>
+                <img style="width: 50px;" src="{{ request.user.company.logo }}" alt="">
+                <h1 style="text-align: center;">{{ request.user.company.nombre_completo }}</h1>
+                <h4 style="text-align: center;">Sistema de Compras {{ request.user.company.nombre }}</h4>
                 <h3>Reporte de Compras al {{ today|date:"d/m/Y" }}</h3>
+                <h3>Dirección: <i>{{ request.user.company.direccion }}</i></h3>
+                <h3>Email: <i>{{ request.user.company.correo }}</i></h3>
+                <h3>Dueño: <i>{{ request.user.name }} {{ request.user.last_name }}</i></h3>
             </div>
 
             <table class="table">

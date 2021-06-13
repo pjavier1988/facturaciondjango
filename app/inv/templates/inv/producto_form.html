@@ -2,9 +2,9 @@
 <div class="modal-dialog modal-lg">
     <div class="modal-content ">
         {% if obj %}
-        <form method="POST" role="form" class="form-inline" action="{% url 'inv:producto_update' obj.pk %}">
+        <form method="POST" role="form" class="form-inline" enctype="multipart/form-data" action="{% url 'inv:producto_update' obj.pk %}">
             {% else %}
-            <form method="POST" role="form" class="form-inline" action="{% url 'inv:producto_new' %}">
+            <form method="POST" role="form" class="form-inline" enctype="multipart/form-data" action="{% url 'inv:producto_new' %}">
                 {% endif %}
                 <div class="col-xl-12 col-md-12 mb-12">
                     {% if obj %}
@@ -20,7 +20,7 @@
                                         </div>
                                         <div class="dropdown-divider"></div>
                                         {% csrf_token %}
-                                        <div class="row">
+                                        <div class="row px-3 py-3" style="display: flex; align-items: center;">
 
                                             {{ form.as_p }}
 
@@ -37,7 +37,7 @@
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <i class="far fa-calendar-plus fa-2x text-gray-300"></i>
+                                        <i class="far fa-calendar-plus fa-2x text-gray-300" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             </div>

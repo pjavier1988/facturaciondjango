@@ -34,7 +34,6 @@ def link_callback(uri, rel):
             )
     return path
 
-
 def reporte_compras(request):
     template_path = 'cmp/compras_print_all.html'
     today = timezone.now()

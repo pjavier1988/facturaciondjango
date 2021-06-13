@@ -1,20 +1,21 @@
 from fac.models import FacturaEnc
 from django import forms
-
 from .models import Proveedor, ComprasEnc
 
 class ProveedorForm(forms.ModelForm):
+
     email = forms.EmailField(max_length=254)
+
     class Meta:
         model=Proveedor
-        exclude = ['um','fm','uc','fc']
+        exclude = ['um','fm','uc','fc', 'empresa']
         widget={'descripcion': forms.TextInput()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
-                'class': 'form-control'
+                'class': 'form-control mx-3 my-1'
             })
 
     def clean(self):
@@ -34,6 +35,7 @@ class ProveedorForm(forms.ModelForm):
         return self.cleaned_data
 
 class ComprasEncForm(forms.ModelForm):
+
     fecha_compra = forms.DateInput()
     fecha_factura = forms.DateInput()
     
@@ -43,14 +45,16 @@ class ComprasEncForm(forms.ModelForm):
             'no_factura','fecha_factura','sub_total',
             'descuento','total']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
             })
+            
         self.fields['fecha_compra'].widget.attrs['readonly'] = True
         self.fields['fecha_factura'].widget.attrs['readonly'] = True
         self.fields['sub_total'].widget.attrs['readonly'] = True
         self.fields['descuento'].widget.attrs['readonly'] = True
         self.fields['total'].widget.attrs['readonly'] = True
+        self.fields['proveedor'].queryset = Proveedor.objects.filter(estado=True, empresa=user.company).order_by('descripcion')

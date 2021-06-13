@@ -5,9 +5,9 @@
     {% csrf_token %}
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <a href="#" class="btn btn-danger">Guardar</a>
-        <a href="{% url 'fac:factura_imprimir_one' enc.id %}" class="btn btn-success" target="_factura">Imprimir</a>
-        <a href="{% url 'fac:factura_list' %}" class="btn btn-info">Cancelar</a>
+        <a href="#" class="btn btn-outline-danger">Guardar</a>
+        <a href="{% url 'fac:factura_imprimir_one' enc.id %}" class="btn btn-outline-success" target="_factura">Imprimir</a>
+        <a href="{% url 'fac:factura_list' %}" class="btn btn-outline-info">Cancelar</a>
     </div>
     <div class="card-body">
         <div class="content">
@@ -25,12 +25,6 @@
                                 Cliente:
                             </div>
                             <div class="col-lg-5 form-group">
-                                <!-- <select name="enc_cliente" id="enc_cliente" class="form-control">
-                                    <option value="0">Seleccione Cliente</option>
-                                    {% for item in clientes %}
-                                        <option value="{{item.id}}">{{ item.nombres }} {{item.apellidos}} </option>
-                                    {% endfor %}
-                                </select> -->
                                 <div class="row">
                                     <div class="col-lg-11 col-md-11">
                                         <select name="enc_cliente" id="enc_cliente" class="form-control">
@@ -96,7 +90,9 @@
 
 
                 <!-- Sección Derecha -->
+
                 <div class="col-lg-6 from-group">
+
                     <div class="row p-2">
                         <div class="col-lg-1">Cod</div>
                         <div class="col-lg-3">
@@ -111,11 +107,12 @@
                             </button>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-lg-1">Cant</div>
                         <div class="col-lg-3">
                             <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Cantidad">
-                            <input type="hidden" class="form-control" name="existencia" id="existencia">
+                            <input type="number" class="form-control" name="existencia" id="existencia">
                         </div>
                         <div class="col-lg-4">
                             <input type="number" class="form-control" name="precio" id="precio" placeholder="Precio" readonly>
@@ -124,10 +121,13 @@
                             <input type="number" class="form-control" name="descuento_detalle" id="descuento_detalle" placeholder="Descuento">
                         </div>
                         <div class="col-lg-1">
-                            <button type="submit" class="btn btn-danger" id="btnGuardar"> <i class="far fa-plus-square"></i> </button>
+                            <button type="submit" class="btn btn-outline-danger" id="btnGuardar"> <i class="far fa-plus-square"></i> </button>
                         </div>
+
                     </div>
+
                     <!-- detalle de la factura-->
+
                     <div class="row p-1">
                         <div class="col-lg-9 text-right">Sub Total</div>
                         <div class="col-lg-3">
@@ -416,10 +416,11 @@
     }
 
     $("form").submit(function(e){
+
         var existencia = +$("#existencia").val();
         var cantidad = +$("#cantidad").val();
 
-        if(cantidad>existencia){
+        if(cantidad > existencia){
             mensaje("No hay existencia suficiente");
             return false;
         }

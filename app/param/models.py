@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from bases.models import AUDUsers, ClaseModelo
+from dropbox.files import UploadError
+from django.core.files.base import ContentFile
 
 class Empresa(ClaseModelo):
 
@@ -9,7 +11,7 @@ class Empresa(ClaseModelo):
     telefono = models.CharField(max_length=15, null=False, blank=False)
     direccion = models.CharField(max_length=200, null=False, blank=False)
     correo = models.CharField(max_length=320, null=False, blank=False)
-    logo = models.CharField(max_length=200, null=True)
+    logo = models.FileField(upload_to='img/empresa', null=True)
     ruc = models.CharField(max_length=100, null=True)
 
     def __str__(self):

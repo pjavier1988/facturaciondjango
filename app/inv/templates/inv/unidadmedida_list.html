@@ -26,14 +26,16 @@
             No hay marcas
         </div>
         {% else %}
-        <table class="table ">
+        <table class="table table-striped table-hover">
             <thead>
+              <tr>
                 <th>Id</th>
                 <th>Descripción</th>
                 <th>Estado</th>
                 <th>F. Creado</th>
                 <th>F. Modifi.</th>
                 <th class="all">Acciones</th>
+              </tr>
             </thead>
             <tbody>
                 {% for item in obj %}

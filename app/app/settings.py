@@ -10,8 +10,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
 
-# SECRET_KEY = 't8qh=fk)+yey51ya0r1a)65l=b@o$*gw!txonr79%gnblh+9gf'
-
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -37,11 +35,14 @@ LOCAL_APPS = [
     'fac',
     'param',
     'api',
+    'vnt',
 ]
 
 THIRD_APPS = [
-    'crispy_forms',
     'rest_framework',
+    'crispy_forms',
+    'storages',
+    'mathfilters',
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'vnt.context_processors.get_total_cart'
             ],
         },
     },
@@ -118,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-ES'
 
-TIME_ZONE = 'America/Guayaquil'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -143,3 +145,13 @@ LOGOUT_REDIRECT_URL = '/login'
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+
+#Dopbox
+
+DEFAULT_FILE_STORAGE = config('DEFAULT_FILE_STORAGE')
+
+DROPBOX_OAUTH2_TOKEN = config('DROPBOX_OAUTH2_TOKEN')
+
+DROPBOX_WRITE_MODE = 'overwrite'
+
+DROPBOX_ROOT_PATH = '/'

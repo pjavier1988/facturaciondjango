@@ -1,9 +1,9 @@
 {% extends 'base/base.html' %} {% block page_content %}
 
 <div>
-    <form method="POST" class="form-inline">
+    <form method="POST" class="form-inline" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="col-xl-10 col-md-10 mb-10">
+        <div class="col-xl-12 col-md-12 mb-12">
             {% if obj %}
             <div class="card border-left-success shadow h-100 py-2">
                 {% else %}
@@ -19,10 +19,66 @@
                                 </div>
                                 <div class="dropdown-divider"></div>
 
-                                <div class="row">
-                                    <div class="col-20">
+                                <div class="row px-3 py-3">
+                                    <div class="col">
                                         <div class="input-group">
-                                            {{ form.as_p }}
+                                            <fieldset class="border px-3 py-3">
+
+                                                <legend>Logo</legend>
+
+                                                <label class="pb-3 d-block">
+                                                    Logo:
+                                                    {{ form.logo }}
+                                                </label>
+
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <fieldset class="border px-3 py-3">
+
+                                                <legend>Información</legend>   
+
+                                                <label class="pb-3 d-block">
+                                                    Nombre:
+                                                    {{ form.nombre }}
+                                                </label>
+
+                                                <label class="pb-3 d-block">
+                                                    Nombre Completo:
+                                                    {{ form.nombre_completo }}
+                                                </label>
+
+                                                <label class="pb-3 d-block">
+                                                    RUC:
+                                                    {{ form.ruc }}
+                                                </label>
+
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <fieldset class="border px-3 py-3">
+
+                                                <legend>Contacto</legend>   
+
+                                                <label class="pb-3 d-block">
+                                                    Correo:
+                                                    {{ form.correo }}
+                                                </label>
+
+                                                <label class="pb-3 d-block">
+                                                    Teléfono:
+                                                    {{ form.telefono }}
+                                                </label>
+                                                <label class="pb-3 d-block">
+                                                    Dirección:
+                                                    {{ form.direccion }}
+                                                </label>
+
+                                            </fieldset>
                                         </div>
                                     </div>
                                 </div>
@@ -30,8 +86,8 @@
                                 <div class="dropdown-divider"></div>
                                 <div class="card-footer">
                                     <div class="col">
-                                        <button type="submit " class="btn btn-outline-danger "><span class="fa fa-save "></span>Guardar</button>
-                                        <a href="{% url 'bases:home' %}" class="btn btn-outline-success "><span class="fa fa-undo "></span>Cancelar</a>
+                                        <button type="submit" class="btn btn-outline-danger px-5 mx-1"><span class="fa fa-save "></span>Guardar</button>
+                                        <a href="{% url 'bases:home' %}" class="btn btn-outline-success px-5 mx-1"><span class="fa fa-undo "></span>Cancelar</a>
                                     </div>
                                 </div>
                             </div>

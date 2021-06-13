@@ -1,0 +1,90 @@
+{% extends 'base/base.html' %}
+
+<div></div>
+
+{% block page_content %}
+
+<div class="container">
+    <h1 class="title text-center">{{ categoria.descripcion }}</h1>
+
+    <!-- Search component -->
+    <form action="{% url 'vnt:producto_search' %}" method="GET">
+        <div class="row my-3">
+            <div class="container h-100">
+                <div class="d-flex justify-content-center h-100">
+                    <div class="searchbar bg-primary">
+                        <select class="form-select bg-primary text-white" name="subcategorias" id="subcategorias">
+                            <option class="text-muted" value="" selected>-- Sub Categorías --</option>
+                            
+                            {% for sc in subcategorias %}
+                            
+                            <option class="text-whitex" value="{{ sc.id }}">{{ sc }}</option>
+                            
+                            {% endfor %}
+                            
+                        </select>
+                        <input class="search_input" required minlength="3" maxlength="50" type="text" name="desc" id="desc" placeholder="Busca un producto ...">
+                        <button type="submit" class="search_icon"><i class="fas fa-search" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    {% for sc in subcategorias %}
+
+    <!-- Page Heading -->
+    <div style="border-bottom: 1px solid #4e73df;" class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ sc.descripcion|title }}</h1>
+        <i class="fa fa-th" aria-hidden="true"></i>
+    </div>
+
+    <div class="row my-1">
+
+        {% for item in obj %} {% if item.subcategoria.id == sc.id %}
+
+        <div class="col-md-3 col-sm-6 my-1">
+            <div class="product-grid">
+                <div class="product-image">
+                    <a href="#" class="image">
+                            {% if item.imagen_url %}
+                            <img class="pic-1" src="{{ item.imagen_url }}" alt="">
+                            {% else %}
+                            <img class="pic-1" src="{{ item.empresa.logo.url }}" alt="">
+                            {% endif %}
+                        </a>
+                    <span class="product-discount-label">-33%</span>
+                    <ul class="product-links">
+                        <li><a href="#" data-tip="Añadir a la lista de deseos"><i class="fas fa-heart" aria-hidden="true"></i></a></li>
+                        <li><a href="#" data-tip="Comparar"><i class="fa fa-random" aria-hidden="true"></i></a></li>
+                        <li><a onclick="return abrir_modal('{% url 'vnt:producto_det' item.id %}')" data-tip="Visualizar"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+                    </ul>
+                </div>
+                <div class="product-content">
+                    <ul class="rating">
+                        <li class="fas fa-star"></li>
+                        <li class="fas fa-star"></li>
+                        <li class="fas fa-star"></li>
+                        <li class="far fa-star"></li>
+                        <li class="far fa-star"></li>
+                    </ul>
+                    <h3 class="title"><a href="#">{{ item }}</a></h3>
+                    <div class="price"><span>${{ item.precio|add:'-1' }} </span>${{ item.precio }}</div>
+                    <a class="add-to-cart" href="{% url 'vnt:insert_product' item.id 'productos_categoria' %}?categoria_id={{categoria.id}}"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>
+
+        {% endif %} {% endfor %}
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock page_content %}
+
+<div></div>
+
+{% block js_page %} {% endblock js_page %}

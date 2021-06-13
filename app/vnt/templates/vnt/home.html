@@ -1,0 +1,150 @@
+{% extends 'base/base.html' %}
+<div></div>
+{% load static %}
+<div></div>
+{% block page_content %}
+
+<link rel="stylesheet" href="{% static 'base/css/search.css' %}">
+
+<div class="container">
+
+    {% if carousel %}
+    <!-- Carousel -->
+    <div id="carousel">
+        <figure id="spinner">
+            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/196980042_1923002824541087_7865171968980241442_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=730e14&_nc_ohc=cSirhwTazC4AX_HDv9T&_nc_ht=scontent.fuio10-1.fna&oh=2379a1584ce435b6a4d074df3805ee7a&oe=60E8EB7E"
+                alt>
+            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/192885877_1918449098329793_5611604952376470188_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=730e14&_nc_ohc=Rc3XCZ2tvsQAX-uH42E&_nc_ht=scontent.fuio10-1.fna&oh=2e8a6b05d43a973a56b2bbd282986354&oe=60E6AB8F"
+                alt>
+            <img src="https://cdn.nexdu.com/img/ec/map/mega-tienda-del-sur-44482.jpg" alt>
+            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/195814015_1922992961208740_8980558187177498465_n.png?_nc_cat=101&ccb=1-3&_nc_sid=730e14&_nc_ohc=2Yz7iEoi6dIAX8AzE_Q&_nc_ht=scontent.fuio10-1.fna&oh=8f9580485e1f925df98ff2acb1fd759d&oe=60E5F20A"
+                alt>
+            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/195939946_1921394454701924_5838901349744770736_n.jpg?_nc_cat=100&ccb=1-3&_nc_sid=730e14&_nc_ohc=SRb4s9pGtrkAX9g-JcM&_nc_ht=scontent.fuio10-1.fna&oh=4513f370b9ac392da1c82398dcbf9735&oe=60E89A28"
+                alt>
+            <img src="https://cadenaser00.epimg.net/ser/imagenes/2017/06/06/gastro/1496761987_216739_1496762991_noticia_normal.jpg" alt>
+            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/196451522_1922987331209303_9081307176640467388_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=730e14&_nc_ohc=S7JO1I2-Y9EAX-0HLDK&_nc_ht=scontent.fuio10-1.fna&oh=5587c40d9e8622a7b9b0f3508da2dd67&oe=60E8A3F3"
+                alt>
+            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/193746395_1918452701662766_938719040346517795_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=730e14&_nc_ohc=F9S4Ejs2oNMAX9ZCir4&tn=YJmLtWSgKCANtc1h&_nc_ht=scontent.fuio10-1.fna&oh=3dfe47423878da626b7987a548a83ec8&oe=60E98C4A"
+                alt>
+        </figure>
+    </div>
+
+    {% endif %}
+
+    <span style="float:left" class="ss-icon" onclick="galleryspin('-')">
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+    </span>
+    <span style="float:right" class="ss-icon" onclick="galleryspin('')">
+        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+    </span>
+
+    <!-- Search component -->
+    <form action="{% url 'vnt:producto_search' %}" method="GET">
+        <div class="row my-3">
+            <div class="container h-100">
+                <div class="d-flex justify-content-center h-100">
+                    <div class="searchbar bg-primary">
+                        <select class="form-select bg-primary text-white" name="categorias" id="categorias">
+                            <option class="text-muted" value="" selected>-- Categoría --</option>
+                        </select>
+                        <input class="search_input" required minlength="3" maxlength="50" type="text" name="desc" id="desc" placeholder="Busca un producto ...">
+                        <button type="submit" class="search_icon"><i class="fas fa-search" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Productos -->
+    {% for key, value in sections.items %}
+
+    <div style="border-bottom: 1px solid #4e73df;" class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ key|title }}</h1>
+        <i class="fa fa-heart" aria-hidden="true"></i>
+    </div>
+
+    <div class="row my-1">
+
+        {% for item in value %}
+
+        <div class="col-md-3 col-sm-6 my-1">
+            <div class="product-grid">
+                <div class="product-image">
+                    <a href="#" class="image">
+                        {% if item.imagen_url %}
+                        <img class="pic-1" src="{{ item.imagen_url }}" alt="">
+                        {% else %}
+                        <img class="pic-1" src="{{ item.empresa.logo.url }}" alt="">
+                        {% endif %}
+                    </a>
+                    <span class="product-discount-label">-33%</span>
+                    <ul class="product-links">
+                        <li><a href="#" data-tip="Añadir a la lista de deseos"><i class="fas fa-heart" aria-hidden="true"></i></a></li>
+                        <li><a href="#" data-tip="Comparar"><i class="fa fa-random" aria-hidden="true"></i></a></li>
+                        <li><a onclick="return abrir_modal('{% url 'vnt:producto_det' item.id %}')" data-tip="Visualizar"><i class="fa fa-eye" aria-hidden="true"></i></a></li>
+                    </ul>
+                </div>
+                <div class="product-content">
+                    <ul class="rating">
+                        <li class="fas fa-star"></li>
+                        <li class="fas fa-star"></li>
+                        <li class="fas fa-star"></li>
+                        <li class="far fa-star"></li>
+                        <li class="far fa-star"></li>
+                    </ul>
+                    <h3 class="title"><a href="#">{{ item }}</a></h3>
+                    <div class="price"><span>${{ item.precio|add:'-1' }} </span>${{ item.precio }}</div>
+                    <a class="add-to-cart" href="{% url 'vnt:insert_product' item.id 'home' %}"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock page_content %}
+
+<div></div>
+
+{% block js_page %}
+
+<script src="{% static 'base/js/carousel.js' %}"></script>
+
+<script>
+    var angle = 0;
+
+    function galleryspin(sign) {
+        spinner = document.querySelector("#spinner");
+        if (!sign) {
+            angle = angle + 45;
+        } else {
+            angle = angle - 45;
+        }
+        spinner.setAttribute("style", "-webkit-transform: rotateY(" + angle + "deg); -moz-transform: rotateY(" + angle + "deg); transform: rotateY(" + angle + "deg);");
+    }
+</script>
+
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: "{% url 'api:categoria_list' %}",
+            async: false,
+            dataType: 'JSON',
+            success: function(data) {
+                data.forEach(element => {
+                    let desc = element.descripcion.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+                    const URL_MASK = "{% url 'vnt:productos_categoria' 12345 %}".replace(/12345/, element.id);
+                    const categoria_item = $(`<option class="text-white" value="${element.id}">${desc}</option>`)
+                    $('#categorias').append(categoria_item);
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock js_page %}

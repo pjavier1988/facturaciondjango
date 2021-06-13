@@ -47,19 +47,19 @@ def Home(request):
     
     fechalte=datetime(current_year, next_month, 1)
 
-    facturas_year = FacturaEnc.objects.filter(fecha__year=current_year,tipo="factura").aggregate(Sum('total'))
-    compras_year = FacturaEnc.objects.filter(fecha__year=current_year,tipo="compra").aggregate(Sum('total'))
-    facturas_mes = FacturaEnc.objects.filter(fecha__gte=fechagte,fecha__lte=fechalte,tipo="factura").aggregate(Sum('total'))
-    compras_mes = FacturaEnc.objects.filter(fecha__gte=fechagte,fecha__lte=fechalte,tipo="compra").aggregate(Sum('total'))
+    facturas_year = FacturaEnc.objects.filter(fecha__year=current_year,tipo="factura", empresa=request.user.company).aggregate(Sum('total'))
+    compras_year = FacturaEnc.objects.filter(fecha__year=current_year,tipo="compra", empresa=request.user.company).aggregate(Sum('total'))
+    facturas_mes = FacturaEnc.objects.filter(fecha__gte=fechagte,fecha__lte=fechalte,tipo="factura", empresa=request.user.company).aggregate(Sum('total'))
+    compras_mes = FacturaEnc.objects.filter(fecha__gte=fechagte,fecha__lte=fechalte,tipo="compra", empresa=request.user.company).aggregate(Sum('total'))
 
-    facturas_year = getTotal(facturas_year)
-    compras_year = getTotal(compras_year)
-    facturas_mes = getTotal(facturas_mes)
-    compras_mes = getTotal(compras_mes)
+    facturas_year = get_total(facturas_year)
+    compras_year = get_total(compras_year)
+    facturas_mes = get_total(facturas_mes)
+    compras_mes = get_total(compras_mes)
 
     ganancias_anual = facturas_year - compras_year
     ganancias_mensual = facturas_mes - compras_mes
-    productos = Producto.objects.filter(existencia__lte=5)
+    productos = Producto.objects.filter(existencia__lte=5, empresa=request.user.company)
 
     contexto={
         'ventas_mes':f"${facturas_mes}",
@@ -67,7 +67,6 @@ def Home(request):
         'ganancias_mensual':f"${ganancias_mensual}",
         'ganancias_anual':f"${ganancias_anual}",
         'obj':productos,
-        'agotados': ProductosAgotados.as_view()
     }
 
     return render(request,template_name,contexto)
@@ -79,7 +78,7 @@ class HomeSinPrivilegios(LoginRequiredMixin, generic.TemplateView):
 
 #Methods
 
-def getTotal(data):
+def get_total(data):
 
     if data.get('total__sum'):
 

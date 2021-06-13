@@ -33,9 +33,6 @@ class EmpresaNew(LoginRequiredMixin, generic.CreateView):
         form.instance.uc = self.request.user
         return super().form_valid(form)
 
-    #DOC
-    #https://docs.djangoproject.com/en/3.2/ref/class-based-views/mixins-simple/
-
     def get_success_url(self):
         if set_user_company(self.request.user.id, self.object) == False:
             messages.error(self.request,'Super Usuario solo puede tener una empresa')

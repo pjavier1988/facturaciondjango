@@ -1,40 +1,26 @@
-
 from cmp.models import Proveedor
 from django.db import models
 #Para los signals
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db.models import Sum
-
 from bases.models import ClaseModelo, ClaseModelo2
 from inv.models import Producto
+from param.models import Empresa
 
 class Cliente(ClaseModelo):
+
     NAT='Natural'
     JUR='Jurídica'
-    TIPO_CLIENTE = [
-        (NAT,'Natural'),
-        (JUR,'Jurídica')
-    ]
-    nombres = models.CharField(
-        max_length=100
-    )
-    apellidos = models.CharField(
-        max_length=100
-    )
-    identificacion = models.CharField(
-        max_length=13
-    )
-    celular = models.CharField(
-        max_length=20,
-        null=True,
-        blank=True
-    )
-    tipo=models.CharField(
-        max_length=10,
-        choices=TIPO_CLIENTE,
-        default=NAT
-    )
+
+    TIPO_CLIENTE = [(NAT,'Natural'),(JUR,'Jurídica')]
+
+    nombres = models.CharField(max_length=100)
+    apellidos = models.CharField(max_length=100)
+    identificacion = models.CharField(max_length=13)
+    celular = models.CharField(max_length=20, null=True, blank=True)
+    tipo = models.CharField( max_length=10, choices=TIPO_CLIENTE, default=NAT)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self):
         return '{} {}'.format(self.apellidos,self.nombres)
@@ -50,29 +36,28 @@ class Cliente(ClaseModelo):
     
 class FacturaEnc(ClaseModelo2):
 
-    cliente = models.ForeignKey(
-        Cliente,
-        on_delete=models.CASCADE,
-        null=True
-    )
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True)
     fecha = models.DateTimeField(auto_now_add=True,editable=True)
-    sub_total=models.FloatField(default=0)
+    sub_total = models.FloatField(default=0)
     faciva = models.FloatField(default=0)
-    descuento=models.FloatField(default=0)
-    total=models.FloatField(default=0)
-    proveedor=models.ForeignKey(Proveedor,on_delete=models.CASCADE)
-    observacion=models.TextField(blank=True,null=True)
-    no_factura=models.CharField(max_length=100)
-    fecha_factura=models.DateField()
-    fecha_compra=models.DateField()
-    tipo=models.CharField(max_length=100)
+    descuento = models.FloatField(default=0)
+    total = models.FloatField(default=0)
+    proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE, null=True)
+    observacion = models.TextField(blank=True,null=True)
+    no_factura = models.CharField(max_length=100)
+    fecha_factura = models.DateField()
+    fecha_compra = models.DateField()
+    tipo = models.CharField(max_length=100)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self):
         return '{}'.format(self.id)
 
     def save(self):
         
-        self.observacion = self.observacion.upper()
+        if self.observacion:
+            self.observacion = self.observacion.upper()
+
         if self.sub_total == None  or self.descuento == None:
             self.sub_total = 0
             self.descuento = 0
@@ -94,15 +79,16 @@ class FacturaEnc(ClaseModelo2):
 class FacturaDet(ClaseModelo2):
 
     factura = models.ForeignKey(FacturaEnc,on_delete=models.CASCADE)
-    producto=models.ForeignKey(Producto,on_delete=models.CASCADE)
-    cantidad=models.BigIntegerField(default=0)
-    precio=models.FloatField(default=0)
-    sub_total=models.FloatField(default=0)
-    descuento=models.FloatField(default=0)
-    total=models.FloatField(default=0)
-    detiva=models.FloatField(default=0)
-    precio_prv=models.FloatField(default=0)
-    costo=models.FloatField(default=0)
+    producto = models.ForeignKey(Producto,on_delete=models.CASCADE)
+    cantidad = models.BigIntegerField(default=0)
+    precio = models.FloatField(default=0)
+    sub_total = models.FloatField(default=0)
+    descuento = models.FloatField(default=0)
+    total = models.FloatField(default=0)
+    detiva = models.FloatField(default=0)
+    precio_prv = models.FloatField(default=0)
+    costo = models.FloatField(default=0)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self):
         return '{}'.format(self.producto)
@@ -136,6 +122,7 @@ def detalle_fac_guardar(sender,instance,**kwargs):
     producto_id = instance.producto.id
 
     enc = FacturaEnc.objects.get(pk=factura_id)
+    
     if enc:
         sub_total = FacturaDet.objects \
             .filter(factura=factura_id) \
@@ -158,10 +145,8 @@ def detalle_fac_guardar(sender,instance,**kwargs):
         enc.save()
 
     prod=Producto.objects.filter(pk=producto_id).first()
+
     if prod:
         cantidad = int(prod.existencia) - int(instance.cantidad)
         prod.existencia = cantidad
         prod.save()
-
-
-

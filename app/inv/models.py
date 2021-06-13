@@ -2,8 +2,6 @@ from django.db import models
 from bases.models import ClaseModelo
 from param.models import Empresa
 
-# Create your models here.
-
 class Categoria(ClaseModelo):
 
     descripcion = models.CharField(max_length =100, help_text = 'Descripción', unique = True)
@@ -36,7 +34,6 @@ class SubCategoria(ClaseModelo):
         verbose_name_plural = "Sub Categorías"
         unique_together = ("categoria","descripcion")
 
-
 class Marca(ClaseModelo):
 
     descripcion = models.CharField(max_length =100, help_text = 'Descripción', unique = True)
@@ -51,8 +48,6 @@ class Marca(ClaseModelo):
 
     class Meta:
         verbose_name_plural = "Marcas"
-
-
 
 class UnidadMedida(ClaseModelo):
 
@@ -69,7 +64,6 @@ class UnidadMedida(ClaseModelo):
     class Meta:
         verbose_name_plural = "Unidades de medida"
     
-
 class Producto(ClaseModelo):
 
     codigo = models.CharField(max_length =20, unique = True)
@@ -84,6 +78,7 @@ class Producto(ClaseModelo):
     unidad_medida = models.ForeignKey(UnidadMedida, on_delete=models.CASCADE, blank=True)
     subcategoria = models.ForeignKey(SubCategoria, on_delete=models.CASCADE)
     es_servicio = models.BooleanField(default=False)
+    imagen = models.FileField(upload_to='img/productos', null=True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self) :
@@ -91,7 +86,12 @@ class Producto(ClaseModelo):
 
     def save(self):
         self.descripcion = self.descripcion.upper()
-        super(Producto,self).save()    
+        super(Producto,self).save()
+    
+    @property
+    def imagen_url(self):
+        if self.imagen and hasattr(self.imagen, 'url'):
+            return self.imagen.url
 
     class Meta:
         verbose_name_plural = "Productos"

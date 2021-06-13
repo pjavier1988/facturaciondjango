@@ -1,3 +1,4 @@
+import inv.views as inv
 from django.db.models.aggregates import Sum
 from django.shortcuts import render,redirect
 from django.views import generic
@@ -11,27 +12,20 @@ from django.contrib.auth import authenticate
 from bases.views import SinPrivilegios
 from .models import Cliente, FacturaEnc, FacturaDet
 from .forms import ClienteForm
-import inv.views as inv
 from inv.models import Producto
 
-class ClienteView(SinPrivilegios, generic.ListView):
-    model = Cliente
-    template_name = "fac/cliente_list.html"
-    context_object_name = "obj"
-    permission_required="cmp.view_cliente"
+class VistaBaseCreate(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
 
-
-class VistaBaseCreate(SuccessMessageMixin,SinPrivilegios, \
-    generic.CreateView):
     context_object_name = 'obj'
     success_message="Registro Agregado Satisfactoriamente"
 
     def form_valid(self, form):
         form.instance.uc = self.request.user
+        form.instance.empresa = self.request.user.company
         return super().form_valid(form)
 
-class VistaBaseEdit(SuccessMessageMixin,SinPrivilegios, \
-    generic.UpdateView):
+class VistaBaseEdit(SuccessMessageMixin, SinPrivilegios, generic.UpdateView):
+
     context_object_name = 'obj'
     success_message="Registro Actualizado Satisfactoriamente"
 
@@ -39,8 +33,24 @@ class VistaBaseEdit(SuccessMessageMixin,SinPrivilegios, \
         form.instance.um = self.request.user.id
         return super().form_valid(form)
 
+#Cliente ***************************************************************************************************************************************
+
+class ClienteView(SinPrivilegios, generic.ListView):
+
+    model = Cliente
+    template_name = "fac/cliente_list.html"
+    context_object_name = "obj"
+    permission_required="cmp.view_cliente"
+
+    def get_queryset(self):
+        
+        if self.request.user.company:
+            return Cliente.objects.filter(empresa = self.request.user.company)
+        else:
+            return None
 
 class ClienteNew(VistaBaseCreate):
+
     model=Cliente
     template_name="fac/cliente_form.html"
     form_class=ClienteForm
@@ -48,7 +58,6 @@ class ClienteNew(VistaBaseCreate):
     permission_required="fac.add_cliente"
 
     def get(self, request, *args, **kwargs):
-        print("sobre escribir get")
         
         try:
             t = request.GET["t"]
@@ -60,8 +69,8 @@ class ClienteNew(VistaBaseCreate):
         form = self.form_class(initial=self.initial)
         return render(request, self.template_name, {'form': form, 't':t})
 
-
 class ClienteEdit(VistaBaseEdit):
+
     model=Cliente
     template_name="fac/cliente_form.html"
     form_class=ClienteForm
@@ -69,9 +78,6 @@ class ClienteEdit(VistaBaseEdit):
     permission_required="fac.change_cliente"
 
     def get(self, request, *args, **kwargs):
-        print("sobre escribir get en editar")
-
-        print(request)
         
         try:
             t = request.GET["t"]
@@ -101,7 +107,10 @@ def clienteInactivar(request,id):
     
     return HttpResponse("FAIL")
 
+#Factura ***************************************************************************************************************************************
+
 class FacturaView(SinPrivilegios, generic.ListView):
+
     model = FacturaEnc
     template_name = "fac/factura_list.html"
     context_object_name = "obj"
@@ -109,20 +118,28 @@ class FacturaView(SinPrivilegios, generic.ListView):
 
     def get_queryset(self):
         user = self.request.user
-        # print(user,"usuario")
-        qs = super().get_queryset()
-        for q in qs:
-            print(q.uc,q.id)
-        
-        if not user.is_superuser:
-            qs = qs.filter(uc=user,tipo='factura')
+        #qs = super().get_queryset()
+        if self.request.user.company:
+            qs = FacturaEnc.objects.filter(empresa = self.request.user.company)
         else:
-            qs = qs.filter(tipo='factura')
+            qs = None
 
-        for q in qs:
-            print(q.uc,q.id)
+        if qs:
 
-        return qs
+            for q in qs:
+                print(q.uc,q.id)
+        
+            if not user.is_superuser:
+                qs = qs.filter(uc=user,tipo='factura')
+            else:
+                qs = qs.filter(tipo='factura')
+
+            for q in qs:
+                print(q.uc,q.id)
+
+            return qs
+        else:
+            return None
 
 def getTransacciones(request):
 
@@ -148,19 +165,13 @@ def getTransacciones(request):
         '''
         
     if request.method == 'GET':
-        qs = FacturaEnc.objects.all()
-        total_compras = FacturaEnc.objects.filter(tipo='compra').aggregate(Sum('total'))
-        total_ventas = FacturaEnc.objects.filter(tipo='factura').aggregate(Sum('total'))
 
-        if total_compras.get('total__sum'):
-            total_compras = total_compras.get('total__sum')
-        else: 
-            total_compras = 0
+        qs = FacturaEnc.objects.filter(empresa=request.user.company)
+        total_compras = FacturaEnc.objects.filter(tipo='compra', empresa=request.user.company).aggregate(Sum('total'))
+        total_ventas = FacturaEnc.objects.filter(tipo='factura', empresa=request.user.company).aggregate(Sum('total'))
 
-        if total_ventas.get('total__sum'):
-            total_ventas.get('total__sum')
-        else:
-            total_ventas = 0
+        total_compras = get_total(total_compras)
+        total_ventas = get_total(total_ventas)
 
         balance = total_ventas - total_compras
 
@@ -176,10 +187,10 @@ def getTransacciones(request):
 @login_required(login_url='/login/')
 @permission_required('fac.change_facturaenc', login_url='bases:sin_privilegios')
 def facturas(request,id=None):
-    template_name='fac/facturas.html'
 
+    template_name='fac/facturas.html'
     detalle = {}
-    clientes = Cliente.objects.filter(estado=True)
+    clientes = Cliente.objects.filter(estado=True, empresa=request.user.company)
     
     if request.method == "GET":
         enc = FacturaEnc.objects.filter(pk=id).first()
@@ -221,14 +232,18 @@ def facturas(request,id=None):
         return render(request,template_name,contexto)
     
     if request.method == "POST":
+        
         cliente = request.POST.get("enc_cliente")
         fecha  = request.POST.get("fecha")
-        cli=Cliente.objects.get(pk=cliente)
+        cli = Cliente.objects.get(pk=cliente)
 
         if not id:
             enc = FacturaEnc(
                 cliente = cli,
                 fecha = fecha,
+                fecha_factura = fecha,
+                fecha_compra = fecha,
+                empresa = request.user.company,
                 tipo = 'factura'
             )
             if enc:
@@ -253,6 +268,7 @@ def facturas(request,id=None):
         total = request.POST.get("total_detalle")
 
         prod = Producto.objects.get(codigo=codigo)
+
         det = FacturaDet(
             factura = enc,
             producto = prod,
@@ -260,7 +276,8 @@ def facturas(request,id=None):
             precio = precio,
             sub_total = s_total,
             descuento = descuento,
-            total = total
+            total = total,
+            empresa = request.user.company,
         )
         
         if det:
@@ -274,8 +291,8 @@ def facturas(request,id=None):
 class ProductoView(inv.ProductoView):
     template_name="fac/buscar_producto.html" 
 
-
 def borrar_detalle_factura(request, id):
+    
     template_name = "fac/factura_borrar_detalle.html"
 
     det = FacturaDet.objects.get(pk=id)
@@ -287,7 +304,7 @@ def borrar_detalle_factura(request, id):
         usr = request.POST.get("usuario")
         pas = request.POST.get("pass")
 
-        user =authenticate(username=usr,password=pas)
+        user = authenticate(username=usr, password=pas)
 
         if not user:
             return HttpResponse("Usuario o Clave Incorrecta")
@@ -296,6 +313,7 @@ def borrar_detalle_factura(request, id):
             return HttpResponse("Usuario Inactivo")
 
         if user.is_superuser or user.has_perm("fac.sup_caja_facturadet"):
+            
             det.id = None
             det.cantidad = (-1 * det.cantidad)
             det.sub_total = (-1 * det.sub_total)
@@ -308,3 +326,13 @@ def borrar_detalle_factura(request, id):
         return HttpResponse("Usuario no autorizado")
     
     return render(request,template_name,context)
+
+#Methods
+
+def get_total(data):
+
+    if data.get('total__sum'):
+
+        return data.get('total__sum')
+    else:
+        return 0

@@ -6,31 +6,25 @@ const loadVentas = () => {
     meses = []
     ventas = []
 
-    let option = document.getElementById('select-ventas').value
-    
+    let year = document.getElementById('select-years-ventas').value;
+    let month = document.getElementById('select-months-ventas').value;
+
     $.ajax({
-        url: `/api/v1/facturas/ventas/mensuales/${option}`,
+        url: `/api/v1/facturas/ventas/mensuales?year=${year}&month=${month}`,
         async: false,
         dataType: 'JSON',
-        
+
         success: function(datos) {
 
             for (let d in datos) {
                 ventas.push(datos[d])
                 meses.push(d)
             }
-        
-            ventas = ventas.reverse()
-            meses = meses.reverse()
         }
     });
 }
 
 loadVentas();
-
-// Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#858796';
 
 function number_format(number, decimals, dec_point, thousands_sep) {
     // *     example: number_format(1234.56, 2, ',', ' ');
@@ -65,8 +59,8 @@ var myBarChart = new Chart(ctx, {
         labels: [...meses],
         datasets: [{
             label: "Ventas",
-            backgroundColor: "#4e73df",
-            hoverBackgroundColor: "#2e59d9",
+            backgroundColor: "#6f42c1",
+            hoverBackgroundColor: "#6610f2",
             borderColor: "#4e73df",
             data: [...ventas],
         }],
@@ -91,7 +85,7 @@ var myBarChart = new Chart(ctx, {
                     drawBorder: false
                 },
                 ticks: {
-                    maxTicksLimit: 6
+                    maxTicksLimit: 15
                 },
                 maxBarThickness: 25,
             }],
@@ -99,7 +93,7 @@ var myBarChart = new Chart(ctx, {
                 ticks: {
                     min: 0,
                     max: Math.max(...ventas),
-                    maxTicksLimit: 5,
+                    maxTicksLimit: 10,
                     padding: 10,
                     // Include a dollar sign in the ticks
                     callback: function(value, index, values) {
@@ -116,7 +110,7 @@ var myBarChart = new Chart(ctx, {
             }],
         },
         legend: {
-            display: false
+            display: false,
         },
         tooltips: {
             titleMarginBottom: 10,

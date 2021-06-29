@@ -30,6 +30,8 @@
     <link rel="stylesheet" href="{% static 'base/css/empresa_det.css' %}">
     <link rel="stylesheet" href="{% static 'base/css/product-card.css' %}">
     <link rel="stylesheet" href="{% static 'base/css/carousel.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 
 </head>
 
@@ -58,6 +60,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
+                {% if perms.inv.view_categoria %}
                 <a class="nav-link" href="{% url 'bases:home' %}">
                     <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i>
                     <span>Dashboard</span>
@@ -70,6 +73,7 @@
                     <i class="fa fa-university" aria-hidden="true"></i>
                     <span>Administración</span>
                 </a>
+                {% endif %}
                 <a class="nav-link" href="{% url 'vnt:home' %}">
                     <i class="fa fa-home" aria-hidden="true"></i>
                     <span>Home</span>
@@ -142,6 +146,33 @@
                     </div>
                 </div>
 
+            </li>
+
+            <!-- Informes -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-chart-area" aria-hidden="true"></i>
+                    <span>Informes</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Pagos:</h6>
+                        <a class="collapse-item" href="{% url 'param:compras_list' %}">Compras</a>
+                        <a class="collapse-item" href="{% url 'param:ventas_list' %}">Ventas</a>
+                        <a class="collapse-item" href="#">Devolución de Compras</a>
+                        <a class="collapse-item" href="#">Devolución de Ventas</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Informes</h6>
+                        <a class="collapse-item" href="#">Ganancia y Pérdidas</a>
+                        <a class="collapse-item" href="{% url 'param:alerta_cantidad_list' %}">Alertas de Cantidad</a>
+                        <a class="collapse-item" href="#">Informe de Almacen</a>
+                        <h6 class="collapse-header">Entidades</h6>
+                        <a class="collapse-item" href="{% url 'param:clientes_list' %}">Informe de Clientes</a>
+                        <a class="collapse-item" href="{% url 'param:proveedores_list' %}">Informe de Proveedores</a>
+                    </div>
+                </div>
+            </li>
+            
             </li>
 
             <!-- Categorias -->
@@ -392,6 +423,14 @@
     <!-- Page level plugins -->
     <script src="{% static 'base/vendor/chart.js/Chart.min.js' %}"></script>
     <!-- Page level custom scripts -->
+
+    <!-- DataTable Buttons -->
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
 
     <script>
         $(document).ready(function() {

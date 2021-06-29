@@ -1,8 +1,10 @@
 {% extends 'base/base.html' %}
-
 <div></div>
-
+{% load static %}
+<div></div>
 {% block page_content %}
+
+<link rel="stylesheet" href="{% static 'base/css/search.css' %}">
 
 <div class="container">
     <h1 class="title text-center">{{ categoria.descripcion }}</h1>

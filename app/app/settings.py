@@ -147,11 +147,12 @@ db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
 #Dopbox
+#https://stackoverflow.com/questions/55587089/django-storages-dropbox-stone-validators-validationerror
 
 DEFAULT_FILE_STORAGE = config('DEFAULT_FILE_STORAGE')
 
 DROPBOX_OAUTH2_TOKEN = config('DROPBOX_OAUTH2_TOKEN')
 
-DROPBOX_WRITE_MODE = 'overwrite'
+DROPBOX_WRITE_MODE = 'update'
 
 DROPBOX_ROOT_PATH = '/'

@@ -86,6 +86,8 @@ class ComprasDet(ClaseModelo):
 @receiver(post_delete, sender=ComprasDet)
 def detalle_compra_borrar(sender,instance, **kwargs):
 
+    print ('detalle_compra_borrar ***************************************************************************************')
+
     id_producto = instance.producto.id
     id_compra = instance.compra.id
 
@@ -106,6 +108,8 @@ def detalle_compra_borrar(sender,instance, **kwargs):
 
 @receiver(post_save, sender=ComprasDet)
 def detalle_compra_guardar(sender,instance,**kwargs):
+
+    print ('detalle_compra_guardar ***************************************************************************************')
 
     id_producto = instance.producto.id
     fecha_compra = instance.compra.fecha_compra

@@ -1,14 +1,23 @@
-from inv.models import Producto
+from inv.models import Producto, Categoria
 from fac.models import FacturaEnc
-from api.views import ProductosAgotados
 from django.db.models.aggregates import Sum
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import generic
 from datetime import datetime
+
+def validar_usuario(request):
+    if request.user.is_authenticated:
+      if request.user.groups.name  == "Client":
+        return redirect('vnt:home')
+      elif request.user.groups.name == "Mod":
+        return redirect('base:home')
+      elif request.user.is_admin:
+        return redirect('/admin/')
+    return redirect('/login/')
 
 class MixinFormInvalid:
 
@@ -66,6 +75,7 @@ def Home(request):
         'ventas_anual':f"${facturas_year}",
         'ganancias_mensual':f"${ganancias_mensual}",
         'ganancias_anual':f"${ganancias_anual}",
+        'categorias_productos': get_products_and_category(request),
         'obj':productos,
     }
 
@@ -85,3 +95,20 @@ def get_total(data):
         return data.get('total__sum')
     else:
         return 0
+
+def get_products_and_category(request):
+
+    data = {}
+
+    categorias = Categoria.objects.all()
+    print (Categoria)
+    print ('****************************************************')
+
+    for c in categorias:
+
+        productos = Producto.objects.filter(subcategoria__categoria=c, empresa=request.user.company)
+
+        if productos:
+            data[c.descripcion] = productos
+    
+    return data

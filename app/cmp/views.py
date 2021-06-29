@@ -233,7 +233,6 @@ def compras(request,compra_id=None):
 
             sub_total = FacturaDet.objects.filter(factura=compra_id).aggregate(Sum('sub_total'))
             descuento = FacturaDet.objects.filter(factura=compra_id).aggregate(Sum('descuento'))
-            print(sub_total)
             enc.sub_total = sub_total["sub_total__sum"]
             enc.descuento = descuento["descuento__sum"]
 

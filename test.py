@@ -1,9 +1,10 @@
-import datetime
-from dateutil.relativedelta import relativedelta
+def get_comparacion_productos(products: str):
 
-current_date = datetime.datetime.now()
-old_date = current_date + relativedelta(months=-8)
+    data = {}
 
-print (current_date)
-print (old_date)
-print (str(old_date.strftime('%A')))
+    products = products.split(',')
+    data = products
+
+    return data
+
+print (get_comparacion_productos('1,2,3,4,5,6,7,8,9'))

@@ -4,10 +4,12 @@
 <div></div>
 {% block page_content %}
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.css" rel="stylesheet"></link>
+
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Resumen</h1>
+        <h2 class="h3 mb-0 text-gray-800">Resumen</h2>
     </div>
 
     <!-- Content Row -->
@@ -88,7 +90,7 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Productos próximos a agotar</h1>
+        <h2 class="h3 mb-0 text-gray-800">Productos próximos a agotar</h2>
     </div>
 
     <div class="row">
@@ -104,19 +106,19 @@
                 <!-- Card Body -->
                 <div class="card-body block">
 
-                    <table class="table table-striped table-hover" aria-hidden="true">
+                    <table style="border: 1px solid #ccc;" class="table table-striped table-hover shadow display" aria-hidden="true">
                         <thead>
                             <tr>
-                                <th>Sub. Cat.</th>
-                                <th>Código</th>
-                                <th>Barras</th>
-                                <th>Descripción</th>
-                                <th>Stock</th>
-                                <th>Marca</th>
-                                <th>Estado</th>
-                                <th>IVA</th>
-                                <th>Tipo</th>
-                                <th class="all">Observación</th>
+                                <th scope="col" style="border: 0px;">Sub. Cat.</th>
+                                <th scope="col" style="border: 0px;">Código</th>
+                                <th scope="col" style="border: 0px;">Barras</th>
+                                <th scope="col" style="border: 0px;">Descripción</th>
+                                <th scope="col" style="border: 0px;">Stock</th>
+                                <th scope="col" style="border: 0px;">Marca</th>
+                                <th scope="col" style="border: 0px;">Estado</th>
+                                <th scope="col" style="border: 0px;">IVA</th>
+                                <th scope="col" style="border: 0px;">Tipo</th>
+                                <th scope="col" style="border: 0px;">Observación</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -148,7 +150,7 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Estadísticas</h1>
+        <h2 class="h3 mb-0 text-gray-800">Estadísticas</h2>
     </div>
 
     <!-- Content Row -->
@@ -156,14 +158,21 @@
 
         <div class="col">
 
-            <!-- Area Chart -->
+            <!-- Area Chart GANANCIAS -->
             <div id="area-chart" class="card shadow mb-4">
                 <div class="card-header py-3">
+                    <h4 class="text-center">
+                        Estadísticas de las Ganancias
+                    </h4>
                     <h6 class="m-0 font-weight-bold text-primary" id="container-select">
-                        <select required class="form-control" style="width: 50%;" name="" onchange="reloadData()" id="select-ganancias">
-                            <option value="2">Ganancias Mes Actual</option>
-                            <option value="1">Ganancias Mensuales</option>
-                            <option value="3">Ganancias Anuales</option>
+                        <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
+
+                        <select id="select-years-ganancias" required class="form-control d-inline-block" style="width: fit-content;" name="select-years-ganancias" onchange="reloadData()">
+                            <option value="" selected>-- Año --</option>
+                        </select>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadData()" id="select-months-ganancias">
+                            <option value="" selected>-- Mes --</option>
                         </select>
                     </h6>
                 </div>
@@ -177,14 +186,21 @@
                 </div>
             </div>
 
-            <!-- Bar Chart -->
+            <!-- Bar Chart VENTAS -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
+                    <h4 class="text-center">
+                        Estadísticas de las Ventas
+                    </h4>
                     <h6 class="m-0 font-weight-bold text-primary">
-                        <select required class="form-control" style="width: 50%;" onchange="reloadDataVentas()" name="" id="select-ventas">
-                            <option value="1">Ventas Mes Actual</option>
-                            <option value="2">Ventas Mensuales</option>
-                            <option value="3">Ventas Anuales</option>
+                        <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="select-years-ventas">
+                            <option value="" selected>-- Año --</option>
+                        </select>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="select-months-ventas">
+                            <option value="" selected>-- Mes --</option>
                         </select>
                     </h6>
                 </div>
@@ -198,18 +214,68 @@
                 </div>
             </div>
 
-        </div>
+            <!-- Bar Chart PRODUCTOS -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h4 class="text-center">
+                        Estadísticas de los Productos
+                    </h4>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataProductos()" id="select-years-productos">
+                            <option value="" selected>-- Año --</option>
+                        </select>
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataProductos()" id="select-months-productos">
+                            <option value="" selected>-- Mes --</option>
+                        </select>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="myBarChartProductos"></canvas>
+                    </div>
+                    <div class="card-footer">
+                        <span>Estadisticas de las ventas de los últimos 12 meses</span>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Donut Chart -->
-        <div class="col-xl-4 col-lg-5">
+            <!-- Donut Chart -->
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">
+
+                        <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataProductosPie()" id="select-years-productos-pie">
+                                <option value="" selected>-- Año --</option>
+                            </select>
+
+                        <spam class="ml-3"><i class="fa fa-random" aria-hidden="true"></i> Comparación</spam>
+
+                        <select id="products-compare" style="width: 300px;" multiple onchange="reloadDataProductosPie()">
+
+                            {% for categoria, productos in categorias_productos.items %}
+
+                            <optgroup label="{{ categoria }}">
+
+                                {% for p in productos %}
+
+                                <option value={{ p.id }}>{{ p|title }}</option>
+                            
+                                {% endfor %}
+
+                            </optgroup>
+
+                            {% endfor %}
+
+                        </select>
+                    </h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-pie pt-4">
+                    <div class="chart-pie my-4">
                         <canvas id="myPieChart"></canvas>
                     </div>
                     <div class="card-footer">
@@ -226,12 +292,80 @@
         $(document).ready(function() {
             $('.table').DataTable();
         });
-        </script>
+    </script>
     {% endblock %}
     <script src="{% static  'base/vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'base/vendor/chart.js/Chart.min.js' %}"></script>
     <script src="{% static 'base/js/demo/chart-area-demo.js' %}"></script>
-    <script src="{% static 'base/js/demo/chart-pie-demo.js' %}"></script>
     <script src="{% static 'base/js/demo/chart-bar-demo.js' %}"></script>
+    <script src="{% static 'base/js/demo/chart-bar-productos.js' %}"></script>
+    <script src="{% static 'base/js/demo/chart-pie-demo.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.js"></script>
+    <script>
+        //http://slimselectjs.com/options
+        $(document).ready(function() {
+            new SlimSelect({
+                select: '#products-compare',
+                limit: 10,
+            })
+        });
+    </script>
+    <script>
+        const loadMonthOptions = () => {
+
+            const meses = {
+                'Enero': 1,
+                'Febrero': 2,
+                'Marzo': 3,
+                'Abril': 4,
+                'Mayo': 5,
+                'Junio': 6,
+                'Julio': 7,
+                'Agosto': 8,
+                'Septiembre': 9,
+                'Octubre': 10,
+                'Noviembre': 11,
+                'Diciembre': 12,
+            }
+
+            for (let m in meses) {
+                const option = $(`<option value="${meses[m]}">${m}</option>`);
+                $('#select-months-ganancias').append(option);
+            }
+            for (let m in meses) {
+                const option = $(`<option value="${meses[m]}">${m}</option>`);
+                $('#select-months-ventas').append(option);
+            }
+            for (let m in meses) {
+                const option = $(`<option value="${meses[m]}">${m}</option>`);
+                $('#select-months-productos').append(option);
+            }
+        }
+
+        const loadYearOptions = () => {
+
+            const year = new Date().getFullYear();
+            const years = [year, year - 1, year - 2, year - 3, year - 4, year - 5, year - 6, year - 7, year - 8, year - 9];
+
+            for (let y of years) {
+                const option = $(`<option value="${y}">${y}</option>`);
+                $('#select-years-ganancias').append(option);
+            }
+            for (let y of years) {
+                const option = $(`<option value="${y}">${y}</option>`);
+                $('#select-years-ventas').append(option);
+            }
+            for (let y of years) {
+                const option = $(`<option value="${y}">${y}</option>`);
+                $('#select-years-productos').append(option);
+            }
+            for (let y of years) {
+                const option = $(`<option value="${y}">${y}</option>`);
+                $('#select-years-productos-pie').append(option);
+            }
+        }
+        loadYearOptions();
+        loadMonthOptions();
+    </script>
 </div>
 {% endblock %}

@@ -1,30 +1,30 @@
-let months = []
-let ganancias = []
+var meses_p = []
+var productos = []
 
-const loadGanancias = () => {
+const loadProductos = () => {
 
-    months = []
-    ganancias = []
+    meses_p = []
+    productos = []
 
-    let year = document.getElementById('select-years-ganancias').value;
-    let month = document.getElementById('select-months-ganancias').value;
-
+    let year = document.getElementById('select-years-productos').value;
+    let month = document.getElementById('select-months-productos').value;
+    
     $.ajax({
-        url: `/api/v1/facturas/ganancias/mensuales?year=${year}&month=${month}`,
+        url: `/api/v1/productos/mas/vendidos?year=${year}&month=${month}`,
         async: false,
         dataType: 'JSON',
 
         success: function(datos) {
 
             for (let d in datos) {
-                ganancias.push(datos[d])
-                months.push(d)
+                productos.push(datos[d])
+                meses_p.push(d)
             }
         }
     });
 }
 
-loadGanancias();
+loadProductos();
 
 function number_format(number, decimals, dec_point, thousands_sep) {
     // *     example: number_format(1234.56, 2, ',', ' ');
@@ -51,26 +51,18 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     return s.join(dec);
 }
 
-// Area Chart Example
-var ctx = document.getElementById("myAreaChart");
-var myLineChart = new Chart(ctx, {
-    type: 'line',
+// Bar Chart Example
+var ctx = document.getElementById("myBarChartProductos");
+var myBarChartProductos = new Chart(ctx, {
+    type: 'bar',
     data: {
-        labels: months,
+        labels: [...meses_p],
         datasets: [{
-            label: "Ganancia",
-            lineTension: 0.3,
-            backgroundColor: "rgba(78, 115, 223, 0.05)",
-            borderColor: "rgba(78, 115, 223, 1)",
-            pointRadius: 3,
-            pointBackgroundColor: "rgba(78, 115, 223, 1)",
-            pointBorderColor: "rgba(78, 115, 223, 1)",
-            pointHoverRadius: 3,
-            pointHoverBackgroundColor: "#1cc88a",
-            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-            pointHitRadius: 10,
-            pointBorderWidth: 2,
-            data: ganancias,
+            label: "Ventas",
+            backgroundColor: "#1cc88a",
+            hoverBackgroundColor: "#36b9cc",
+            borderColor: "#4e73df",
+            data: [...productos],
         }],
     },
     options: {
@@ -86,23 +78,26 @@ var myLineChart = new Chart(ctx, {
         scales: {
             xAxes: [{
                 time: {
-                    unit: 'date'
+                    unit: 'month'
                 },
                 gridLines: {
                     display: false,
                     drawBorder: false
                 },
                 ticks: {
-                    maxTicksLimit: 12
-                }
+                    maxTicksLimit: 15
+                },
+                maxBarThickness: 25,
             }],
             yAxes: [{
                 ticks: {
-                    maxTicksLimit: 5,
+                    min: 0,
+                    max: Math.max(...productos),
+                    maxTicksLimit: 10,
                     padding: 10,
                     // Include a dollar sign in the ticks
                     callback: function(value, index, values) {
-                        return '$' + number_format(value);
+                        return '#' + number_format(value);
                     }
                 },
                 gridLines: {
@@ -118,48 +113,30 @@ var myLineChart = new Chart(ctx, {
             display: false
         },
         tooltips: {
-            backgroundColor: "rgb(255,255,255)",
-            bodyFontColor: "#858796",
             titleMarginBottom: 10,
             titleFontColor: '#6e707e',
             titleFontSize: 14,
+            backgroundColor: "rgb(255,255,255)",
+            bodyFontColor: "#858796",
             borderColor: '#dddfeb',
             borderWidth: 1,
             xPadding: 15,
             yPadding: 15,
             displayColors: false,
-            intersect: false,
-            mode: 'index',
             caretPadding: 10,
             callbacks: {
                 label: function(tooltipItem, chart) {
                     var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                    return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+                    return datasetLabel + ': #' + number_format(tooltipItem.yLabel);
                 }
             }
         },
     }
 });
 
-const reloadData = () => {
+const reloadDataProductos = () => {
 
-    loadGanancias();
-    removeData(myLineChart);
-    addData(myLineChart, months, ganancias);
-}
-
-function addData(chart, label, data) {
-    chart.data.labels = label;
-    chart.data.datasets.forEach((dataset) => {
-        dataset.data = data;
-    });
-    chart.update();
-}
-
-function removeData(chart) {
-    chart.data.labels = [];
-    chart.data.datasets.forEach((dataset) => {
-        dataset.data = [];
-    });
-    chart.update();
+    loadProductos();
+    removeData(myBarChartProductos);
+    addData(myBarChartProductos, meses_p, productos);
 }

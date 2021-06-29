@@ -5,11 +5,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.db.models import Q, F
+from django.db.models import Q, F, Count, Max
 from django.db.models.aggregates import Sum
 from .serializers import ProductoSerializer, CategoriaSerializer
 from inv.models import Producto, Categoria
-from fac.models import FacturaEnc
+from fac.models import FacturaEnc, FacturaDet
 
 #Productos Cliente *****************************************************************************************************************************
 
@@ -44,16 +44,23 @@ class ProductosAgotados(APIView):
 
 class Ganancias(APIView):
 
-    def get(self, request, intervalo):
+    def get(self, request):
+
+        data = {}
 
         if request.user.company:
+            
+            year = self.request.query_params.get('year')
+            month = self.request.query_params.get('month')
+            date = datetime.datetime.now()
 
-            if intervalo == 1:
-                data = get_ganancias_mensuales(request)
-            elif intervalo == 2:
-                data = get_ganancias_mes(request)
-            elif intervalo == 3:
-                print (intervalo)
+            if not year and not len(str(year)) > 0:
+                year = date.year
+
+            if not month and not len(str(month)) > 0:
+                data = get_ganancias_mensuales(request, int(year))
+            else:
+                data = get_ganancias_mes(request, int(year), int(month))
 
             return Response(data=data, status=status.HTTP_200_OK)
         else:
@@ -61,16 +68,21 @@ class Ganancias(APIView):
 
 class Ventas(APIView):
 
-    def get(self, request, intervalo):
+    def get(self, request):
 
         if request.user.company:
+            
+            year = self.request.query_params.get('year')
+            month = self.request.query_params.get('month')
+            date = datetime.datetime.now()
 
-            if intervalo == 1:
-                data = get_ventas_mensuales(request)
-            elif intervalo == 2:
-                data = get_ventas_mes(request)
-            elif intervalo == 3:
-                print (intervalo)
+            if not year and not len(str(year)) > 0:
+                year = date.year
+
+            if not month and not len(str(month)) > 0:
+                data = get_ventas_mensuales(request, int(year))
+            else:
+                data = get_ventas_mes(request, int(year), int(month))
 
             return Response(data=data, status=status.HTTP_200_OK)
         else:
@@ -78,17 +90,45 @@ class Ventas(APIView):
 
 class ProductosVendidos(APIView):
 
-    def get(self, request, intervalo):
+    def get(self, request):
 
         if request.user.company:
+            
+            year = self.request.query_params.get('year')
+            month = self.request.query_params.get('month')
+            date = datetime.datetime.now()
 
-            if intervalo == 1:
-                data = get_ventas_mensuales(request)
-            elif intervalo == 2:
-                data = get_ventas_mes(request)
-            elif intervalo == 3:
-                print (intervalo)
+            if not year and not len(str(year)) > 0:
+                year = date.year
 
+            if not month and not len(str(month)) > 0:
+                data = get_productos_v_mensuales(request, int(year))
+            else:
+                data = get_productos_v_mes(request, int(year), int(month))
+
+            return Response(data=data, status=status.HTTP_200_OK)
+        else:
+            return Response()
+
+class ProductosAnual(APIView):
+
+    def get(self, request):
+
+        if request.user.company:
+            
+            products = self.request.query_params.get('products')
+            year = self.request.query_params.get('year')
+            date = datetime.datetime.now()
+
+            if not year and not len(str(year)) > 0:
+                year = date.year
+
+            if products and len(products) > 0:
+
+                data = get_comparacion_productos(request, products, year)
+                return Response(data=data, status=status.HTTP_200_OK)
+
+            data = get_productos_anual(request, int(year))
             return Response(data=data, status=status.HTTP_200_OK)
         else:
             return Response()
@@ -105,105 +145,204 @@ class CategoriaList(APIView):
 
 #Methods Ganancias
 
-def get_ganancias_mensuales(request):
+def get_ganancias_mensuales(request, year):
 
     data = {}
-    date = datetime.datetime.now()
 
-    for _ in range(12):
+    for i in range(12):
 
+        i = i + 1
+ 
         facturas_mes = FacturaEnc.objects.filter(
-            fecha__year=date.year,
-            fecha__month=date.month,
+            fecha__year=year,
+            fecha__month=i,
             tipo="factura",
             empresa=request.user.company
         ).aggregate(Sum('total'))
 
         compras_mes = FacturaEnc.objects.filter(
-            fecha__year=date.year,
-            fecha__month=date.month,
+            fecha__year=year,
+            fecha__month=i,
             tipo="compra",
             empresa=request.user.company
         ).aggregate(Sum('total'))
 
         ganancia = get_total(facturas_mes) - get_total(compras_mes)
+        date = datetime.datetime(year, i, 1)
         data[str(date.strftime('%B'))] = ganancia
-        date = date + relativedelta(months=-1)
 
     return data
 
-def get_ganancias_mes(request):
+def get_ganancias_mes(request, year, month):
 
     data = {}
-    date = datetime.datetime.now()
     
-    for _ in range(get_dias_del_mes(date.month, date.year)):
+    for i in range(get_dias_del_mes(month, year)):
+
+        i = i+1
 
         facturas = FacturaEnc.objects.filter(
-            fecha__year=date.year,
-            fecha__month=date.month,
-            fecha__day=date.day,
+            fecha__year=year,
+            fecha__month=month,
+            fecha__day=i,
             tipo="factura",
             empresa=request.user.company
         ).aggregate(Sum('total'))
 
         compras = FacturaEnc.objects.filter(
-            fecha__year=date.year,
-            fecha__month=date.month,
-            fecha__day=date.day,
+            fecha__year=year,
+            fecha__month=month,
+            fecha__day=i,
             tipo="compra",
             empresa=request.user.company
         ).aggregate(Sum('total'))
 
+        date = datetime.datetime(year, month, i)
         data[f'{date.strftime("%B")} - {date.day}'] = get_total(facturas) - get_total(compras)
-        date = date + relativedelta(days=-1)
 
     return data
 
 #Methods Ventas
 
-def get_ventas_mensuales(request):
+def get_ventas_mensuales(request, year):
 
     data = {}
-    date = datetime.datetime.now()
 
-    for _ in range(12):
+    for i in range(12):
+
+        i = i + 1
 
         facturas_mes = FacturaEnc.objects.filter(
-            fecha__year=date.year,
-            fecha__month=date.month,
+            fecha__year=year,
+            fecha__month=i,
             tipo="factura",
             empresa=request.user.company).count()
 
+        date = datetime.datetime(year, i, 1)
         data[str(date.strftime('%B'))] = facturas_mes
-        date = date + relativedelta(months=-1)
 
     return data
         
-def get_ventas_mes(request):
+def get_ventas_mes(request, year, month):
 
     data = {}
-    date = datetime.datetime.now()
 
-    for _ in range(get_dias_del_mes(date.month, date.year)):
+    for i in range(get_dias_del_mes(month, year)):
+
+        i = i + 1
 
         facturas = FacturaEnc.objects.filter(
-            fecha__year=date.year,
-            fecha__month=date.month,
-            fecha__day=date.day,
+            fecha__year=year,
+            fecha__month=month,
+            fecha__day=i,
             tipo="factura",
             empresa=request.user.company).count()
 
+        date = datetime.datetime(year, month, i)
         data[f'{date.strftime("%B")} - {date.day}'] = facturas
-        date = date + relativedelta(days=-1)
 
     return data
 
 #Methods Productos Vendidos
 
-def get_productos_v_mensuales(request):
+def get_productos_v_mensuales(request, year):
 
-    print('')
+    data = {}
+
+    for i in range(12):
+
+        i = i +1
+
+        facturas = FacturaDet.objects.filter(
+            factura__fecha__year=year,
+            factura__fecha__month=i,
+            factura__tipo="factura",
+            empresa=request.user.company).values('producto__descripcion').order_by('-producto__count').annotate(Count('producto')).first()
+
+        date = datetime.datetime(year, i, 1)
+
+        if facturas:
+            data[f'{str(date.strftime("%B"))} - {facturas.get("producto__descripcion")}'] = facturas.get('producto__count')
+        else:
+            data[str(date.strftime('%B'))] = 0
+
+    return data
+
+def get_productos_v_mes(request, year, month):
+
+    data = {}
+
+    for i in range(get_dias_del_mes(month, year)):
+
+        i = i + 1
+
+        facturas = FacturaDet.objects.filter(
+            factura__fecha__year=year,
+            factura__fecha__month=month,
+            factura__tipo="factura",
+            factura__fecha__day=i,
+            empresa=request.user.company).values('producto__descripcion').order_by('-producto__count').annotate(Count('producto')).first()        
+
+        date = datetime.datetime(year, month, i)
+        
+        if facturas:
+            data[f'{date.day} - {facturas.get("producto__descripcion")}'] = facturas.get('producto__count')
+        else:
+            data[f'{str(date.strftime("%B"))} {date.day}'] = 0
+
+    return data
+
+def get_productos_anual(request, year):
+
+    data = {}
+
+    facturas = FacturaDet.objects.filter(
+        factura__fecha__year=year,
+        factura__tipo="factura",
+        empresa=request.user.company).values('producto__descripcion').order_by('-producto__count').annotate(Count('producto'))[:10]
+
+    total = 0
+    for f in facturas:
+        total = total + f.get('producto__count')
+
+    for f in facturas:
+        
+        result = round((f.get('producto__count') * 100) / total)
+        data[f.get('producto__descripcion')] = result
+
+    return data
+
+def get_comparacion_productos(request, products: str, year):
+
+    data = {}
+    products = products.split(',')
+    acum = []
+    total = 0
+
+    for p in products:
+
+        producto = Producto.objects.get(pk=int(p))
+
+        if producto:
+            facturas = FacturaDet.objects.filter(
+                factura__fecha__year=year,
+                factura__tipo="factura",
+                producto=producto,
+                empresa=request.user.company).values('producto__descripcion').order_by('-producto__count').annotate(Count('producto'))
+
+            if facturas:
+                acum.append(facturas[0])
+
+    if len(acum) > 0:
+
+        for fac in acum:
+            total = total + fac.get('producto__count')
+
+        for fac in acum:
+            result = round((fac.get('producto__count') * 100) / total)
+            data[fac.get('producto__descripcion')] = result
+    
+    return data
     
 #Methods
 

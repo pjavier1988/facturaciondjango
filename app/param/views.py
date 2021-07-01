@@ -213,7 +213,7 @@ def cliente_history(request, cliente_id):
 
     return render(request, template_name, context)
 
-def almacen():
+def almacen(request):
 
     pass
 

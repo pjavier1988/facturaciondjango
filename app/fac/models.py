@@ -36,6 +36,12 @@ class Cliente(ClaseModelo):
     
 class FacturaEnc(ClaseModelo2):
 
+    PAG = 'Pagado'
+    PAR = 'Parcial'
+    NOPAG = 'No Pagado'
+
+    ESTADOS_PAGO = [(PAG,'Pagado'),(PAR,'Parcial'), (NOPAG, 'No Pagado')]
+
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=True)
     fecha = models.DateTimeField(auto_now_add=True,editable=True)
     sub_total = models.FloatField(default=0)
@@ -48,6 +54,7 @@ class FacturaEnc(ClaseModelo2):
     fecha_factura = models.DateField()
     fecha_compra = models.DateField()
     tipo = models.CharField(max_length=100)
+    estado_pago = models.TextField(null=False, choices=ESTADOS_PAGO, default=PAG)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
     def __str__(self):

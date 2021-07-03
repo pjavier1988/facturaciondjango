@@ -1,3 +1,4 @@
+import datetime
 import inv.views as inv
 from django.db.models.aggregates import Sum
 from django.shortcuts import render,redirect
@@ -6,7 +7,6 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
-from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from bases.views import SinPrivilegios
@@ -326,6 +326,84 @@ def borrar_detalle_factura(request, id):
         return HttpResponse("Usuario no autorizado")
     
     return render(request,template_name,context)
+
+def devolucion_facturas(request):
+
+    template_name = 'fac/devolucion_facturas.html'
+
+    clientes = Cliente.objects.filter(empresa = request.user.company)
+
+    if request.method=='GET':
+
+        context = {
+            'obj': [],
+            'clientes': clientes,
+        }
+
+        return render(request, template_name, context)
+
+    if request.method=='POST':
+
+        cliente = request.POST.get("cliente")
+        fecha_max = request.POST.get("fecha-max")
+        fecha_min = request.POST.get("fecha-min")
+        facturas = {}
+
+        if fecha_max and len(fecha_max) > 0:
+            fecha_max = datetime.datetime.strptime(fecha_max.replace('-', '/'), '%Y/%m/%d')
+        else:
+            fecha_max = None
+
+        if fecha_min and len(fecha_min) > 0:
+            fecha_min = datetime.datetime.strptime(fecha_min.replace('-', '/'), '%Y/%m/%d')
+        else:
+            fecha_min = None
+
+        if cliente and len(cliente) > 0:
+
+            cliente = Cliente.objects.get(pk=cliente)
+
+            if fecha_max and fecha_min:
+
+                facturas = FacturaEnc.objects.filter(
+                    tipo="factura",
+                    empresa=request.user.company,
+                    cliente=cliente,
+                    fecha__range=[fecha_min, fecha_max],
+                )
+
+            elif fecha_max:
+
+                facturas = FacturaEnc.objects.filter(
+                    tipo="factura",
+                    empresa=request.user.company,
+                    cliente=cliente,
+                    fecha__lte=fecha_max,
+                )
+
+            elif fecha_min:
+
+                facturas = FacturaEnc.objects.filter(
+                    tipo="factura",
+                    empresa=request.user.company,
+                    cliente=cliente,
+                    fecha__gte=fecha_min,
+                )
+
+            else:
+
+                facturas = FacturaEnc.objects.filter(
+                    tipo="factura",
+                    empresa=request.user.company,
+                    cliente=cliente,
+                )
+
+        context = {
+            'facturas': facturas,
+            'clientes': clientes,
+        }
+
+        return render(request, template_name, context)
 
 #Methods
 

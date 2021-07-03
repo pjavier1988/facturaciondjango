@@ -136,10 +136,22 @@
 
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Entradas</h6>
-                        <a class="collapse-item {% if cmp_url in request.path  %} active {% endif %}" href="{% url 'cmp:compras_list' %}">Compras</a>
+                        <a class="collapse-item {% if cmp_url in request.path  %} active {% endif %}" href="{% url 'cmp:compras_list' %}">
+                            Compras
+                        </a>
+                        <a class="collapse-item" href="{% url 'cmp:devolucion_compras' %}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            Devolución Compras 
+                        </a>
 
                         <h6 class="collapse-header">Salidas</h6>
-                        <a class="collapse-item" href="{% url 'fac:factura_list' %}">Facturas</a>
+                        <a class="collapse-item" href="{% url 'fac:factura_list' %}">
+                            Facturas
+                        </a>
+                        <a class="collapse-item" href="{% url 'fac:devolucion_facturas' %}">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                            Devolución Facturas 
+                        </a>
 
                         <h6 class="collapse-header">Todos</h6>
                         <a class="collapse-item" href="{% url 'fac:transacciones_list' %}">Todos los movimientos</a>
@@ -159,8 +171,8 @@
                         <h6 class="collapse-header">Pagos:</h6>
                         <a class="collapse-item" href="{% url 'param:compras_list' %}">Compras</a>
                         <a class="collapse-item" href="{% url 'param:ventas_list' %}">Ventas</a>
-                        <a class="collapse-item" href="#">Devolución de Compras</a>
-                        <a class="collapse-item" href="#">Devolución de Ventas</a>
+                        <a class="collapse-item" href="{% url 'param:devolucion_compras_list' %}">Devolución de Compras</a>
+                        <a class="collapse-item" href="{% url 'param:devolucion_facturas_list' %}">Devolución de Ventas</a>
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Informes</h6>
                         <a class="collapse-item" href="#">Ganancia y Pérdidas</a>

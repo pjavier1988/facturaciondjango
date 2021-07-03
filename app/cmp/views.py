@@ -254,3 +254,99 @@ class CompraDetDelete(SinPrivilegios, generic.DeleteView):
     def get_success_url(self):
           compra_id=self.kwargs['compra_id']
           return reverse_lazy('cmp:compras_edit', kwargs={'compra_id': compra_id})
+
+def devolucion_compras(request):
+
+    template_name = 'cmp/devolucion_compras.html'
+
+    proveedores = Proveedor.objects.filter(empresa = request.user.company)
+
+    if request.method=='GET':
+
+        context = {
+            'obj': [],
+            'proveedores': proveedores,
+        }
+
+        return render(request, template_name, context)
+
+    if request.method=='POST':
+
+        proveedor = request.POST.get("proveedor")
+        fecha_max = request.POST.get("fecha-max")
+        fecha_min = request.POST.get("fecha-min")
+        compras = {}
+
+        if fecha_max and len(fecha_max) > 0:
+            fecha_max = datetime.datetime.strptime(fecha_max.replace('-', '/'), '%Y/%m/%d')
+        else:
+            fecha_max = None
+
+        if fecha_min and len(fecha_min) > 0:
+            fecha_min = datetime.datetime.strptime(fecha_min.replace('-', '/'), '%Y/%m/%d')
+        else:
+            fecha_min = None
+
+        if proveedor and len(proveedor) > 0:
+
+            proveedor = Proveedor.objects.get(pk=proveedor)
+
+            if fecha_max and fecha_min:
+
+                compras = FacturaEnc.objects.filter(
+                    tipo="compra",
+                    empresa=request.user.company,
+                    proveedor=proveedor,
+                    fecha__range=[fecha_min, fecha_max],
+                )
+
+            elif fecha_max:
+
+                compras = FacturaEnc.objects.filter(
+                    tipo="compra",
+                    empresa=request.user.company,
+                    proveedor=proveedor,
+                    fecha__lte=fecha_max,
+                )
+
+            elif fecha_min:
+
+                compras = FacturaEnc.objects.filter(
+                    tipo="compra",
+                    empresa=request.user.company,
+                    proveedor=proveedor,
+                    fecha__gte=fecha_min,
+                )
+
+            else:
+
+                compras = FacturaEnc.objects.filter(
+                    tipo="compra",
+                    empresa=request.user.company,
+                    proveedor=proveedor,
+                )
+
+
+
+        context = {
+            'compras': compras,
+            'proveedores': proveedores,
+        }
+
+        return render(request, template_name, context)
+
+def devolver(request, factura_id, template):
+
+    factura = FacturaEnc.objects.get(pk=factura_id)
+    factura.estado_pago = 'No Pagado'
+    factura.save()
+
+    return redirect(f'{template}')
+
+def pagar(request, factura_id, template):
+
+    factura = FacturaEnc.objects.get(pk=factura_id)
+    factura.estado_pago = 'Pagado'
+    factura.save()
+
+    return redirect(f'{template}')

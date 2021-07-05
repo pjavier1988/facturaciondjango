@@ -3,7 +3,7 @@ from django.db import models
 #Para los signals
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from django.db.models import Sum
+from django.db.models import Sum, Max
 from bases.models import ClaseModelo, ClaseModelo2
 from inv.models import Producto
 from param.models import Empresa
@@ -50,7 +50,7 @@ class FacturaEnc(ClaseModelo2):
     total = models.FloatField(default=0)
     proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE, null=True)
     observacion = models.TextField(blank=True,null=True)
-    no_factura = models.CharField(max_length=100)
+    no_factura = models.IntegerField(null=True)
     fecha_factura = models.DateField()
     fecha_compra = models.DateField()
     tipo = models.CharField(max_length=100)
@@ -68,11 +68,12 @@ class FacturaEnc(ClaseModelo2):
         if self.sub_total == None  or self.descuento == None:
             self.sub_total = 0
             self.descuento = 0
-            
+
+        no_factura_max = FacturaEnc.objects.count()
+        self.no_factura = int(no_factura_max) + 1
         self.total = self.sub_total - self.descuento
-
-
         self.total = self.sub_total - self.descuento + self.faciva
+
         super(FacturaEnc,self).save()
 
     class Meta:

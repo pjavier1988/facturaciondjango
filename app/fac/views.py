@@ -208,7 +208,7 @@ def facturas(request,id=None):
         if not enc:
             encabezado = {
                 'id':0,
-                'fecha':datetime.today(),
+                'fecha':datetime.datetime.today(),
                 'cliente':0,
                 'sub_total':0.00,
                 'descuento':0.00,

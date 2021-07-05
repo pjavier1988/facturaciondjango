@@ -15,6 +15,7 @@ urlpatterns = [
     path('reportes/vista/clientes', views.clientes_list, name='clientes_list'),
     path('reportes/vista/pproveedor/history/<int:proveedor_id>', views.proveedor_history, name='proveedor_history'),
     path('reportes/vista/cliente/history/<int:cliente_id>', views.cliente_history, name='cliente_history'),
+    path('reportes/vista/almacen', views.almacen_list, name = 'almacen_list'),
 
     path('reportes/reporte/compras', reportes.compras_list, name='compras_list_report'),
     path('reportes/reporte/ventas', reportes.ventas_list, name='ventas_list_report'),

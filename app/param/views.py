@@ -69,7 +69,7 @@ def compras_list(request):
     template_name = 'reportes/compras_list.html'
 
     compras = FacturaEnc.objects.filter(
-        tipo="factura",
+        tipo="compra",
         empresa=request.user.company
     )
 
@@ -266,9 +266,41 @@ def cliente_history(request, cliente_id):
 
     return render(request, template_name, context)
 
-def almacen():
+def almacen(request):
 
     pass
+
+def devolucion_compras_list(request):
+
+    template_name = 'reportes/devolucion_compras_list.html'
+
+    compras = FacturaEnc.objects.filter(
+        tipo="compra",
+        estado_pago='No Pagado',
+        empresa=request.user.company
+    )
+
+    context = {
+        'compras': compras
+    }
+
+    return render(request, template_name, context) 
+
+def devolucion_facturas_list(request):
+
+    template_name = 'reportes/devolucion_facturas_list.html'
+
+    facturas = FacturaEnc.objects.filter(
+        tipo="factura",
+        estado_pago='No Pagado',
+        empresa=request.user.company
+    )
+
+    context = {
+        'facturas': facturas
+    }
+
+    return render(request, template_name, context) 
 
 #Funciones
 

@@ -19,8 +19,6 @@ const loadProductosPie = () => {
         }
     }
 
-    console.log(products);
-
     $.ajax({
         url: `/api/v1/productos/vendidos/anual?year=${year}&products=${products}`,
         async: false,

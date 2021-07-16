@@ -1,0 +1,371 @@
+{% extends 'base/base.html' %}
+
+<div></div>
+
+{% block page_content %}
+
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.css" rel="stylesheet"></link>
+
+<form action="{% url 'vnt:cotizacion_form' %}" method="POST" class="form-inline">
+    {% csrf_token %}
+    <div class="col-xl-12 col-md-12 mb-12">
+        <div class="card border-left-success shadow h-100 py-2">
+
+            <div class="card-header">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h5 class="m-0 font-weight-bold text-primary">Editar Cotización</h5>
+                </div>
+            </div>
+            <div class="card-body">
+
+                <div class="col input-group text-center" style="display: flex; align-items: center; justify-content: center;">
+
+                    <fieldset class="px-3 py-1 mx-1">
+                        <legend>Fecha Cotización</legend>
+                        <div>
+                            <input style="height: 30px;" type="date" name="fecha" class="form-control is-valid" aria-describedby="date-feedback" required>
+                            <div id="OrderTax-feedback" class="invalid-feedback"></div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="px-3 py-1 mx-1">
+
+                        <legend>Cliente</legend>
+
+                        <select id="clientes-cotizacion" name="cliente" style="width: 250px;" required>
+                            
+                                <option value="">-- Selecionar --</option>
+                        
+                                {% for c in clientes %}
+        
+                                <option value={{ c.id }}>{{ c }}</option>
+                                    
+                                {% endfor %}
+                            
+                            </select>
+
+                    </fieldset>
+                </div>
+
+                <div class="col">
+                    <fieldset class="px-3 py-1 mx-1">
+
+                        <legend>Productos</legend>
+
+                        <select id="productos-cotizacion" multiple onchange="reloadProducts()">
+
+                                {% for categoria, productos in categorias_productos.items %}
+    
+                                <optgroup label="{{ categoria }}">
+    
+                                    {% for p in productos %}
+                                    <option value={{ p.id }}>{{ p|title }}</option>
+                                    {% endfor %}
+    
+                                </optgroup>
+    
+                                {% endfor %}
+    
+                            </select>
+
+                    </fieldset>
+                </div>
+
+                <div class="col my-3">
+                    <table style="border: 1px solid #ccc;" class="table table-hover shadow display">
+                        <caption></caption>
+                        <thead>
+                            <tr class="text-center" style="color: #000; background-color: #d1d5db;">
+                                <th scope="col" style="border: 0px;">Código</th>
+                                <th scope="col" style="border: 0px;">Descripción</th>
+                                <th scope="col" style="border: 0px;">Precio Unitario</th>
+                                <th scope="col" style="border: 0px;">IVA</th>
+                                <th scope="col" style="border: 0px;">Descuento</th>
+                                <th scope="col" style="border: 0px;">Total Parcial</th>
+                                <th scope="col" style="border: 0px;">Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body-products">
+                        </tbody>
+                    </table>
+                    <div>
+                        <input style="width: min-content;" type="hidden" name="product-ids" id="product-ids" value="" required readonly>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-8 col-lg-5" style="margin: auto;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row bg-light">
+                                <spam class="col">Impuesto de Orden</spam>
+                                <spam id="iva-spam" class="col">$0.00 (0%)</spam>
+                            </div>
+                            <div class="row bg-white">
+                                <spam class="col">Descuento</spam>
+                                <spam id="descuento-spam" class="col">$ 0.00</spam>
+                            </div>
+                            <div class="row bg-light">
+                                <spam class="col">Envío</spam>
+                                <spam id="envio-spam" class="col">$ 0.00</spam>
+                            </div>
+                            <div class="row bg-white text-dark font-weight-bold">
+                                <spam class="col">Total</spam>
+                                <spam id="total-spam" class="col">$ 0.00</spam>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col my-3">
+                    <div class="input-group mb-3" style="display: flex; align-items: center; justify-content: center;">
+                        <fieldset class="input-group">
+                            <legend>Impuestos</legend>
+                            <div class="input-group-prepend mr-4">
+                                <input id="iva" name="impuestos" type="number" class="form-control" placeholder="IVA" aria-label="IVA" aria-describedby="basic-addon1" required onchange="onChangeIVA()">
+                                <span class="input-group-text" id="basic-addon1">%</span>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="input-group">
+                            <legend>Descuento</legend>
+                            <div class="input-group-prepend mr-4">
+                                <input id="descuento" name="descuento" type="number" class="form-control" placeholder="Descuento" aria-label="Descuento" aria-describedby="basic-addon1" required onchange="onChangeDescuento()">
+                                <span class="input-group-text" id="basic-addon1">$</span>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="input-group">
+                            <legend>Envío</legend>
+                            <div class="input-group-prepend mr-4">
+                                <input id="envio" name="envio" type="number" class="form-control" placeholder="Envío" aria-label="Envío" aria-describedby="basic-addon1" required onchange="onChangeEnvio()">
+                                <span class="input-group-text" id="basic-addon1">
+                                        <i class="fa fa-truck" aria-hidden="true"></i>
+                                    </span>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="input-group">
+                            <legend>Estado</legend>
+                            <div class="input-group-prepend mr-4">
+                                <select name="estado" class="form-control" id="estado" required>
+                                        <option value="Enviado" selected>Enviado</option>
+                                        <option value="Pendiente">Pendiente</option>
+                                    </select>
+                                <span class="input-group-text" id="basic-addon1">
+                                        <i class="fa fa-check" aria-hidden="true"></i>
+                                    </span>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="col">
+                        <fieldset>
+                            <legend>Nota</legend>
+                            <textarea name="nota" class="form-control" rows="3" style="width: 100%;"></textarea>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div class="text-center my-3">
+                    <button type="submit" class="btn btn-info" style="width: 200px;">Agregar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+<div></div>
+
+{% block js_page %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.js"></script>
+
+<script>
+    //http://slimselectjs.com/options
+    $(document).ready(function() {
+        new SlimSelect({
+            select: '#clientes-cotizacion',
+            limit: 20,
+        })
+    });
+    $(document).ready(function() {
+        new SlimSelect({
+            select: '#productos-cotizacion',
+            limit: 20,
+        })
+    });
+</script>
+
+<script>
+    let total = 0.00;
+    let totalProductos = 0.00;
+
+    const increment = (id) => {
+        const input = document.getElementById(id);
+        if (parseInt(input.value) < 100) {
+            input.value = parseInt(input.value) + 1
+        }
+    }
+
+    const decrement = (id) => {
+        const input = document.getElementById(id);
+        if (parseInt(input.value) > 1) {
+            input.value = parseInt(input.value) - 1
+        }
+    }
+
+    const calcularTotal = () => {
+
+        const iva = document.getElementById('iva').value;
+        const descuento = document.getElementById('descuento').value;
+        const envio = document.getElementById('envio').value;
+        const totalSpam = document.getElementById('total-spam');
+
+        if (iva) total = total + ((total * parseFloat(iva)) / 100);
+        if (descuento) total = total - parseFloat(descuento);
+        if (envio) total = total + parseFloat(envio);
+
+        totalSpam.innerHTML = `$ ${total}`;
+    }
+
+    const onChangeIVA = () => {
+        const iva = document.getElementById('iva').value;
+        const spam = document.getElementById('iva-spam');
+
+        if (iva) {
+            const iva_calculated = (total * iva) / 100;
+            spam.innerHTML = `$ ${iva_calculated} (${iva}%)`;
+        } else {
+            spam.innerHTML = '$ 0.00 (0%)';
+        }
+
+        total = totalProductos;
+        calcularTotal()
+    }
+
+    const onChangeDescuento = () => {
+        const descuento = document.getElementById('descuento').value;
+        const spam = document.getElementById('descuento-spam');
+
+        spam.innerHTML = (descuento) ? `$ ${descuento}` : '$ 0.00';
+
+        total = totalProductos;
+        calcularTotal()
+    }
+
+    const onChangeEnvio = () => {
+        const envio = document.getElementById('envio').value;
+        const spam = document.getElementById('envio-spam');
+
+        spam.innerHTML = (envio) ? `$ ${envio}` : '$ 0.00';
+
+        total = totalProductos;
+        calcularTotal()
+    }
+
+    const reloadProducts = () => {
+
+        let products = '';
+        let selectProducts = document.getElementById('productos-cotizacion');
+
+        for (let option of selectProducts.options) {
+            if (option.selected) {
+                if (products.length > 0) {
+                    products = `${products},${option.value}`;
+                } else {
+                    products = `${option.value}`;
+                }
+            }
+        }
+
+        const tableBodyProducts = document.getElementById('table-body-products');
+        tableBodyProducts.innerHTML = '';
+
+        $.ajax({
+            url: `/api/v1/productos/by/string/ids?products=${(products) ? products : '0' }`,
+            async: false,
+            dataType: 'JSON',
+            success: function(datos) {
+
+                const spamTotal = document.getElementById('total-spam');
+                const productIds = document.getElementById('product-ids');
+
+                if (datos && datos.length > 0) {
+
+                    totalProductos = 0;
+                    let ids = '';
+
+                    for (let d of datos) {
+
+                        totalProductos = totalProductos + parseFloat(d.precio);
+
+                        if (ids.length > 0) {
+                            ids = `${ids},${d.id}`;
+                        } else {
+                            ids = `${d.id}`;
+                        }
+                    }
+
+                    productIds.value = ids;
+                    spamTotal.innerHTML = `$ ${totalProductos}`;
+
+                    for (let d of datos) {
+
+                        const quantity = `
+                            <a class="btn btn-circle btn-danger btn-sm text-white" onclick="decrement(${d.id})">
+                                <i class="fa fa-minus" aria-hidden="true"></i>    
+                            </a>
+                            <input disabled required class="form-control text-center" style="width: 50px; height: 30px" type="number" id="${d.id}" value="1">
+                            <a class="btn btn-circle btn-success btn-sm text-white" onclick="increment(${d.id})">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </a>
+                        `;
+
+                        const row = $(`
+                            <tr class="text-center">
+                                <td>${d.codigo}</td>
+                                <td>${d.descripcion}</td>
+                                <td>${d.precio}$</td>
+                                <td>${(d.tiene_iva) ? '✔' : '❌' }</td>
+                                <td>${0}%</td>
+                                <td>${d.precio}$</td>
+                                <td>${quantity}</td>
+                            </tr>
+                        `);
+                        $('#table-body-products').append(row);
+                    }
+
+                } else {
+                    productIds.value = null;
+                    spamTotal.innerHTML = `$ 0.00`;
+                    totalProductos = 0;
+                }
+
+                total = totalProductos;
+                onChangeDescuento();
+                onChangeEnvio();
+                onChangeIVA();
+                calcularTotal();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        reloadProducts()
+    });
+</script>
+
+{% endblock %}

@@ -14,4 +14,6 @@ urlpatterns = [
     path('cart/remove/<int:producto_id>/<str:template_name>', views.remove_product, name='remove_product'),
     path('cart/decrement/<int:producto_id>/<str:template_name>', views.decrement_product, name='decrement_product'),
     path('cart/clear/<str:template_name>', views.clear_cart, name='clear_cart'),
+
+    path('cotizacion/new',views.cotizacion_new,name="cotizacion_form"),
 ]

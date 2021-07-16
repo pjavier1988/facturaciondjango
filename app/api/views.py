@@ -131,9 +131,41 @@ class ProductosAnual(APIView):
             data = get_productos_anual(request, int(year))
             return Response(data=data, status=status.HTTP_200_OK)
         else:
-            return Response()
+            return Response(data=None, status=status.HTTP_401_UNAUTHORIZED)
 
-#Catalogos ***************************************************************************************************************************************
+#Productos ******************************************************************************************************************************
+
+class ProductosByIds(APIView):
+
+    def get(self, request):
+
+        if request.user.company:
+
+            products = self.request.query_params.get('products')
+
+            if products and len(products) > 0:
+
+                products = products.split(',')
+                product_list = []
+
+                for p in products:
+
+                    producto = Producto.objects.filter(pk=int(p)).first()
+
+                    if producto:
+                        product_list.append(producto)
+
+                if len(product_list) > 0:
+                    return Response(data=ProductoSerializer(product_list, many=True).data, status=status.HTTP_200_OK)
+                else:
+                    return Response(data=None, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response(data=None, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data=None, status=status.HTTP_401_UNAUTHORIZED)
+
+
+#Categorias *****************************************************************************************************************************
 
 class CategoriaList(APIView):
 
@@ -243,8 +275,6 @@ def get_ventas_mes(request, year, month):
 
     return data
 
-#Methods Productos Vendidos
-
 def get_productos_v_mensuales(request, year):
 
     data = {}
@@ -321,7 +351,7 @@ def get_comparacion_productos(request, products: str, year):
 
     for p in products:
 
-        producto = Producto.objects.get(pk=int(p))
+        producto = Producto.objects.filter(pk=int(p)).first()
 
         if producto:
             facturas = FacturaDet.objects.filter(

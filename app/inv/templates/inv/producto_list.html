@@ -5,11 +5,14 @@
         <h6 class="m-0 font-weight-bold text-primary">Listado de Productos</h6>
         <div class="dropdown no-arrow">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400" aria-hidden="true"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                 <div class="dropdown-header">Acciones</div>
-                <a class="dropdown-item" onclick="return abrir_modal('{% url 'inv:producto_new' %}')" href="#"><i class="far fa-calendar-plus"></i> Nuevo</a>
+                <a class="dropdown-item" onclick="return abrir_modal('{% url 'inv:producto_new' %}')" href="#">
+                    <i class="far fa-calendar-plus" aria-hidden="true"></i>
+                     Nuevo
+                </a>
                 <a class="dropdown-item" href="#">Another action</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">Something else here</a>
@@ -23,19 +26,20 @@
             No hay productos
         </div>
         {% else %}
-        <table class="table table-striped table-hover">
+        <table style="border: 1px solid #ccc;" class="table table-striped table-hover shadow display">
+            <caption>Lista de Productos</caption>
             <thead>
                 <tr>
-                    <th>Sub. Cat.</th>
-                    <th>Código</th>
-                    <th>Barras</th>
-                    <th>Descripción</th>
-                    <th>Stock</th>
-                    <th>Marca</th>
-                    <th>Estado</th>
-                    <th>IVA</th>
-                    <th>Tipo</th>
-                    <th class="all">Acciones</th>
+                    <th scope="col" style="border: 0px;">Sub. Cat.</th>
+                    <th scope="col" style="border: 0px;">Código</th>
+                    <th scope="col" style="border: 0px;">Barras</th>
+                    <th scope="col" style="border: 0px;">Descripción</th>
+                    <th scope="col" style="border: 0px;">Stock</th>
+                    <th scope="col" style="border: 0px;">Marca</th>
+                    <th scope="col" style="border: 0px;">Estado</th>
+                    <th scope="col" style="border: 0px;">IVA</th>
+                    <th scope="col" style="border: 0px;">Tipo</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
                 </tr>
             </thead>
             <tbody>

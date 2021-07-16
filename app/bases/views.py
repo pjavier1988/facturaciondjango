@@ -101,8 +101,6 @@ def get_products_and_category(request):
     data = {}
 
     categorias = Categoria.objects.all()
-    print (Categoria)
-    print ('****************************************************')
 
     for c in categorias:
 

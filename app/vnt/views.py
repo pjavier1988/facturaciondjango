@@ -1,8 +1,15 @@
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from inv.models import Producto, Categoria, SubCategoria
+from fac.models import Cliente, FacturaEnc, FacturaDet
+from bases.views import get_products_and_category
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Q
+from .models import Cotizacion, ProductosCotizacion
+from .forms import CotizacionForm
 from .cart import Cart
 import datetime
 from .models import *
@@ -167,6 +174,70 @@ def clear_cart(request, template_name):
     else:
         return redirect(f'vnt:{template_name}')
 
+# Cotización *****************************************************************************************************************************
+
+@login_required(login_url='/login/')
+@permission_required('fac.change_facturaenc', login_url='bases:sin_privilegios')
+def cotizacion_new(request):
+
+    template_name = "vnt/cotizacion_form.html"
+    clientes = Cliente.objects.filter(estado=True, empresa=request.user.company)
+
+    if request.method=='GET':
+
+        context = {
+            'clientes': clientes,
+            'categorias_productos': get_products_and_category(request),
+        }
+
+        return render(request, template_name, context)
+
+    if request.method=='POST':
+
+        cliente_id = request.POST.get("cliente")
+        fecha = request.POST.get("fecha")
+        impuestos = request.POST.get("impuestos")
+        descuento = request.POST.get("descuento")
+        envio = request.POST.get("envio")
+        estado = request.POST.get("estado")
+        nota = request.POST.get("nota")
+        products = request.POST.get('product-ids')
+
+        cliente = Cliente.objects.get(pk=cliente_id)
+
+        cotizacion = Cotizacion(
+            cliente = cliente,
+            estado_cotizacion = estado,
+            iva = impuestos,
+            descuento = descuento,
+            envio = envio,
+            nota = nota,
+            uc = request.user,
+        )
+
+        cotizacion.save()
+        cotizacion = Cotizacion.objects.latest('fc')
+
+        if products and len(products) > 0:
+
+            products = products.split(',')
+
+            for p in products:
+
+                producto = Producto.objects.filter(pk=int(p)).first()
+
+                if producto:
+
+                    productos_cotizacion = ProductosCotizacion(
+                        cotizacion = cotizacion,
+                        producto = producto,
+                        cantidad = 1,
+                        uc = request.user,
+                    )
+
+                    productos_cotizacion.save()
+
+        return redirect('inv:categoria_list')
 
 def cotizacion_list(request):
     template_name = 'vnt/cotizacion_list.html'
@@ -175,7 +246,6 @@ def cotizacion_list(request):
     context = {
         'obj':cotizacion
     }
-
     return render(request, template_name, context)
 
 def cotizacion_delete(request, id):
@@ -186,8 +256,7 @@ def cotizacion_delete(request, id):
     cotizacionlist = Cotizacion.objects.filter(estado = 1)
     context = {
         'obj':cotizacionlist
-    }
-
+        }
     return render(request, template_name, context)
 #Methods
 

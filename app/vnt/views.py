@@ -5,6 +5,8 @@ from django.views import generic
 from django.db.models import Q
 from .cart import Cart
 import datetime
+from .models import *
+from fac.models import FacturaEnc, Cliente, FacturaDet
 
 TEMPLATE_USER_HOME = 'vnt/home.html'
 
@@ -36,7 +38,7 @@ def home(request):
 class ProductosByCategoria(generic.TemplateView):
 
     template_name = 'vnt/productos_categoria.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -53,7 +55,7 @@ class ProductosByCategoria(generic.TemplateView):
 class ProductosOferta(generic.TemplateView):
 
     template_name = TEMPLATE_USER_HOME
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -76,7 +78,7 @@ class ProductoDetail(generic.DetailView):
 class SearchProduct(generic.TemplateView):
 
     template_name = TEMPLATE_USER_HOME
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -88,7 +90,7 @@ class SearchProduct(generic.TemplateView):
 
             categoria = Categoria.objects.filter(pk=categorias).first()
             resultados = list(Producto.objects.filter(
-                Q(descripcion__contains=desc.upper()) & 
+                Q(descripcion__contains=desc.upper()) &
                 Q(subcategoria__categoria=categoria))[:4])
             similares = get_similares(resultados)
 
@@ -165,6 +167,28 @@ def clear_cart(request, template_name):
     else:
         return redirect(f'vnt:{template_name}')
 
+
+def cotizacion_list(request):
+    template_name = 'vnt/cotizacion_list.html'
+
+    cotizacion = Cotizacion.objects.filter(estado = 1)
+    context = {
+        'obj':cotizacion
+    }
+
+    return render(request, template_name, context)
+
+def cotizacion_delete(request, id):
+    template_name = 'vnt/cotizacion_list.html'
+    cotizacion = Cotizacion.objects.get(id = id)
+    cotizacion.estado = 0
+    cotizacion.save()
+    cotizacionlist = Cotizacion.objects.filter(estado = 1)
+    context = {
+        'obj':cotizacionlist
+    }
+
+    return render(request, template_name, context)
 #Methods
 
 def get_obj_by_max_date(objects):

@@ -12,6 +12,7 @@ from fac.models import FacturaEnc, Cliente, FacturaDet
 from api.views import ProductosAgotados
 from inv.models import Producto
 from cmp.models import Proveedor
+from datetime import datetime
 
 #Empresa *************************************************************************************************************************************
 
@@ -90,59 +91,6 @@ def ventas_list(request):
 
     context = {
         'obj': compras
-    }
-
-    return render(request, template_name, context)
-
-def almacen_list(request):
-    template_name = 'reportes/almacen_list.html'
-
-    proveedor = Proveedor.objects.get(pk=1, empresa=request.user.company)
-
-    comprass = FacturaEnc.objects.filter(
-        tipo="factura",
-        empresa=request.user.company
-    )
-
-    compras = FacturaEnc.objects.filter(
-        tipo="compra",
-        proveedor=proveedor,
-        empresa=request.user.company,
-    )
-
-    nro_productos = FacturaDet.objects.filter(
-        factura__tipo="compra",
-        factura__proveedor=proveedor,
-        empresa=request.user.company,
-    ).aggregate(Sum('cantidad'))
-
-    gasto_total = FacturaDet.objects.filter(
-        factura__tipo="compra",
-        factura__proveedor=proveedor,
-        empresa=request.user.company,
-    ).aggregate(Sum('factura__total'))
-
-    nro_compras = FacturaDet.objects.filter(
-        factura__tipo="compra",
-        factura__proveedor=proveedor,
-        empresa=request.user.company,
-    ).count()
-
-    proveedoress = Proveedor.objects.filter(empresa=request.user.company)
-
-    clientes = Cliente.objects.filter(empresa=request.user.company)
-
-    context = {
-        'proveedor': proveedor,
-        'obj':comprass,
-        'objp':proveedoress,
-        'objc': clientes,
-        'compras': compras,
-        'reportes': {
-            'nro_productos': get_sum(nro_productos, "cantidad"),
-            'gasto_total': get_sum(gasto_total, "factura__total"),
-            'nro_compras': nro_compras,
-        }
     }
 
     return render(request, template_name, context)
@@ -284,7 +232,7 @@ def devolucion_compras_list(request):
         'compras': compras
     }
 
-    return render(request, template_name, context) 
+    return render(request, template_name, context)
 
 def devolucion_facturas_list(request):
 
@@ -300,9 +248,65 @@ def devolucion_facturas_list(request):
         'facturas': facturas
     }
 
-    return render(request, template_name, context) 
+    return render(request, template_name, context)
+
+def almacen_list(request):
+    template_name = 'reportes/almacen_list.html'
+
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+    fechagte=datetime(current_year, current_month, 1)
+    next_month = current_month + 1
+
+    if(next_month==13):
+        next_month=1
+
+    fechalte=datetime(current_year, next_month, 1)
+
+    facturas_year = FacturaEnc.objects.filter(fecha__year=current_year,tipo="factura", empresa=request.user.company).aggregate(Sum('total'))
+    facturas_mes = FacturaEnc.objects.filter(fecha__gte=fechagte,fecha__lte=fechalte,tipo="factura", empresa=request.user.company).aggregate(Sum('total'))
+    compras_year = FacturaEnc.objects.filter(fecha__year=current_year,tipo="compra", empresa=request.user.company).aggregate(Sum('total'))
+    compras_mes = FacturaEnc.objects.filter(fecha__gte=fechagte,fecha__lte=fechalte,tipo="compra", empresa=request.user.company).aggregate(Sum('total'))
+    compras = FacturaEnc.objects.filter(tipo="compra", empresa=request.user.company)
+    ventas = FacturaEnc.objects.filter(tipo="factura", empresa=request.user.company)
+    clientes = Cliente.objects.filter(empresa=request.user.company)
+    proveedores = Proveedor.objects.filter(empresa=request.user.company)
+    dcompras = FacturaEnc.objects.filter(tipo="compra",estado_pago='No Pagado', empresa=request.user.company)
+    facturas = FacturaEnc.objects.filter(tipo="factura", estado_pago='No Pagado',empresa=request.user.company)
+
+    facturas_year = get_total(facturas_year)
+    compras_year = get_total(compras_year)
+    facturas_mes = get_total(facturas_mes)
+    compras_mes = get_total(compras_mes)
+
+    ganancias_anual = facturas_year - compras_year
+    ganancias_mensual = facturas_mes - compras_mes
+
+    context = {
+        'ventas_mes':f"${facturas_mes}",
+        'ventas_anual':f"${facturas_year}",
+        'ganancias_mensual':f"${ganancias_mensual}",
+        'ganancias_anual':f"${ganancias_anual}",
+        'compra':compras,
+        'venta':ventas,
+        'cliente':clientes,
+        'proveedor':proveedores,
+        'dcompras':dcompras,
+        'facturas':facturas,
+    }
+
+    return render(request, template_name, context)
+
 
 #Funciones
+
+def get_total(data):
+
+    if data.get('total__sum'):
+
+        return data.get('total__sum')
+    else:
+        return 0
 
 def set_user_company(user_id, company):
 

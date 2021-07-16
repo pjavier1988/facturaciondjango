@@ -41,6 +41,22 @@
         display: flex;
         align-items: center;
     }
+    .nopag, .pag, .par {
+        border-radius: 5px; font-size: .8rem;
+        padding: 2px;
+    }
+    .nopag {
+        color: orange;
+        border: 1px solid orange;
+    }
+    .pag {
+        color: green;
+        border: 1px solid green;
+    }
+    .par {
+        color: blueviolet;
+        border: 1px solid blueviolet;
+    }
 </style>
 <div class="card shadow mb-4">
   <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -75,10 +91,6 @@
               <i class="fa fa-retweet mr-2" aria-hidden="true" style="font-size: 2rem;"></i>
               Ventas
           </button>
-          <button class="tablinks" onclick="openTap(event, 'devoluciones-tab')">
-              <i class="fa fa-retweet mr-2" aria-hidden="true" style="font-size: 2rem;"></i>
-              Devoluciones
-          </button>
           <button class="tablinks" onclick="openTap(event, 'clientes-tab')">
               <i class="fa fa-retweet mr-2" aria-hidden="true" style="font-size: 2rem;"></i>
               Clientes
@@ -86,6 +98,14 @@
           <button class="tablinks" onclick="openTap(event, 'proveeores-tab')">
               <i class="fa fa-retweet mr-2" aria-hidden="true" style="font-size: 2rem;"></i>
               Proveedores
+          </button>
+          <button class="tablinks" onclick="openTap(event, 'devoluciones-tab')">
+              <i class="fa fa-retweet mr-2" aria-hidden="true" style="font-size: 2rem;"></i>
+              Devoluciones Compras
+          </button>
+          <button class="tablinks" onclick="openTap(event, 'devolucionesf-tab')">
+              <i class="fa fa-retweet mr-2" aria-hidden="true" style="font-size: 2rem;"></i>
+              Devoluciones Ventas
           </button>
       </div>
 
@@ -103,8 +123,8 @@
                       <div class="card-body">
                           <div class="row no-gutters align-items-center">
                               <div class="col mr-2">
-                                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Productos Adquiridos (Total)</div>
-                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ reportes.nro_productos }} productos</div>
+                                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Ventas (Mensual)</div>
+                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ventas_mes}}</div>
                               </div>
                               <div class="col-auto">
                                   <i class="fas fa-calendar fa-2x text-gray-300" aria-hidden="true"></i>
@@ -113,15 +133,14 @@
                       </div>
                   </div>
               </div>
-
               <!-- Earnings (Monthly) Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
                   <div class="card border-left-success shadow h-100 py-2">
                       <div class="card-body">
                           <div class="row no-gutters align-items-center">
                               <div class="col mr-2">
-                                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Gasto (Total)</div>
-                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ reportes.gasto_total }} $</div>
+                                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ventas (Anual)</div>
+                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ventas_anual}}</div>
                               </div>
                               <div class="col-auto">
                                   <i class="fas fa-dollar-sign fa-2x text-gray-300" aria-hidden="true"></i>
@@ -137,10 +156,10 @@
                       <div class="card-body">
                           <div class="row no-gutters align-items-center">
                               <div class="col mr-2">
-                                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Nro. Compras (Total)</div>
+                                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ganancias (Mensual)</div>
                                   <div class="row no-gutters align-items-center">
                                       <div class="col-auto">
-                                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ reportes.nro_compras }} compras</div>
+                                          <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ganancias_mensual}}</div>
                                       </div>
                                   </div>
                               </div>
@@ -151,6 +170,25 @@
                       </div>
                   </div>
               </div>
+
+
+              <!-- Pending Requests Card Example -->
+              <div class="col-xl-3 col-md-6 mb-4">
+                  <div class="card border-left-warning shadow h-100 py-2">
+                      <div class="card-body">
+                          <div class="row no-gutters align-items-center">
+                              <div class="col mr-2">
+                                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Ganancias (Anual)</div>
+                                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{ganancias_anual}}</div>
+                              </div>
+                              <div class="col-auto">
+                                  <i class="fas fa-comments fa-2x text-gray-300" aria-hidden="true"></i>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
 
               <!-- Pending Requests Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
@@ -172,42 +210,63 @@
       </div>
       <div id="clientes-tab" class="tabcontent">
           <h3>Clientes</h3>
-            <table style="border: 1px solid #ccc;" class="table table-striped table-hover display shadow">
+          {% if not cliente%}
 
-                <caption>Clientes</caption>
+          <div class="alert alert-info">
+              No hay clientes
+          </div>
 
-                <thead>
-                    <tr>
-                        <th scope="col" style="border: 0px;">Nombre</th>
-                        <th scope="col" style="border: 0px;">Apellido</th>
-                        <th scope="col" style="border: 0px;">Identificacion</th>
-                        <th scope="col" style="border: 0px;">Celular</th>
-                        <th scope="col" style="border: 0px;">Tipo</th>
-                        <th scope="col" style="border: 0px;">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
+          {% else %}
 
-                    {% for o in objc %}
+          <table style="border: 1px solid #ccc;" id="table-p" class="table table-striped table-hover display shadow">
 
-                    <tr>
-                        <td>{{ o.nombres }}</td>
-                        <td>{{ o.apellidos }}</td>
-                        <td>{{ o.identificacion }}</td>
-                        <td>{{ o.celular }}</td>
-                        <td>{{ o.tipo }}</td>
-                    </tr>
+              <caption>Lista de Clientes</caption>
 
-                    {% endfor %}
+              <thead>
+                  <tr>
+                      <th scope="col" style="border: 0px;">Nombre</th>
+                      <th scope="col" style="border: 0px;">Apellido</th>
+                      <th scope="col" style="border: 0px;">Identificacion</th>
+                      <th scope="col" style="border: 0px;">Celular</th>
+                      <th scope="col" style="border: 0px;">Tipo</th>
+                      <th scope="col" style="border: 0px;">Acciones</th>
+                  </tr>
+              </thead>
+              <tbody>
 
-                </tbody>
-            </table>
+                  {% for o in cliente %}
+
+                  <tr>
+                      <td>{{ o.nombres }}</td>
+                      <td>{{ o.apellidos }}</td>
+                      <td>{{ o.identificacion }}</td>
+                      <td>{{ o.celular }}</td>
+                      <td>{{ o.tipo }}</td>
+                      <td>
+                          <a href="{% url 'param:cliente_history' o.id %}" class="btn btn-info text-white">Informes</a>
+                      </td>
+                  </tr>
+
+                  {% endfor %}
+
+              </tbody>
+          </table>
+
+          {% endif %}
+
       </div>
 
       <div id="compras-tab" class="tabcontent">
           <h3>Compras</h3>
+          {% if not compra%}
 
-          <table style="border: 1px solid #ccc;"  class="table table-striped table-hover display shadow">
+          <div class="alert alert-info">
+              No hay Compras
+          </div>
+
+          {% else %}
+
+          <table style="border: 1px solid #ccc;" class="table table-striped table-hover display shadow">
 
               <caption>Lista de Compras</caption>
 
@@ -224,7 +283,7 @@
               </thead>
               <tbody>
 
-                  {% for o in obj %}
+                  {% for o in compra %}
 
                   <tr>
                       <td>{{ o.proveedor }}</td>
@@ -240,20 +299,29 @@
 
               </tbody>
           </table>
+
+          {% endif %}
+
       </div>
 
       <div id="ventas-tab" class="tabcontent">
           <h3>Ventas</h3>
-          <table style="border: 1px solid #ccc;" class="table table-striped table-hover shadow display">
+          {% if not venta%}
 
-              <caption>Lista de Compras</caption>
+          <div class="alert alert-info">
+              No hay ventas
+          </div>
+
+          {% else %}
+
+          <table style="border: 1px solid #ccc;" class="table table-striped table-hover display display shadow">
+
+              <caption>Lista de Ventas</caption>
 
               <thead>
                   <tr>
-                      <th scope="col" style="border: 0px;">Proveedor</th>
+                      <th scope="col" style="border: 0px;">Cliente</th>
                       <th scope="col" style="border: 0px;">Fecha</th>
-                      <th scope="col" style="border: 0px;">Observación</th>
-                      <th scope="col" style="border: 0px;">Nro. Factura</th>
                       <th scope="col" style="border: 0px;">Sub Total</th>
                       <th scope="col" style="border: 0px;">Descuento</th>
                       <th scope="col" style="border: 0px;">Total</th>
@@ -261,13 +329,11 @@
               </thead>
               <tbody>
 
-                  {% for o in obj %}
+                  {% for o in venta %}
 
                   <tr>
-                      <td>{{ o.proveedor }}</td>
+                      <td>{{ o.cliente }}</td>
                       <td>{{ o.fecha }}</td>
-                      <td>{{ o.observacion }}</td>
-                      <td>{{ o.no_factura }}</td>
                       <td>{{ o.sub_total }}</td>
                       <td>{{ o.descuento }}</td>
                       <td>{{ o.total }}</td>
@@ -277,10 +343,21 @@
 
               </tbody>
           </table>
+
+          {% endif %}
+
       </div>
     <div class="tabcontent" id="proveeores-tab">
       <h3>Proveedores</h3>
-      <table style="border: 1px solid #ccc;" class="table table-striped table-hover display shadow">
+      {% if not proveedor%}
+
+      <div class="alert alert-info">
+          No hay marcas
+      </div>
+
+      {% else %}
+
+      <table style="border: 1px solid #ccc;" id="table-p" class="table table-striped table-hover display shadow">
 
           <caption>Lista de Compras</caption>
 
@@ -296,7 +373,7 @@
           </thead>
           <tbody>
 
-              {% for o in objp %}
+              {% for o in proveedor %}
 
               <tr>
                   <td>{{ o.descripcion }}</td>
@@ -304,18 +381,134 @@
                   <td>{{ o.contacto }}</td>
                   <td>{{ o.telefono }}</td>
                   <td>{{ o.email }}</td>
+                  <td>
+                      <a href="{% url 'param:proveedor_history' o.id %}" class="btn btn-info text-white">Informes</a>
+                  </td>
               </tr>
 
               {% endfor %}
 
           </tbody>
       </table>
+
+      {% endif %}
+
     </div>
     <div class="tabcontent" id="devoluciones-tab">
-      <h3>Devoluciones</h3>
+      <h3>Devoluciones de compras</h3>
+      {% if not dcompras%}
+
+      <div class="alert alert-info">
+          No hay compras
+      </div>
+
+      {% else %}
+
+      <table style="border: 1px solid #ccc;" class="table table-striped table-hover display shadow">
+
+          <caption>Lista de Compras</caption>
+
+          <thead>
+              <tr>
+                  <th scope="col" style="border: 0px;">Proveedor</th>
+                  <th scope="col" style="border: 0px;">Fecha</th>
+                  <th scope="col" style="border: 0px;">Observación</th>
+                  <th scope="col" style="border: 0px;">Sub Total</th>
+                  <th scope="col" style="border: 0px;">Total</th>
+                  <th scope="col" style="border: 0px;">Estado Pago</th>
+              </tr>
+          </thead>
+          <tbody>
+
+              {% for o in dcompras %}
+
+              <tr>
+                  <td>{{ o.proveedor }}</td>
+                  <td>{{ o.fecha }}</td>
+                  <td>{{ o.observacion }}</td>
+                  <td>{{ o.sub_total }}</td>
+                  <td>{{ o.total }}</td>
+
+                  {% if o.estado_pago == 'No Pagado' %}
+                  <td>
+                      <span class="nopag">{{ o.estado_pago }}</span>
+                  </td>
+                  {% elif o.estado_pago == 'Pagado' %}
+                  <td>
+                      <span class="pag">{{ o.estado_pago }}</span>
+                  </td>
+                  {% elif o.estado_pago == 'Parcial' %}
+                  <td>
+                      <span class="par">{{ o.estado_pago }}</span>
+                  </td>
+                  {% endif %}
+              </tr>
+
+              {% endfor %}
+
+          </tbody>
+      </table>
+
+      {% endif %}
+    </div>
+    <div class="tabcontent" id="devolucionesf-tab">
+      <h3>Devoluciones de ventas</h3>
+      {% if not facturas %}
+
+      <div class="alert alert-info">
+          No hay facturas
+      </div>
+
+      {% else %}
+
+      <table style="border: 1px solid #ccc;" class="table table-striped table-hover display shadow">
+
+          <caption>Lista de Facturas</caption>
+
+          <thead>
+              <tr>
+                  <th scope="col" style="border: 0px;">Cliente</th>
+                  <th scope="col" style="border: 0px;">Fecha</th>
+                  <th scope="col" style="border: 0px;">Sub Total</th>
+                  <th scope="col" style="border: 0px;">Descuento</th>
+                  <th scope="col" style="border: 0px;">Total</th>
+                  <th scope="col" style="border: 0px;">Estado Pago</th>
+              </tr>
+          </thead>
+          <tbody>
+
+              {% for o in facturas %}
+
+              <tr>
+                  <td>{{ o.cliente }}</td>
+                  <td>{{ o.fecha }}</td>
+                  <td>{{ o.sub_total }}</td>
+                  <td>{{ o.descuento }}</td>
+                  <td>{{ o.total }}</td>
+
+                  {% if o.estado_pago == 'No Pagado' %}
+                  <td>
+                      <span class="nopag">{{ o.estado_pago }}</span>
+                  </td>
+                  {% elif o.estado_pago == 'Pagado' %}
+                  <td>
+                      <span class="pag">{{ o.estado_pago }}</span>
+                  </td>
+                  {% elif o.estado_pago == 'Parcial' %}
+                  <td>
+                      <span class="par">{{ o.estado_pago }}</span>
+                  </td>
+                  {% endif %}
+              </tr>
+
+              {% endfor %}
+
+          </tbody>
+      </table>
+
+      {% endif %}
     </div>
   </div>
-</div>
 
 {% endblock %} {% block js_page %}
 

@@ -1,0 +1,130 @@
+{% extends 'base/base.html' %}
+<div></div>
+{% load static %}
+<div></div>
+{% block page_content %}
+<style>
+  .nopag, .pag {
+      border-radius: 5px; font-size: .8rem;
+      padding: 2px;
+  }
+  .nopag {
+      color: orange;
+      border: 1px solid orange;
+  }
+  .pag {
+      color: green;
+      border: 1px solid green;
+  }
+</style>
+<div class="card shadow mb-4">
+  <!-- Card Header - Dropdown -->
+  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+      <h6 class="m-0 font-weight-bold text-primary">Detalle de la Cotizacion N°{{cot.id}}</h6><br>
+      <div class="dropdown no-arrow">
+        <a href="{% url 'vnt:cotizacion_list' %}" class="btn btn-success text-white">Regresar</a>
+        <a href="{% url 'vnt:cotizacion_print' cot.id %}" class="btn btn-success text-white">Imprimir</a>
+      </div>
+  </div>
+  <br>
+  <div class="card-body">
+    <h4 style="text-align:center; color:Black;">Cotización: {{cot.nota}}</h4>
+    <br>
+    <div class="input-group text-center" style="display: flex; align-items: center; justify-content: center;">
+      <fieldset class="px-3 py-3 mx-1">
+        <h5 style="color:Black;">Información del Cliente</h5>
+        <ul>
+          <li>IDENTIFICACION: {{cot.cliente.identificacion}}</li>
+          <li>NOMBRES: {{cot.cliente.nombres}} {{cot.cliente.apellidos}}</li>
+          <li>TELEFONO: {{cot.cliente.celular}}</li>
+        </ul>
+      </fieldset>
+      <fieldset class="px-3 py-3 mx-1">
+        <h5 style="color:Black;">Información de la Compañia</h5>
+      </fieldset>
+      <fieldset class="px-3 py-3 mx-1">
+        <h5 style="color:Black;">Información de la Cotización</h5>
+        <ul>
+          <li>REFERENCIA: {{cot.nota}}</li>
+          <li>FECHA: {{cot.fc}}</li>
+          {% if cot.estado_cotizacion == 'Enviado' %}
+          <li class="pag">ESTADO: {{cot.estado_cotizacion}}</li>
+          {% elif cot.estado_cotizacion == 'Pendiente' %}
+          <li class="nopag">ESTADO: {{cot.estado_cotizacion}}</li>
+          {% endif %}
+        </ul>
+      </fieldset>
+    </div>
+  </div>
+
+
+  <div class="mx-1 my-2">
+
+    {% if not productos%}
+
+    <div class="alert alert-info">
+        No hay productos
+    </div>
+
+    {% else %}
+
+    <table style="border: 1px solid #ccc;" class="table table-striped table-hover display shadow">
+
+        <caption>Lista de Productos</caption>
+
+        <thead>
+            <tr>
+                <th scope="col" style="border: 0px;">Nombre</th>
+                <th scope="col" style="border: 0px;">Precio</th>
+                <th scope="col" style="border: 0px;">Cantidad</th>
+                <th scope="col" style="border: 0px;">Descuento</th>
+                <th scope="col" style="border: 0px;">Impuestos</th>
+                <th scope="col" style="border: 0px;">Total Parcial</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for o in productos %}
+
+            <tr>
+                <td>{{ o.producto }}</td>
+                <td>{{ o.producto.precio }}</td>
+                <td>{{ o.cantidad }}</td>
+                <td>{{ o.cotizacion.descuento }}</td>
+                <td>{{ o.cotizacion.iva }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+    {% endif %}
+  </div>
+  <div class="col-sm-12 col-md-8 col-lg-5" style="margin: auto;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row bg-light">
+                                <spam class="col">Impuesto de Orden</spam>
+                                <spam id="iva-spam" class="col">$0.00 (0%)</spam>
+                            </div>
+                            <div class="row bg-white">
+                                <spam class="col">Descuento</spam>
+                                <spam id="descuento-spam" class="col">$ 0.00</spam>
+                            </div>
+                            <div class="row bg-light">
+                                <spam class="col">Envío</spam>
+                                <spam id="envio-spam" class="col">$ 0.00</spam>
+                            </div>
+                            <div class="row bg-white text-dark font-weight-bold">
+                                <spam class="col">Total</spam>
+                                <spam id="total-spam" class="col">$ 0.00</spam>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+</div>
+{% endblock %} {% block js_page %}
+
+{% endblock %}

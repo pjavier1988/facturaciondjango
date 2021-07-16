@@ -4,7 +4,7 @@ from fac.models import  Cliente
 from inv.models import Producto
 
 def imprimir_cotizacion(request, id):
-    template_name = "vnt/detalle_cotizacion.html"
+    template_name = "vnt/cotizacion_print.html"
 
     cot = Cotizacion.objects.get(id=id)
     productos = ProductosCotizacion.objects.filter(cotizacion_id = cot.id)

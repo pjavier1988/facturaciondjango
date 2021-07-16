@@ -65,7 +65,7 @@
                     <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i>
                     <span>Dashboard</span>
                 </a>
-                <a class="nav-link" href="{% if user.company %} 
+                <a class="nav-link" href="{% if user.company %}
                                             {% url 'param:empresa_det' user.company.id %}
                                           {% else %}
                                             {% url 'param:empresa_new' %}
@@ -177,14 +177,14 @@
                         <h6 class="collapse-header">Informes</h6>
                         <a class="collapse-item" href="#">Ganancia y Pérdidas</a>
                         <a class="collapse-item" href="{% url 'param:alerta_cantidad_list' %}">Alertas de Cantidad</a>
-                        <a class="collapse-item" href="#">Informe de Almacen</a>
+                        <a class="collapse-item" href="{% url 'param:almacen_list' %}">Informe de Almacen</a>
                         <h6 class="collapse-header">Entidades</h6>
                         <a class="collapse-item" href="{% url 'param:clientes_list' %}">Informe de Clientes</a>
                         <a class="collapse-item" href="{% url 'param:proveedores_list' %}">Informe de Proveedores</a>
                     </div>
                 </div>
             </li>
-            
+
             </li>
 
             <!-- Categorias -->

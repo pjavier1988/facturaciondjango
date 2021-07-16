@@ -36,7 +36,7 @@ class EmpresaNew(LoginRequiredMixin, generic.CreateView):
     context_object_name = "obj"
     form_class = EmpresaForm
     login_url = "bases:login"
-    
+
     def form_valid(self, form):
         form.instance.uc = self.request.user
         return super().form_valid(form)
@@ -53,7 +53,7 @@ class EmpresaEdit(LoginRequiredMixin, generic.UpdateView):
     context_object_name = "obj"
     form_class = EmpresaForm
     login_url = "bases:login"
-    
+
     def form_valid(self, form):
         form.instance.um = self.request.user.id
         return super().form_valid(form)
@@ -90,6 +90,59 @@ def ventas_list(request):
 
     context = {
         'obj': compras
+    }
+
+    return render(request, template_name, context)
+
+def almacen_list(request):
+    template_name = 'reportes/almacen_list.html'
+
+    proveedor = Proveedor.objects.get(pk=1, empresa=request.user.company)
+
+    comprass = FacturaEnc.objects.filter(
+        tipo="factura",
+        empresa=request.user.company
+    )
+
+    compras = FacturaEnc.objects.filter(
+        tipo="compra",
+        proveedor=proveedor,
+        empresa=request.user.company,
+    )
+
+    nro_productos = FacturaDet.objects.filter(
+        factura__tipo="compra",
+        factura__proveedor=proveedor,
+        empresa=request.user.company,
+    ).aggregate(Sum('cantidad'))
+
+    gasto_total = FacturaDet.objects.filter(
+        factura__tipo="compra",
+        factura__proveedor=proveedor,
+        empresa=request.user.company,
+    ).aggregate(Sum('factura__total'))
+
+    nro_compras = FacturaDet.objects.filter(
+        factura__tipo="compra",
+        factura__proveedor=proveedor,
+        empresa=request.user.company,
+    ).count()
+
+    proveedoress = Proveedor.objects.filter(empresa=request.user.company)
+
+    clientes = Cliente.objects.filter(empresa=request.user.company)
+
+    context = {
+        'proveedor': proveedor,
+        'obj':comprass,
+        'objp':proveedoress,
+        'objc': clientes,
+        'compras': compras,
+        'reportes': {
+            'nro_productos': get_sum(nro_productos, "cantidad"),
+            'gasto_total': get_sum(gasto_total, "factura__total"),
+            'nro_compras': nro_compras,
+        }
     }
 
     return render(request, template_name, context)

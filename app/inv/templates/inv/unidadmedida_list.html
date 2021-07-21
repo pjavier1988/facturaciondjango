@@ -30,7 +30,7 @@
             <thead>
               <tr>
                 <th>Id</th>
-                <th>Descripción</th>
+                <th>Unidad de Medida</th>
                 <th>Estado</th>
                 <th>F. Creado</th>
                 <th>F. Modifi.</th>
@@ -50,7 +50,7 @@
                       <a href="{% url 'inv:unidadmedida_inactivar' item.id %}" class="btn btn-danger btn-circle" role="button"><i class="far fa-thumbs-down"></i></a>
                   </td>
                 </tr>
-                
+
                 {% endfor %}
             </tbody>
         </table>

@@ -213,6 +213,7 @@ def cotizacion_new(request):
             envio = envio,
             nota = nota,
             uc = request.user,
+            empresa = request.user.company,
         )
 
         cotizacion.save()

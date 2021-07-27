@@ -1,4 +1,16 @@
 {% load crispy_forms_tags %}
+
+<style>
+    .width-max {
+        width: 90% !important;
+    }
+    /* ESTILOS PARA EL CHECKBOX */
+    
+    input[type=checkbox] {
+        width: auto !important;
+    }
+</style>
+
 <div class="modal-dialog modal-lg">
     <div class="modal-content ">
         {% if obj %}
@@ -15,14 +27,82 @@
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
+
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                             {% if obj %} Editar {% else %} Nuevo {% endif %} Producto
                                         </div>
+
                                         <div class="dropdown-divider"></div>
                                         {% csrf_token %}
-                                        <div class="row px-3 py-3" style="display: flex; align-items: center;">
 
-                                            {{ form.as_p }}
+                                        <div class="row px-3 py-3" style="display: flex; align-items: center; justify-content: center;">
+
+                                            <div class="row row-cols-2 row-cols-sm-1 row-cols-xs-1 mb-3 pb-1">
+
+                                                {% if obj.imagen %}
+                                                <div class="col">
+                                                    <img style="width: 100px;" src="{{ obj.imagen.url }}" alt="">
+                                                </div>
+                                                {% endif %}
+
+                                                <div class="col">
+                                                    {{ form.imagen }}
+                                                </div>
+
+                                            </div>
+
+                                            <div class="container">
+                                                <div class="row row-cols-2 row-cols-sm-1 row-cols-xs-1">
+                                                    <div class="col">
+                                                        <label class="d-block">
+                                                            Código
+                                                            {{ form.codigo }}
+                                                        </label>
+                                                        <label class="d-block">
+                                                            Código Barras
+                                                            {{ form.codigo_barras }}
+                                                        </label>
+                                                        <label class="d-block">
+                                                            Descripción
+                                                            {{ form.descripcion }}
+                                                        </label>
+                                                        <label class="d-block">
+                                                            Precio
+                                                            {{ form.precio }}
+                                                        </label>
+                                                        <label class="d-block">
+                                                            Marca
+                                                            {{ form.marca }}
+                                                        </label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="d-block">
+                                                            Stock
+                                                            {{ form.existencia }}
+                                                        </label>
+                                                        <label class="d-block">
+                                                            Min. Stock
+                                                            {{ form.min_stock }}
+                                                        </label>
+                                                        <label class="d-block">
+                                                            Unidad Medida
+                                                            {{ form.unidad_medida }}
+                                                        </label>
+                                                        <label class="d-block">
+                                                            Subcategoria
+                                                            {{ form.subcategoria }}
+                                                        </label>
+                                                        <label class="d-inline-block c-label">
+                                                            IVA
+                                                            {{ form.tiene_iva }}
+                                                        </label>
+                                                        <label class="d-inline-block mx-5 c-label">
+                                                            Estado
+                                                            {{ form.estado }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                         </div>
 
@@ -31,13 +111,10 @@
                                             <div class="col">
                                                 <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
                                                 <button type="button" class="btn btn-success" onclick="return cerrar_modal()">
-                                    Cancelar
-                                </button>
+                                                    Cancelar
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="far fa-calendar-plus fa-2x text-gray-300" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             </div>

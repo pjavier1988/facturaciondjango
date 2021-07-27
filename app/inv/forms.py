@@ -99,7 +99,8 @@ class ProductoForm(forms.ModelForm):
         labels = {
             "descripcion" : "Descripción del Producto",
             "estado" : "Estado",
-            "min_stock":"Mínima Existencia"
+            "min_stock":"Mínima Existencia",
+            'tiene_iva': 'IVA',
         }
         exclude =["um","fm","uc","fc"]
         widgets={"descripcion":forms.TextInput}
@@ -109,7 +110,7 @@ class ProductoForm(forms.ModelForm):
         super().__init__(*args,**kargs)
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
-                'class' : 'd-flex form-control mx-1 my-1 text-center',
+                'class' : 'd-flex form-control mx-1 my-1 text-center width-max',
             })
 
         self.fields['ultima_compra'].widget.attrs['readonly'] = True

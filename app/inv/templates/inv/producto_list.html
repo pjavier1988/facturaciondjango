@@ -26,18 +26,17 @@
             No hay productos
         </div>
         {% else %}
-        <table style="border: 1px solid #ccc;" class="table table-striped table-hover shadow display">
+        <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded">
             <caption>Lista de Productos</caption>
-            <thead>
+            <thead class="thead-light">
                 <tr>
                     <th scope="col" style="border: 0px;">Sub. Cat.</th>
-                    <th scope="col" style="border: 0px;">Código</th>
                     <th scope="col" style="border: 0px;">Barras</th>
                     <th scope="col" style="border: 0px;">Descripción</th>
                     <th scope="col" style="border: 0px;">Stock</th>
+                    <th scope="col" style="border: 0px;">IVA</th>
                     <th scope="col" style="border: 0px;">Marca</th>
                     <th scope="col" style="border: 0px;">Estado</th>
-                    <th scope="col" style="border: 0px;">IVA</th>
                     <th scope="col" style="border: 0px;">Tipo</th>
                     <th scope="col" style="border: 0px;">Acciones</th>
                 </tr>
@@ -46,13 +45,18 @@
                 {% for item in obj %}
                 <tr>
                     <td>{{item.subcategoria}}</td>
-                    <td>{{item.codigo}}</td>
                     <td>{{item.codigo_barras}}</td>
                     <td>{{item.descripcion}}</td>
                     <td>{{item.existencia}}</td>
+                    <td>{{item.tiene_iva|yesno:"✔,❌"}}</td>
                     <td>{{item.marca}}</td>
-                    <td>{{item.estado|yesno:"Activo , Inactivo"}}</td>
-                    <td>{{item.tiene_iva|yesno:"SI , NO"}}</td>
+                    <td>
+                        {% if item.estado %}
+                        <span class="status-success">Activo</span>
+                        {% else %}
+                        <span class="status-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
                     <td>{{item.es_servicio|yesno:"Servicio , Producto"}}</td>
 
                     <td>

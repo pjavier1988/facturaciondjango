@@ -27,11 +27,11 @@
             No hay subcategorías
         </div>
         {% else %}
-        <table style="border: 1px solid #ccc;" class="table table-striped table-hover shadow display">
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display">
 
             <caption>Lista de SubCategorías</caption>
 
-            <thead>
+            <thead class="thead-light">
                 <th scope="col" style="border: 0px;">Id</th>
                 <th scope="col" style="border: 0px;">Categoría</th>
                 <th scope="col" style="border: 0px;">Subcategoria</th>
@@ -46,7 +46,13 @@
                     <td>{{item.id}}</td>
                     <td>{{item.categoria}}</td>
                     <td>{{item.descripcion}}</td>
-                    <td>{{item.estado|yesno:"Activo , Inactivo"}}</td>
+                    <td>
+                        {% if item.estado %}
+                        <span class="status-success">Activo</span>
+                        {% else %}
+                        <span class="status-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
                     <td>{{item.fc|date:"d/m/Y H:i:s" }}</td>
                     <td>{{item.fm|date:"d/m/Y H:i:s"}}</td>
                     <td>

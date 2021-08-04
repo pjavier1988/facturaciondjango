@@ -20,16 +20,16 @@
         {% if not obj %}
         <div class="alert alert-info">No Proveedores</div>
         {% endif %}
-        <table style="border: 1px solid #ccc;" class="table table-striped table-hover shadow-lg display">
+        <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow-lg display rounded">
             <caption>Lista de Proovedores</caption>
-            <thead>
+            <thead class="thead-light">
                 <tr>
                     <th scope="col" style="border: 0px;">Id</th>
                     <th scope="col" style="border: 0px;">Descripcion</th>
                     <th scope="col" style="border: 0px;">Dirección</th>
                     <th scope="col" style="border: 0px;">Contacto</th>
                     <th scope="col" style="border: 0px;">Teléfono</th>
-                    <th scope="col" style="border: 0px;">EMail</th>
+                    <th scope="col" style="border: 0px;">Correo</th>
                     <th scope="col" style="border: 0px;">Estado</th>
                     <th scope="col" style="border: 0px;">Acciones</th>
                 </tr>
@@ -43,7 +43,13 @@
                     <td>{{ item.contacto }}</td>
                     <td>{{ item.telefono }}</td>
                     <td>{{ item.email }}</td>
-                    <td>{{ item.estado|yesno:"Activo,Inactivo" }}</td>
+                    <td>
+                        {% if item.estado %}
+                        <span class="status-success">Activo</span>
+                        {% else %}
+                        <span class="status-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'cmp:proveedor_edit' item.id %}')">
                             <i class="far fa-edit" aria-hidden="true"></i>

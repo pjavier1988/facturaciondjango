@@ -106,17 +106,17 @@
                 <!-- Card Body -->
                 <div class="card-body block">
 
-                    <table style="border: 1px solid #ccc;" class="table table-striped table-hover shadow display" aria-hidden="true">
-                        <thead>
+                    <table style="border: 1px solid #ccc;" class="table table-hover table-responsive shadow display rounded" aria-hidden="true">
+                        <thead class="thead-light">
                             <tr>
                                 <th scope="col" style="border: 0px;">Sub. Cat.</th>
                                 <th scope="col" style="border: 0px;">Código</th>
                                 <th scope="col" style="border: 0px;">Barras</th>
                                 <th scope="col" style="border: 0px;">Descripción</th>
                                 <th scope="col" style="border: 0px;">Stock</th>
+                                <th scope="col" style="border: 0px;">IVA</th>
                                 <th scope="col" style="border: 0px;">Marca</th>
                                 <th scope="col" style="border: 0px;">Estado</th>
-                                <th scope="col" style="border: 0px;">IVA</th>
                                 <th scope="col" style="border: 0px;">Tipo</th>
                                 <th scope="col" style="border: 0px;">Observación</th>
                             </tr>
@@ -129,14 +129,24 @@
                                 <td>{{item.codigo_barras}}</td>
                                 <td>{{item.descripcion}}</td>
                                 <td>{{item.existencia}}</td>
-                                <td>{{item.marca}}</td>
-                                <td>{{item.estado|yesno:"Activo , Inactivo"}}</td>
                                 <td>{{item.tiene_iva|yesno:"✔️ , ❌"}}</td>
+                                <td>{{item.marca}}</td>
+                                <td>
+                                    {% if item.estado %}
+                                    <span class="status-success">Activo</span>
+                                    {% else %}
+                                    <span class="status-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
                                 <td>{{item.es_servicio|yesno:"Servicio , Producto"}}</td>
                                 {% if item.existencia > 0 %}
-                                <td style="color: orange">Próximo a agotar</td>
+                                <td>
+                                    <span class="status-warning">Próximo a agotar</span>
+                                </td>
                                 {% else %}
-                                <td style="color: red">Agotado</td>
+                                <td >
+                                    <span class="status-danger">Agotado</span>
+                                </td>
                                 {% endif %}
                             </tr>
 

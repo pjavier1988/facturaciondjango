@@ -2,7 +2,7 @@
 <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h4 class="m-0 font-weight-bold text-primary">Informe de Ventas</h4>
+        <h6 class="m-0 font-weight-bold text-primary">Informe de Ventas</h6>
         <div class="dropdown no-arrow">
             <a href="{% url 'param:ventas_list_report' %}" class="btn btn-danger text-white">PDF</a>
             <a href="" class="btn btn-success text-white">EXCEL</a>
@@ -19,17 +19,18 @@
 
         {% else %}
 
-        <table style="border: 1px solid #ccc;" class="table table-striped table-hover display display shadow">
+        <table style="border: 1px solid #ccc;" class="table table-hover display display shadow rounded">
 
-            <caption>Lista de Ventas</caption>
+            <caption>Lista de Facturas</caption>
 
-            <thead>
+            <thead class="thead-light">
                 <tr>
                     <th scope="col" style="border: 0px;">Cliente</th>
                     <th scope="col" style="border: 0px;">Fecha</th>
                     <th scope="col" style="border: 0px;">Sub Total</th>
                     <th scope="col" style="border: 0px;">Descuento</th>
                     <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +43,11 @@
                     <td>{{ o.sub_total }}</td>
                     <td>{{ o.descuento }}</td>
                     <td>{{ o.total }}</td>
+                    <td>
+                        <a class="btn btn-outline-primary btn-circle btn-sm" role="button" href="#">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                    </td>
                 </tr>
 
                 {% endfor %}
@@ -61,8 +67,37 @@
         $('.table').DataTable({
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
+            {
+                extend: 'excel',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4 ]
+                }
+            },
+            {
+                extend: 'csv',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4 ]
+                }
+            },
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4 ]
+                }
+            },
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4 ]
+                }
+            },
+            {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [ 0, 1, 2, 3, 4 ]
+                }
+            },
+        ]
         });
     });
 </script>

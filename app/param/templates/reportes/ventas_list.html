@@ -19,7 +19,7 @@
 
         {% else %}
 
-        <table style="border: 1px solid #ccc;" class="table table-hover display display shadow rounded">
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover display display shadow rounded">
 
             <caption>Lista de Facturas</caption>
 
@@ -44,7 +44,7 @@
                     <td>{{ o.descuento }}</td>
                     <td>{{ o.total }}</td>
                     <td>
-                        <a class="btn btn-outline-primary btn-circle btn-sm" role="button" href="#">
+                        <a class="btn btn-outline-primary btn-circle btn-sm" role="button" href="{% url 'param:venta_detail' o.id %}">
                             <i class="fa fa-eye" aria-hidden="true"></i>
                         </a>
                     </td>
@@ -67,37 +67,37 @@
         $('.table').DataTable({
             dom: 'Bfrtip',
             buttons: [
-            {
-                extend: 'excel',
-                exportOptions: {
-                    columns: [ 0, 1, 2, 3, 4 ]
-                }
-            },
-            {
-                extend: 'csv',
-                exportOptions: {
-                    columns: [ 0, 1, 2, 3, 4 ]
-                }
-            },
-            {
-                extend: 'pdf',
-                exportOptions: {
-                    columns: [ 0, 1, 2, 3, 4 ]
-                }
-            },
-            {
-                extend: 'print',
-                exportOptions: {
-                    columns: [ 0, 1, 2, 3, 4 ]
-                }
-            },
-            {
-                extend: 'copy',
-                exportOptions: {
-                    columns: [ 0, 1, 2, 3, 4 ]
-                }
-            },
-        ]
+                {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                },
+                {
+                    extend: 'csv',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                },
+                {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                },
+                {
+                    extend: 'copy',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                },
+            ]
         });
     });
 </script>

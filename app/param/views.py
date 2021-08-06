@@ -95,6 +95,23 @@ def ventas_list(request):
 
     return render(request, template_name, context)
 
+def venta_detail(request, factura_id):
+
+    template_name = 'reportes/venta_detail.html'
+
+    venta_enc = FacturaEnc.objects.get(pk=factura_id)
+    ventas_det = FacturaDet.objects.filter(
+        factura=venta_enc,
+        empresa=request.user.company,
+    )
+
+    context = {
+        'obj': venta_enc,
+        'ventas': ventas_det,
+    }
+
+    return render(request, template_name, context)
+
 def alerta_cantidad(request):
 
     template_name = 'reportes/alerta_cantidad_list.html'

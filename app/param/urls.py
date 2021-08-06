@@ -10,6 +10,7 @@ urlpatterns = [
 
     path('reportes/vista/compras', views.compras_list, name='compras_list'),
     path('reportes/vista/ventas', views.ventas_list, name='ventas_list'),
+    path('reportes/vista/venta/detail/<int:factura_id>', views.venta_detail, name = 'venta_detail'),
     path('reportes/vista/alerta/catidad', views.alerta_cantidad, name='alerta_cantidad_list'),
     path('reportes/vista/proveedores', views.proveedores_list, name='proveedores_list'),
     path('reportes/vista/clientes', views.clientes_list, name='clientes_list'),

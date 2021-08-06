@@ -1,0 +1,94 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Informe de Factura Nro. {{ obj.no_factura }}</h6>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+
+        {% if not obj%}
+
+        <div class="alert alert-info">
+            No hay ventas
+        </div>
+
+        {% else %}
+
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover display display shadow rounded">
+
+            <caption style="caption-side: top;">
+                
+                <h2>Detail Here!</h2>
+
+            </caption>
+
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="border: 0px;">Producto</th>
+                    <th scope="col" style="border: 0px;">Precio</th>
+                    <th scope="col" style="border: 0px;">Sub Total</th>
+                    <th scope="col" style="border: 0px;">Descuento</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for v in ventas %}
+
+                <tr>
+                    <td>{{ v.producto }}</td>
+                    <td>{{ v.precio_prv }}</td>
+                    <td>{{ v.sub_total }}</td>
+                    <td>{{ v.descuento }}</td>
+                    <td>{{ v.total }}</td>
+                </tr>
+
+                {% endfor %}
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="font-weight-bold">Sub Total</td>
+                    <td class="font-weight-bold">{{ obj.sub_total }}</td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="font-weight-bold">Iva</td>
+                    <td class="font-weight-bold">{{ obj.faciva|floatformat:2 }}</td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="font-weight-bold">Total</td>
+                    <td class="font-weight-bold">{{ obj.total }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdfHtml5', 'print'
+            ]
+        });
+    });
+</script>
+
+{% endblock %}

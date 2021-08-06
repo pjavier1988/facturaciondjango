@@ -20,6 +20,29 @@ class Empresa(ClaseModelo):
     class Meta:
         verbose_name_plural = "Empresas"
 
+class Links(ClaseModelo):
+
+    FACEBOOK = 'Facebook'
+    CAROUSEL = 'Carousel'
+    YOUTUBE = 'YouTube'
+    TWITTER = 'Twitter'
+    INSTAGRAM = 'Instagram'
+    LINKEDIN = 'LinkedIn'
+
+    PLATAFORMAS = [
+        (FACEBOOK, 'Facebook'),
+        (CAROUSEL, 'Carousel'),
+        (YOUTUBE, 'YouTube'),
+        (TWITTER, 'Twitter'),
+        (INSTAGRAM, 'Instagram'),
+        (LINKEDIN, 'LinkedIn'),
+    ]
+
+    plataforma = models.TextField(null=False, choices=PLATAFORMAS, default=FACEBOOK)
+    url = models.CharField(max_length=400, null=True)
+    imagen = models.FileField(upload_to='img/carousel', null=True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
+
 class UserManager(BaseUserManager):
     def _create_user(self, username, email, name,last_name, password, is_staff, is_superuser, **extra_fields):
         user = self.model(

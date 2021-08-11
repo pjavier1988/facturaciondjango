@@ -1,18 +1,19 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render,redirect,HttpResponseRedirect
 from django.contrib.messages.views import SuccessMessageMixin
-from rest_framework.test import APIRequestFactory
 from django.contrib import messages
 from django.views import generic
 from django.db.models import F
+from django.urls import reverse_lazy
 from django.db.models.aggregates import Sum, Count
+from rest_framework.test import APIRequestFactory
+from datetime import datetime
 from .models import Empresa, User
 from .forms import EmpresaForm
 from fac.models import FacturaEnc, Cliente, FacturaDet
 from api.views import ProductosAgotados
 from inv.models import Producto
 from cmp.models import Proveedor
-from datetime import datetime
 
 #Empresa *************************************************************************************************************************************
 
@@ -89,8 +90,15 @@ def ventas_list(request):
         empresa=request.user.company
     )
 
+    total = 0
+
+    if compras:
+        for c in compras:
+            total = total + c.total
+
     context = {
-        'obj': compras
+        'obj': compras,
+        'total': total,
     }
 
     return render(request, template_name, context)

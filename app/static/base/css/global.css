@@ -1,6 +1,6 @@
 /* Status */
 
-.status-danger, .status-dark, .status-info, .status-primary, .status-success, .status-warning {
+.status-danger, .status-dark, .status-info, .status-primary, .status-success, .status-warning, .status-violet, .status-indigo, .status-purple {
     border-radius: 5px;
     font-size: .8rem;
     padding: 2px 3px;
@@ -34,4 +34,19 @@
 .status-primary {
     color: #4e73df;
     border: 1px solid #4e73df;
+}
+
+.status-violet {
+    color: violet;
+    border: 1px solid violet;
+}
+
+.status-indigo {
+    color: #6610f2;
+    border: 1px solid #6610f2;
+}
+
+.status-purple {
+    color: #6f42c1;
+    border: 1px solid #6f42c1;
 }

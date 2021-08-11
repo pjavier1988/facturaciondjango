@@ -22,4 +22,5 @@ urlpatterns = [
 
     path('reportes/reporte/compras', reportes.compras_list, name='compras_list_report'),
     path('reportes/reporte/ventas', reportes.ventas_list, name='ventas_list_report'),
+    path('reportes/reporte/factura/venta/<int:factura_id>', reportes.facura_venta, name='factura_venta'),
 ]

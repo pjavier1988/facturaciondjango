@@ -74,9 +74,15 @@ def compras_list(request):
         tipo="compra",
         empresa=request.user.company
     )
+    total = 0
+
+    if compras:
+        for c in compras:
+            total = total + c.total
 
     context = {
-        'obj': compras
+        'obj': compras,
+        'total':total,
     }
 
     return render(request, template_name, context)
@@ -119,7 +125,22 @@ def venta_detail(request, factura_id):
     }
 
     return render(request, template_name, context)
+def compra_detail(request, factura_id):
 
+    template_name = 'reportes/compras_detail.html'
+
+    compra_enc = FacturaEnc.objects.get(pk=factura_id)
+    compra_det = FacturaDet.objects.filter(
+        factura=compra_enc,
+        empresa=request.user.company,
+    )
+
+    context = {
+        'obj': compra_enc,
+        'compras': compra_det,
+    }
+
+    return render(request, template_name, context)
 def alerta_cantidad(request):
 
     template_name = 'reportes/alerta_cantidad_list.html'

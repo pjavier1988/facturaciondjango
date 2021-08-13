@@ -13,9 +13,10 @@ class Empresa(ClaseModelo):
     correo = models.CharField(max_length=320, null=False, blank=False)
     logo = models.FileField(upload_to='img/empresa', null=True)
     ruc = models.CharField(max_length=100, null=True)
+    tributa = models.BooleanField(default=True, null=False)
 
     def __str__(self):
-        return f'{self.nombre}' 
+        return f'{self.nombre}'
 
     class Meta:
         verbose_name_plural = "Empresas"
@@ -65,7 +66,7 @@ class UserManager(BaseUserManager):
         return self._create_user(username, email, name,last_name, password, True, True, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin, AUDUsers):
-    
+
     username = models.CharField(max_length = 255, unique = True)
     email = models.EmailField('Correo Electrónico',max_length = 255, unique = True,)
     name = models.CharField('Nombres', max_length = 255, blank = True, null = True)

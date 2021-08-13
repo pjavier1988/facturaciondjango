@@ -9,6 +9,7 @@ urlpatterns = [
 
     path('links/new', views.LinksNew.as_view(), name="links_new"),
 
+    path('reportes/vista/compra/detail/<int:factura_id>', views.compra_detail, name = 'compra_detail'),
     path('reportes/vista/compras', views.compras_list, name='compras_list'),
     path('reportes/vista/ventas', views.ventas_list, name='ventas_list'),
     path('reportes/vista/venta/detail/<int:factura_id>', views.venta_detail, name = 'venta_detail'),

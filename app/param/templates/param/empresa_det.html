@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %} {% block page_content %}
 
-<!-- 
+<!--
     REF
     https://bbbootstrap.com/snippets/social-profile-container-63944396
  -->
@@ -23,6 +23,11 @@
                                 <a href="{% url 'param:empresa_edit' obj.id %}">
                                     <i class="fas fa-edit m-t-10 f-16 text-white" aria-hidden="true"></i>
                                 </a>
+                                {% if obj.tributa == False %}
+                                <span class="status-warning mx-2">No declara</span>
+                                {% elif obj.tributa == True %}
+                                <span class="status-success mx-2">Declarante</span>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="col-sm-8">

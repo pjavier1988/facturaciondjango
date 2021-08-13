@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import fields, widgets
-from .models import Empresa
+from .models import Empresa, Links
 
 class EmpresaForm(forms.ModelForm):
     
@@ -30,3 +30,23 @@ class EmpresaForm(forms.ModelForm):
 
         self.fields['telefono'].widget.attrs['pattern'] = '^[0-9]{10,15}'
         self.fields['logo'].widget.attrs['accept'] = 'image/*'
+
+class LinksForm(forms.ModelForm):
+
+    class Meta:
+        model = Links
+        fields = ['plataforma', 'url', 'imagen', 'estado']
+        labels = {
+            'plataforma': 'Plataforma',
+            'url': 'URL',
+            'imagen': 'Imágen',
+            'estado': 'Estado',
+        }
+
+    def __init__(self,*args,**kargs):
+
+        super().__init__(*args,**kargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class' : 'mx-5 mt-1 form-control',
+            })

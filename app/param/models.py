@@ -38,10 +38,10 @@ class Links(ClaseModelo):
         (LINKEDIN, 'LinkedIn'),
     ]
 
-    plataforma = models.TextField(null=False, choices=PLATAFORMAS, default=FACEBOOK)
+    plataforma = models.CharField(max_length=20, null=False, choices=PLATAFORMAS, default=CAROUSEL)
     url = models.CharField(max_length=400, null=True)
     imagen = models.FileField(upload_to='img/carousel', null=True)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=False, blank=False)
 
 class UserManager(BaseUserManager):
     def _create_user(self, username, email, name,last_name, password, is_staff, is_superuser, **extra_fields):

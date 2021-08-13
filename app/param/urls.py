@@ -1,12 +1,13 @@
 from django.urls import path
-from .views import EmpresaDet, EmpresaNew, EmpresaEdit
 from . import views
 from . import reportes
 
 urlpatterns = [
-    path('empresas/detail/<int:pk>', EmpresaDet.as_view(), name="empresa_det"),
-    path('empresas/new',EmpresaNew.as_view(),name="empresa_new"),
-    path('empresas/edit/<int:pk>', EmpresaEdit.as_view(), name="empresa_edit"),
+    path('administracion/empresa', views.administracion, name="administracion_empresa"),
+    path('empresas/new',views.EmpresaNew.as_view(),name="empresa_new"),
+    path('empresas/edit/<int:pk>', views.EmpresaEdit.as_view(), name="empresa_edit"),
+
+    path('links/new', views.LinksNew.as_view(), name="links_new"),
 
     path('reportes/vista/compras', views.compras_list, name='compras_list'),
     path('reportes/vista/ventas', views.ventas_list, name='ventas_list'),

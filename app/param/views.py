@@ -8,8 +8,8 @@ from django.urls import reverse_lazy
 from django.db.models.aggregates import Sum, Count
 from rest_framework.test import APIRequestFactory
 from datetime import datetime
-from .models import Empresa, User
-from .forms import EmpresaForm
+from .models import Empresa, User, Links
+from .forms import EmpresaForm, LinksForm
 from fac.models import FacturaEnc, Cliente, FacturaDet
 from api.views import ProductosAgotados
 from inv.models import Producto
@@ -17,17 +17,24 @@ from cmp.models import Proveedor
 
 #Empresa *************************************************************************************************************************************
 
+def administracion(request):
+
+    template_name = 'param/empresa_det.html'
+
+    empresa = Empresa.objects.get(pk=request.user.company.id)
+    links = Links.objects.filter(empresa=empresa)
+
+    context = {
+        'obj': empresa,
+        'links': links,
+    }
+
+    return render(request, template_name, context)
+
 class EmpresaView(LoginRequiredMixin, generic.ListView):
 
     model = Empresa
     template_name = "param/empresa_list.html"
-    context_object_name = "obj"
-    login_url = "bases:login"
-
-class EmpresaDet(LoginRequiredMixin, generic.DetailView):
-
-    model = Empresa
-    template_name = "param/empresa_det.html"
     context_object_name = "obj"
     login_url = "bases:login"
 
@@ -46,7 +53,7 @@ class EmpresaNew(LoginRequiredMixin, generic.CreateView):
     def get_success_url(self):
         if set_user_company(self.request.user.id, self.object) == False:
             messages.error(self.request,'Super Usuario solo puede tener una empresa')
-        return reverse_lazy('param:empresa_det', kwargs={'pk': self.object.pk})
+        return reverse_lazy('param:administracion_empresa')
 
 class EmpresaEdit(LoginRequiredMixin, generic.UpdateView):
 
@@ -61,7 +68,24 @@ class EmpresaEdit(LoginRequiredMixin, generic.UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('param:empresa_det', kwargs={'pk': self.object.pk})
+        return reverse_lazy('param:administracion_empresa')
+
+# LINKS ****************************************************************************************************************************
+
+class LinksNew(LoginRequiredMixin, generic.CreateView):
+
+    model = Links
+    template_name = "param/links_form.html"
+    context_object_name = "obj"
+    form_class = LinksForm
+    login_url = "bases:login"
+    success_url = reverse_lazy("param:administracion_empresa")
+    success_message = "Link creado exitosamente"
+
+    def form_valid(self, form):
+        form.instance.uc = self.request.user
+        form.instance.empresa = self.request.user.company
+        return super().form_valid(form)
 
 #Reportes *************************************************************************************************************************************
 #https://datatables.net/extensions/buttons/examples/initialisation/export.html

@@ -12,20 +12,13 @@
     <!-- Carousel -->
     <div id="carousel">
         <figure id="spinner">
-            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/196980042_1923002824541087_7865171968980241442_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=730e14&_nc_ohc=cSirhwTazC4AX_HDv9T&_nc_ht=scontent.fuio10-1.fna&oh=2379a1584ce435b6a4d074df3805ee7a&oe=60E8EB7E"
-                alt>
-            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/192885877_1918449098329793_5611604952376470188_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=730e14&_nc_ohc=Rc3XCZ2tvsQAX-uH42E&_nc_ht=scontent.fuio10-1.fna&oh=2e8a6b05d43a973a56b2bbd282986354&oe=60E6AB8F"
-                alt>
-            <img src="https://cdn.nexdu.com/img/ec/map/mega-tienda-del-sur-44482.jpg" alt>
-            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/195814015_1922992961208740_8980558187177498465_n.png?_nc_cat=101&ccb=1-3&_nc_sid=730e14&_nc_ohc=2Yz7iEoi6dIAX8AzE_Q&_nc_ht=scontent.fuio10-1.fna&oh=8f9580485e1f925df98ff2acb1fd759d&oe=60E5F20A"
-                alt>
-            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/195939946_1921394454701924_5838901349744770736_n.jpg?_nc_cat=100&ccb=1-3&_nc_sid=730e14&_nc_ohc=SRb4s9pGtrkAX9g-JcM&_nc_ht=scontent.fuio10-1.fna&oh=4513f370b9ac392da1c82398dcbf9735&oe=60E89A28"
-                alt>
-            <img src="https://cadenaser00.epimg.net/ser/imagenes/2017/06/06/gastro/1496761987_216739_1496762991_noticia_normal.jpg" alt>
-            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/196451522_1922987331209303_9081307176640467388_n.jpg?_nc_cat=103&ccb=1-3&_nc_sid=730e14&_nc_ohc=S7JO1I2-Y9EAX-0HLDK&_nc_ht=scontent.fuio10-1.fna&oh=5587c40d9e8622a7b9b0f3508da2dd67&oe=60E8A3F3"
-                alt>
-            <img src="https://scontent.fuio10-1.fna.fbcdn.net/v/t1.6435-9/193746395_1918452701662766_938719040346517795_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=730e14&_nc_ohc=F9S4Ejs2oNMAX9ZCir4&tn=YJmLtWSgKCANtc1h&_nc_ht=scontent.fuio10-1.fna&oh=3dfe47423878da626b7987a548a83ec8&oe=60E98C4A"
-                alt>
+            {% for img in imagenes %}
+                {% if img.imagen %}
+                <img src="{{ img.imagen.url }}" alt="_blank">
+                {% else %}
+                <img src="{{ img.url }}" alt="_blank">
+                {% endif %}
+            {% endfor %}
         </figure>
     </div>
 

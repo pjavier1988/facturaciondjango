@@ -7,6 +7,9 @@
 
 <div class="page-content page-container" id="page-content">
     <div class="padding">
+
+        <h3>Información Empresa</h3>
+
         <div class="row container d-flex justify-content-center">
             <div class="col-xl-9 col-md-12">
                 <div class="card user-card-full">
@@ -18,7 +21,7 @@
                                 <i>{{ obj.nombre_completo }}</i>
                                 <p style="text-decoration: underline;">By: {{ obj.uc }}</p>
                                 <a href="{% url 'param:empresa_edit' obj.id %}">
-                                    <i class="fas fa-edit m-t-10 f-16 text-white"></i>
+                                    <i class="fas fa-edit m-t-10 f-16 text-white" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
@@ -39,7 +42,7 @@
                                         <h6 class="text-muted f-w-400">{{ obj.direccion }}</h6>
                                     </div>
                                     <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600 font-weight-bold">RUC</p>
+                                        <p class="m-b-10 f-w-600 font-weight-bold">RUC/NIT</p>
                                         <h6 class="text-muted f-w-400">{{ obj.ruc }}</h6>
                                     </div>
                                 </div>
@@ -74,6 +77,72 @@
                 </div>
             </div>
         </div>
+        <h3>Redes Sociales y Carousel</h3>
+
+        <div class="row container d-flex justify-content-center">
+            <div class="col-xl-10 col-md-12">
+                <div class="card user-card-full p-3">
+                    
+                    <div class="text-center pb-2">
+                        <a style="width: 150px;" href="{% url 'param:links_new' %}" class="btn btn-success">
+                            <i class="fa fa-plus" aria-hidden="true"></i> Nuevo
+                        </a>
+                    </div>
+
+                    {% if not links%}
+                    <div class="alert alert-info">
+                        No hay Links e Imágenes
+                    </div>
+                    {% else %}
+                    <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display rounded">
+                        <caption>Lista de Links</caption>
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" style="border: 0px;">Plataforma</th>
+                                <th scope="col" style="border: 0px;">Valor</th>
+                                <th scope="col" style="border: 0px;">Estado</th>
+                                <th scope="col" style="border: 0px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for link in links %}
+                            <tr>
+                                <td>{{link.plataforma}}</td>
+                                <td>
+                                    {% if link.plataforma == 'Carousel' %}
+                                        {% if link.imagen %}
+                                        <img style="width: auto; height: 50px" src="{{ link.imagen.url }}" alt="">
+                                        {% else %}
+                                        <a href="{{ link.url }}">{{ link.url }}</a>
+                                        {% endif %}
+                                    {% else %}
+                                    <a href="{{ link.url }}">{{ link.url }}</a>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if link.estado %}
+                                    <span class="status-success">Activo</span>
+                                    {% else %}
+                                    <span class="status-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a class="btn btn-warning btn-circle text-white" role="button">
+                                        <i class="far fa-edit" aria-hidden="true"></i>
+                                    </a>
+                                    <a class="btn btn-danger btn-circle text-white" role="button">
+                                        <i class="far fa-trash-alt" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 

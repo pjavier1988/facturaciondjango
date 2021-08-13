@@ -104,8 +104,8 @@ def facura_venta(request, factura_id):
     )
 
     context = {
-        'factura_enc': factura_enc,
-        'factura_det': factura_det,
+        'enc': factura_enc,
+        'det': factura_det,
         'today': today,
         'request': request
     }

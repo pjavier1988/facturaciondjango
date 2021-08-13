@@ -1,9 +1,6 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from inv.models import Producto, Categoria, SubCategoria
-from fac.models import Cliente, FacturaEnc, FacturaDet
-from bases.views import get_products_and_category
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
@@ -11,9 +8,13 @@ from django.db.models import Q
 from .models import Cotizacion, ProductosCotizacion
 from .forms import CotizacionForm
 from .cart import Cart
-import datetime
 from .models import *
+from inv.models import Producto, Categoria, SubCategoria
+from fac.models import Cliente, FacturaEnc, FacturaDet
+from bases.views import get_products_and_category
 from fac.models import FacturaEnc, Cliente, FacturaDet
+from param.models import Links
+import datetime
 
 TEMPLATE_USER_HOME = 'vnt/home.html'
 
@@ -31,8 +32,15 @@ def home(request):
         productos.remove(obj_max_date)
 
     populares = productos
+    
+    imagenes = Links.objects.filter(
+        empresa=request.user.company,
+        plataforma='Carousel',
+        estado=1,
+    )[:8]
 
     context = {
+        'imagenes': imagenes,
         'carousel': True,
         'sections': {
             'nuevos': nuevos,
@@ -99,7 +107,7 @@ class SearchProduct(generic.TemplateView):
             resultados = list(Producto.objects.filter(
                 Q(descripcion__contains=desc.upper()) &
                 Q(subcategoria__categoria=categoria))[:4])
-            similares = get_similares(resultados)
+            similares = get_similares(resultados, self.request)
 
         elif subcategorias and len(subcategorias) > 0:
 
@@ -107,11 +115,11 @@ class SearchProduct(generic.TemplateView):
             resultados = list(Producto.objects.filter(
                 Q(descripcion__contains=desc.upper()) &
                 Q(subcategoria=subcategoria))[:4])
-            similares = get_similares(resultados)
+            similares = get_similares(resultados, self.request)
 
         else:
             resultados = list(Producto.objects.filter(Q(descripcion__contains=desc.upper()))[:4])
-            similares = get_similares(resultados)
+            similares = get_similares(resultados, self.request)
 
         context['carousel'] = False
         context['sections'] = {
@@ -243,22 +251,76 @@ def cotizacion_new(request):
 def cotizacion_list(request):
     template_name = 'vnt/cotizacion_list.html'
 
-    cotizacion = Cotizacion.objects.filter(estado = 1)
+    cotizacion = Cotizacion.objects.filter(
+        estado = 1,
+        empresa = request.user.company,
+    )
     context = {
         'obj':cotizacion
     }
     return render(request, template_name, context)
 
 def cotizacion_delete(request, id):
+
     template_name = 'vnt/cotizacion_list.html'
     cotizacion = Cotizacion.objects.get(id = id)
     cotizacion.estado = 0
     cotizacion.save()
-    cotizacionlist = Cotizacion.objects.filter(estado = 1)
+    cotizacionlist = Cotizacion.objects.filter(
+        estado = 1,
+        empresa = request.user.company,
+    )
+
     context = {
         'obj':cotizacionlist
-        }
+    }
+
     return render(request, template_name, context)
+
+def convertir_a_factura(request, cot_id):
+
+    cotizacion = Cotizacion.objects.get(id=cot_id)
+    productos = ProductosCotizacion.objects.filter(
+        cotizacion=cotizacion,
+    )
+
+    enc = FacturaEnc(
+        cliente=cotizacion.cliente,
+        fecha=datetime.datetime.now(),
+        sub_total=cotizacion.sub_total,
+        faciva=cotizacion.iva,
+        descuento=cotizacion.descuento,
+        total=cotizacion.total,
+        fecha_factura=datetime.datetime.now(),
+        fecha_compra=datetime.datetime.now(),
+        tipo='factura',
+        estado_pago='Pagado',
+        empresa=request.user.company,
+        uc=request.user,
+    )
+
+    enc.save()
+
+    if enc.id:
+
+        for p in productos:
+
+            det = FacturaDet(
+                factura=enc,
+                producto=p.producto,
+                cantidad=p.cantidad,
+                precio=p.producto.precio,
+                descuento=p.descuento,
+                precio_prv=p.producto.precio,
+                costo=p.producto.precio,
+                empresa=request.user.company,
+                uc=request.user,
+            )
+
+            det.save()
+
+    return redirect('param:ventas_list')
+
 #Methods
 
 def get_obj_by_max_date(objects):
@@ -274,10 +336,13 @@ def get_obj_by_max_date(objects):
 
     return obj
 
-def get_similares(resultados):
+def get_similares(resultados, request):
 
     if resultados:
-        similares = list(Producto.objects.filter(subcategoria=resultados[0].subcategoria)[:4])
+        similares = list(Producto.objects.filter(
+            subcategoria=resultados[0].subcategoria,
+            empresa=request.user.company,
+        )[:4])
 
         for r in resultados:
             similares.remove(r)

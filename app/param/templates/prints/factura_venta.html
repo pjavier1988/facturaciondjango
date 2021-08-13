@@ -1,298 +1,183 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
-    <meta charset="utf-8">
-    <title>Example 2</title>
-    <link rel="stylesheet" href="style.css" media="all" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Listado de Compras</title>
 
-    <style>
-        .img-logo {
-            width: 100px;
-            height: auto;
+    <style type="text/css">
+        @page {
+            size: letter;
+            margin: 1cm;
         }
         
-        .clearfix:after {
-            content: "";
-            display: table;
-            clear: both;
+        .table {
+            margin: 5px auto;
+            padding: 5px;
         }
         
-        a {
-            color: #0087C3;
-            text-decoration: none;
+        th {
+            border-top: 1px solid green;
+            border-bottom: 1px solid green;
+            padding: 3px 0px;
+            background-color: rgb(119, 167, 119);
         }
         
-        body {
-            position: relative;
-            width: 21cm;
-            height: 29.7cm;
-            margin: 0 auto;
-            color: #555555;
-            background: #FFFFFF;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            font-family: SourceSansPro;
+        .empresa,
+        .cliente {
+            padding: 0px 25px;
         }
         
-        #logo {
-            float: left;
-            margin-top: 8px;
-        }
-        
-        #logo img {
-            height: 70px;
-        }
-        
-        #company {
-            float: right;
-            text-align: right;
-        }
-        
-        #details {
-            margin-bottom: 50px;
-        }
-        
-        #client {
-            padding-left: 6px;
-            border-left: 6px solid #0087C3;
-            float: left;
-        }
-        
-        #client .to {
-            color: #777777;
-        }
-        
-        h2.name {
-            font-size: 1.4em;
-            font-weight: normal;
-            margin: 0;
-        }
-        
-        #invoice {
-            float: right;
-            text-align: right;
-        }
-        
-        #invoice h1 {
-            color: #0087C3;
-            font-size: 2.4em;
-            line-height: 1em;
-            font-weight: normal;
-            margin: 0 0 10px 0;
-        }
-        
-        #invoice .date {
-            font-size: 1.1em;
-            color: #777777;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
-            margin-bottom: 20px;
-            -pdf-keep-in-frame-mode: shrink;
-        }
-        
-        table th,
-        table td {
-            padding: 20px;
-            background: #EEEEEE;
+        caption {
             text-align: center;
-            border-bottom: 1px solid #FFFFFF;
+            display: block;
+            width: 100%;
         }
         
-        table th {
-            white-space: nowrap;
-            font-weight: normal;
-        }
-        
-        table td {
+        .factura-info {
             text-align: right;
         }
         
-        table td h3 {
-            color: #57B223;
-            font-size: 1.2em;
-            font-weight: normal;
-            margin: 0 0 0.2em 0;
+        h3,
+        h6 {
+            margin: 0%;
         }
         
-        table .no {
-            color: #FFFFFF;
-            font-size: 1.6em;
-            background: #57B223;
+        h1,
+        h2 {
+            color: green;
         }
         
-        table .desc {
-            text-align: left;
+        i {
+            font-weight: 100;
         }
         
-        table .unit {
-            background: #DDDDDD;
+        .gb-teme-ligth {
+            background-color: rgb(149, 199, 149);
         }
         
-        table .qty {}
-        
-        table .total {
-            background: #57B223;
-            color: #FFFFFF;
-        }
-        
-        table td.unit,
-        table td.qty,
-        table td.total {
-            font-size: 1.2em;
-        }
-        
-        table tbody tr:last-child td {
-            border: none;
-        }
-        
-        table tfoot td {
-            padding: 10px 20px;
-            background: #FFFFFF;
-            border-bottom: none;
-            font-size: 1.2em;
-            white-space: nowrap;
-            border-top: 1px solid #AAAAAA;
-        }
-        
-        table tfoot tr:first-child td {
-            border-top: none;
-        }
-        
-        table tfoot tr:last-child td {
-            color: #57B223;
-            font-size: 1.4em;
-            border-top: 1px solid #57B223;
-        }
-        
-        table tfoot tr td:first-child {
-            border: none;
-        }
-        
-        #thanks {
-            font-size: 2em;
-            margin-bottom: 50px;
-        }
-        
-        #notices {
-            padding-left: 6px;
-            border-left: 6px solid #0087C3;
-        }
-        
-        #notices .notice {
-            font-size: 1.2em;
-        }
-        
-        footer {
-            color: #777777;
-            width: 100%;
-            height: 30px;
-            position: absolute;
-            bottom: 0;
-            border-top: 1px solid #AAAAAA;
-            padding: 8px 0;
-            text-align: center;
+        .center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
 
-<body>
-    <div class="clearfix">
+<body style="padding: 0px 50px;">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
 
-        <div id="logo">
-            <img class="img-logo" src="{{ factura_enc.empresa.logo.url }}" alt="_blank">
-        </div>
+                <img style="width: 50px;" src="{{ request.user.company.logo.url }}" alt="">
+                <h1 style="text-align: center;">{{ request.user.company.nombre_completo }}</h1>
+                <h4 style="text-align: center;">Sistema de Compras {{ request.user.company.nombre }}</h4>
 
-        <div id="company">
-            <h2 class="name">Company Name</h2>
-            <div>455 Foggy Heights, AZ 85004, US</div>
-            <div>(602) 519-0450</div>
-            <div><a href="mailto:company@example.com">company@example.com</a></div>
-        </div>
+                <div class="factura-info">
+                    <p style="margin: 0px;">
+                        Fecha: <i aria-hidden="true">{{ today|date:"d/m/Y" }}</i>
+                    </p>
+                    <p style="margin: 0px;">
+                        Factura Nro. <i aria-hidden="true">{{ enc.no_factura }}</i>
+                    </p>
+                </div>
 
-    </div>
+                <table>
+                    <tr>
+                        <td class="empresa">
+                            <h2>Empresa</h2>
 
-    <hr>
+                            <h3>
+                                Dirección: <i aria-hidden="true">{{ request.user.company.direccion }}</i>
+                            </h3>
+                            <h3>
+                                Email: <i aria-hidden="true">{{ request.user.company.correo }}</i>
+                            </h3>
+                            <h3>
+                                NIT: <i aria-hidden="true">{{ request.user.company.ruc }}</i>
+                            </h3>
+                        </td>
 
-    <div>
-        <div id="details" class="clearfix">
-            <div id="client">
-                <div class="to">INVOICE TO:</div>
-                <h2 class="name">John Doe</h2>
-                <div class="address">796 Silver Harbour, TX 79273, US</div>
-                <div class="email"><a href="mailto:john@example.com">john@example.com</a></div>
+                        <td class="cliente">
+                            <h2>Cliente</h2>
+
+                            <h3>
+                                Nombre: <i aria-hidden="true">{{ enc.cliente }}</i>
+                            </h3>
+                            <h3>
+                                CI/RUC: <i aria-hidden="true">{{ enc.cliente.identificacion }}</i>
+                            </h3>
+                            <h3>
+                                Email: <i aria-hidden="true"> cliente@gmail.com </i>
+                            </h3>
+                            <h3>
+                                Teléfono: <i aria-hidden="true">{{ enc.cliente.celular }}</i>
+                            </h3>
+                        </td>
+                    </tr>
+                </table>
             </div>
-            <div id="invoice">
-                <h1>INVOICE 3-2-1</h1>
-                <div class="date">Date of Invoice: 01/06/2014</div>
-                <div class="date">Due Date: 30/06/2014</div>
+
+            <div class="center">
+                <table class="table">
+
+                    <caption>Lista de Compras</caption>
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Código</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Precio U.</th>
+                            <th scope="col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in det %}
+                        <tr style="text-align: center;">
+                            <td>{{ item.producto.codigo }}</td>
+                            <td>{{ item.producto }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>{{ item.producto.precio }}</td>
+                            <td>$ {{ item.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr style="padding: 2px;">
+                            <td colspan="5"></td>
+                            <td class="gb-teme-ligth">IVA</td>
+                            <td class="gb-teme-ligth">$ {{ enc.faciva|floatformat:2 }}</td>
+                        </tr>
+                        <tr style="padding: 2px;">
+                            <td colspan="5"></td>
+                            <td>Descuento</td>
+                            <td>$ {{ enc.descuento }}</td>
+                        </tr>
+                        <tr style="padding: 2px;">
+                            <td colspan="5"></td>
+                            <td class="gb-teme-ligth">Sub Total</td>
+                            <td class="gb-teme-ligth">$ {{ enc.sub_total }}</td>
+                        </tr>
+                        <tr style="padding: 2px;">
+                            <td colspan="5"></td>
+                            <td>Total</td>
+                            <td>$ {{ enc.total }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
-        </div>
-        <table style="padding: 0px; margin: 0px;">
 
-            <caption></caption>
-
-            <thead>
-                <tr>
-                    <th scope="col" class="no">#</th>
-                    <th scope="col" class="desc">DESCRIPTION</th>
-                    <th scope="col" class="unit">UNIT PRICE</th>
-                    <th scope="col" class="qty">QUANTITY</th>
-                    <th scope="col" class="total">TOTAL</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="no">01</td>
-                    <td class="desc">
-                        <h3>Website Design</h3>Creating a recognizable design solution based on the company's existing visual identity</td>
-                    <td class="unit">$40.00</td>
-                    <td class="qty">30</td>
-                    <td class="total">$1,200.00</td>
-                </tr>
-                <tr>
-                    <td class="no">02</td>
-                    <td class="desc">
-                        <h3>Website Development</h3>Developing a Content Management System-based Website</td>
-                    <td class="unit">$40.00</td>
-                    <td class="qty">80</td>
-                    <td class="total">$3,200.00</td>
-                </tr>
-                <tr>
-                    <td class="no">03</td>
-                    <td class="desc">
-                        <h3>Search Engines Optimization</h3>Optimize the site for search engines (SEO)</td>
-                    <td class="unit">$40.00</td>
-                    <td class="qty">20</td>
-                    <td class="total">$800.00</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2"></td>
-                    <td colspan="2">SUBTOTAL</td>
-                    <td>$5,200.00</td>
-                </tr>
-                <tr>
-                    <td colspan="2"></td>
-                    <td colspan="2">TAX 25%</td>
-                    <td>$1,300.00</td>
-                </tr>
-                <tr>
-                    <td colspan="2"></td>
-                    <td colspan="2">GRAND TOTAL</td>
-                    <td>$6,500.00</td>
-                </tr>
-            </tfoot>
-        </table>
-        <div id="thanks">Thank you!</div>
-        <div id="notices">
-            <div>NOTICE:</div>
-            <div class="notice">A finance charge of 1.5% will be made on unpaid balances after 30 days.</div>
+            <div class="nota">
+                <h2>Nota:</h2>
+                <p style="text-align: justify;">
+                    <i aria-hidden="true">
+                        Este documento no reemplaza ni es una factura de venta electrónica ya que no somos responsables de IVA y por lo tanto no estamos obligados a expedirla según lo dispuesto en el articulo 511 del Estatuto Tributario; pero si eres responsable de IVA recuerda que este archivo puedes usarlo para respaldar "el documento soporte en compras con no obligados a facturar "para la aceptación fiscal de costos, deducciones o impuestos descontables; según la resolución 000012 del 9 de febrero del 2021.
+                    </i>
+                </p>
+            </div>
         </div>
     </div>
 </body>

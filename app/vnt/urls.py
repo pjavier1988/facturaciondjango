@@ -18,5 +18,6 @@ urlpatterns = [
     path('cotizacion/PDF/<int:id>', imprimir_cotizacion, name='cotizacion_print'),
     path('cotizacion/detalle/<int:id>', detalle_cotizacion, name='detalle_cotizacion'),
     path('cotización/delete/<int:id>', views.cotizacion_delete, name='delete_cotizacion'),
+    path('cotizacion/convetir/factura/<int:cot_id>', views.convertir_a_factura, name='convertir_factura'),
     path('cotizacion/new',views.cotizacion_new,name="cotizacion_form"),
 ]

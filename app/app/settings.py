@@ -146,28 +146,18 @@ LOGOUT_REDIRECT_URL = '/login'
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
-#Dopbox -> https://stackoverflow.com/questions/55587089/django-storages-dropbox-stone-validators-validationerror
-
-#DEFAULT_FILE_STORAGE = config('DEFAULT_FILE_STORAGE')
-
-#DROPBOX_OAUTH2_TOKEN = config('DROPBOX_OAUTH2_TOKEN')
-
-#DROPBOX_WRITE_MODE = 'update'
-
-#DROPBOX_ROOT_PATH = '/'
-
 #S3 -> https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = config('DEFAULT_FILE_STORAGE')
 
-AWS_ACCESS_KEY_ID = 'AKIAQNIR2FV5CT6SB3HL'
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
 
-AWS_SECRET_ACCESS_KEY = 'CgsU4yaiNMqk/561vM9f2I866gq8hNe4RHGkI0IQ'
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 
-AWS_STORAGE_BUCKET_NAME = 'facturacion-datybi'
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 
-AWS_DEFAULT_ACL = 'public-read'
+AWS_DEFAULT_ACL = config('AWS_DEFAULT_ACL')
 
-AWS_S3_REGION_NAME = 'us-east-1'
+AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
 
 AWS_QUERYSTRING_AUTH = False

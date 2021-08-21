@@ -205,6 +205,11 @@
                     <h6 class="m-0 font-weight-bold text-primary">
                         <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
 
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="display-data-ventas" title="Visualización de los datos">
+                            <option value="valor" selected>Valor</option>
+                            <option value="cantidad">Cantidad</option>
+                        </select>
+
                         <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="select-years-ventas">
                             <option value="" selected>-- Año --</option>
                         </select>

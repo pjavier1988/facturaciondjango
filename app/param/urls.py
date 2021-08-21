@@ -21,6 +21,7 @@ urlpatterns = [
     path('reportes/vista/devolucion/compras', views.devolucion_compras_list, name='devolucion_compras_list'),
     path('reportes/vista/devolucion/facturas', views.devolucion_facturas_list, name='devolucion_facturas_list'),
     path('reportes/vista/almacen', views.almacen_list, name = 'almacen_list'),
+    path('reportes/vista/kardex/<int:producto_id>', views.kardex, name = 'kardex'),
 
     path('reportes/reporte/compras', reportes.compras_list, name='compras_list_report'),
     path('reportes/reporte/ventas', reportes.ventas_list, name='ventas_list_report'),

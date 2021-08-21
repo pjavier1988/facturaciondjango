@@ -250,8 +250,14 @@ def get_ventas_mensuales(request, year):
             tipo="factura",
             empresa=request.user.company).count()
 
+        facturas_valor = FacturaEnc.objects.filter(
+            fecha__year=year,
+            fecha__month=i,
+            tipo="factura",
+            empresa=request.user.company).aggregate(Sum('total'))
+
         date = datetime.datetime(year, i, 1)
-        data[str(date.strftime('%B'))] = facturas_mes
+        data[str(date.strftime('%B'))] = { 'cantidad': facturas_mes, 'valor': get_total(facturas_valor)}
 
     return data
         
@@ -270,10 +276,19 @@ def get_ventas_mes(request, year, month):
             tipo="factura",
             empresa=request.user.company).count()
 
+        facturas_valor = FacturaEnc.objects.filter(
+            fecha__year=year,
+            fecha__month=month,
+            fecha__day=i,
+            tipo="factura",
+            empresa=request.user.company).aggregate(Sum('total'))
+
         date = datetime.datetime(year, month, i)
-        data[f'{date.strftime("%B")} - {date.day}'] = facturas
+        data[f'{date.strftime("%B")} - {date.day}'] = { 'cantidad': facturas, 'valor': get_total(facturas_valor)}
 
     return data
+
+#
 
 def get_productos_v_mensuales(request, year):
 

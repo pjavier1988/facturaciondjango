@@ -14,7 +14,7 @@
     <title>Sistema Compras e Inventario {{ user.company.nombre }}</title>
 
     <!-- Custom fonts for this template-->
-    <link href="{% static  'base/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static  'base/vendor/fontawesome-free-5.15.4/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="{% static  'base/css/sb-admin-2.min.css' %}" rel="stylesheet">
@@ -28,7 +28,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
     
     <!-- Static CSS -->
-    <link rel="stylesheet" href="{% static 'base/css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'base/css/global-status.css' %}">
     <link rel="stylesheet" href="{% static 'base/css/empresa_det.css' %}">
     <link rel="stylesheet" href="{% static 'base/css/product-card.css' %}">
     <link rel="stylesheet" href="{% static 'base/css/carousel.css' %}">
@@ -172,14 +172,13 @@
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Pagos:</h6>
+                        <h6 class="collapse-header">Pagos</h6>
                         <a class="collapse-item" href="{% url 'param:compras_list' %}">Compras</a>
                         <a class="collapse-item" href="{% url 'param:ventas_list' %}">Ventas</a>
                         <a class="collapse-item" href="{% url 'param:devolucion_compras_list' %}">Devolución de Compras</a>
                         <a class="collapse-item" href="{% url 'param:devolucion_facturas_list' %}">Devolución de Ventas</a>
                         <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">Informes</h6>
-                        <a class="collapse-item" href="#">Ganancia y Pérdidas</a>
+                        <h6 class="collapse-header">Inventario</h6>
                         <a class="collapse-item" href="{% url 'param:alerta_cantidad_list' %}">Alertas de Cantidad</a>
                         <a class="collapse-item" href="{% url 'param:almacen_list' %}">Informe de Almacen</a>
                         <h6 class="collapse-header">Entidades</h6>

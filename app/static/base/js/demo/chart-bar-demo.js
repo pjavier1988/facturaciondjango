@@ -8,6 +8,7 @@ const loadVentas = () => {
 
     let year = document.getElementById('select-years-ventas').value;
     let month = document.getElementById('select-months-ventas').value;
+    let display = document.getElementById('display-data-ventas').value;
 
     $.ajax({
         url: `/api/v1/facturas/ventas/mensuales?year=${year}&month=${month}`,
@@ -17,8 +18,14 @@ const loadVentas = () => {
         success: function(datos) {
 
             for (let d in datos) {
-                ventas.push(datos[d])
-                meses.push(d)
+
+                if (display == 'valor') {
+                    ventas.push(datos[d].valor);
+                } else if (display == 'cantidad') {
+                    ventas.push(datos[d].cantidad);
+                }
+
+                meses.push(d);
             }
         }
     });

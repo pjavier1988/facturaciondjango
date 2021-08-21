@@ -1,0 +1,57 @@
+/* Status */
+
+.status-danger, .status-dark, .status-info, .status-primary, .status-success, .status-warning, .status-violet, .status-indigo, .status-purple {
+    border-radius: 5px;
+    font-size: .8rem;
+    padding: 2px 3px;
+}
+
+.status-danger {
+    color: #e74a3b;
+    border: 1px solid #e74a3b;
+}
+
+.status-success {
+    color: #1cc88a;
+    border: 1px solid #1cc88a;
+}
+
+.status-info {
+    color: #36b9cc;
+    border: 1px solid #36b9cc;
+}
+
+.status-warning {
+    color: #f6c23e;
+    border: 1px solid #f6c23e;
+}
+
+.status-dark {
+    color: #5a5c69;
+    border: 1px solid #5a5c69;
+}
+
+.status-primary {
+    color: #4e73df;
+    border: 1px solid #4e73df;
+}
+
+.status-secondary {
+    color: #4e73df;
+    border: 1px solid #4e73df;
+}
+
+.status-violet {
+    color: violet;
+    border: 1px solid violet;
+}
+
+.status-indigo {
+    color: #6610f2;
+    border: 1px solid #6610f2;
+}
+
+.status-purple {
+    color: #6f42c1;
+    border: 1px solid #6f42c1;
+}

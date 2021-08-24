@@ -1,0 +1,123 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">
+
+            Informe de Factura Nro. {{ obj.no_factura }}
+
+            {% if obj.estado_pago == 'No Pagado' %}
+            <span class="status-warning mx-2">{{ obj.estado_pago }}</span>
+            {% elif obj.estado_pago == 'Pagado' %}
+            <span class="status-success mx-2">{{ obj.estado_pago }}</span>
+            {% elif obj.estado_pago == 'Parcial' %}
+            <span class="status-indigo mx-2">{{ obj.estado_pago }}</span>
+            {% endif %}
+
+        </h6>
+
+        <div class="dropdown no-arrow">
+            <a href="{% url 'param:factura_venta' obj.id %}" class="btn btn-info text-white">
+                <i class="fa fa-print" aria-hidden="true"></i>
+                Imprimir Factura
+            </a>
+        </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+
+        {% if not obj%}
+
+        <div class="alert alert-info">
+            No hay ventas
+        </div>
+
+        {% else %}
+
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover display display shadow rounded">
+
+            <caption style="caption-side: bottom;">
+                <div class="col-sm-12 col-md-8 col-lg-5" style="margin: auto;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row bg-light">
+                                <spam class="col">Impuesto de Orden</spam>
+                                <spam class="col">$ {{ obj.faciva|floatformat:2 }} (0.12%)</spam>
+                            </div>
+                            <div class="row bg-white">
+                                <spam class="col">Descuento</spam>
+                                <spam class="col">$ {{ obj.descuento }}</spam>
+                            </div>
+                            <div class="row bg-light"> 
+                                <spam class="col">Sub Total</spam>
+                                <spam class="col">$ {{ obj.sub_total }}</spam>
+                            </div>
+                            <div class="row bg-white text-dark font-weight-bold">
+                                <spam class="col">Total</spam>
+                                <spam class="col">$ {{ obj.total }}</spam>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </caption>
+
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="border: 0px;">Producto</th>
+                    <th scope="col" style="border: 0px;">Precio</th>
+                    <th scope="col" style="border: 0px;">Sub Total</th>
+                    <th scope="col" style="border: 0px;">Descuento</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for v in ventas %}
+
+                <tr>
+                    <td>{{ v.producto }}</td>
+                    <td>{{ v.precio_prv }}</td>
+                    <td>{{ v.sub_total }}</td>
+                    <td>{{ v.descuento }}</td>
+                    <td>{{ v.total }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+            <tfoot>
+                <div class="mb-3">
+                    <h5>Información</h5>
+                    <div>
+                        <span class="font-weight-bold">Cliente: </span>
+                        <span>{{ obj.cliente }}</span>
+                    </div>
+                    <div>
+                        <span class="font-weight-bold">Fecha: </span>
+                        <span>{{ obj.fecha }}</span>
+                    </div>
+                </div>
+            </tfoot>
+
+        </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdfHtml5', 'print'
+            ]
+        });
+    });
+</script>
+
+{% endblock %}

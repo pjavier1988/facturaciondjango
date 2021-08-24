@@ -1,0 +1,95 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Facturas</h6>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="f1">Fecha Inicio</label>
+                <input type="text" class="form-class" name="f1" id="f1" readonly>
+            </div>
+            <div class="col-md-4">
+                <label for="f2">Fecha Fin</label>
+                <input type="text" class="form-class" name="f2" id="f2" readonly>
+            </div>
+            <div class="col-md-4">
+                <button class="btn btn-warning" type="button" id="btnPrint">Imprimir</button>
+            </div>
+        </div>
+        <hr> {% if not obj %}
+        <div class="alert alert-info">No Hay Facturas</div>
+        {% endif %}
+        <div class="buttons-toolbar">
+            <a class="btn btn-success" href="{% url 'fac:factura_new' %}">
+                <i cass="far fa-calendar-plus" aria-hidden="true"></i> Nuevo
+            </a>
+        </div>
+
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display rounded" id="table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true" data-show-toggle="true" data-show-fullscreen="true" data-toolbar=".buttons-toolbar"
+            data-locale="es-NI">
+            <caption>Lista de Facturas</caption>
+            <thead class="thead-light">
+                <th scope="col" data-sortable="true" data-field="id">No.</th>
+                <th scope="col" data-sortable="true" data-field="nombres">Cliente</th>
+                <th scope="col" data-sortable="true" data-field="apellidos">Total</th>
+                <th scope="col" data-sortable="true" data-field="estado">Estado</th>
+                <th scope="col" class="all">Acciones</th>
+            </thead>
+            <tbody>
+                {% for item in obj%}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.cliente }}</td>
+                    <td>{{ item.total }}</td>
+                    <td>
+                        {% if item.estado == 1 %}
+                        <span class="status-success">{{item.estado|yesno:"Activo,Inactivo"}}</span>
+                        {% else %}
+                        <span class="status-danger">{{item.estado|yesno:"Activo,Inactivo"}}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'fac:factura_edit' item.id %}" class="href btn btn-warning btn-circle">
+                            <i class="far fa-edit" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+
+        </table>
+    </div>
+</div>
+{% endblock %} {% block js_page %}
+<script>
+    $(function() {
+        $("#f1, #f2").datetimepicker({
+            format: 'Y-m-d',
+            timepicker: false
+        });
+
+        $("#btnPrint").click(function(e) {
+            e.preventDefault();
+            var f1, f2;
+            f1 = $("#f1").val();
+            f2 = $("#f2").val();
+            if (f1 == "" || f1 == null) {
+                f1 = "2019-06-01";
+            }
+            if (f2 == "" || f2 == null) {
+                var d = new Date();
+                var f2 = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+            }
+
+            var url = "imprimir-todas/" + f1 + "/" + f2;
+
+            window.open(url, 'facturas');
+
+        });
+    });
+</script>
+{% endblock %}

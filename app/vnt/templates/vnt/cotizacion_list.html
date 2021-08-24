@@ -1,0 +1,160 @@
+{% extends 'base/base.html' %} {% block page_content %}
+
+<style>
+    /* The container <div> - needed to position the dropdown content */
+    
+    .dropdowns {
+        position: absolute;
+        display: inline-block;
+    }
+    /* Dropdown Content (Hidden by Default) */
+    
+    .dropdowns-content {
+        display: none;
+        position: absolute;
+        background-color: #FFFFFF;
+        min-width: 160px;
+        z-index: 10;
+    }
+    /* Links inside the dropdown */
+    
+    .dropdowns-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    /* Change color of dropdown links on hover */
+    
+    .dropdowns-content a:hover {
+        background-color: #f1f1f1
+    }
+    /* Show the dropdown menu on hover */
+    
+    .dropdowns:hover .dropdowns-content {
+        display: block;
+    }
+    /* Change the background color of the dropdown button when the dropdown content is shown */
+    
+    .dialog[open] {
+        position: fixed;
+        width: 50%;
+        max-width: auto;
+        top: 250px;
+    }
+    
+    .dialog::backdrop {
+        background-color: rgba(255, 0, 0, 0.8);
+    }
+</style>
+
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Informe de Cotizaciones</h6>
+        <a href="{% url 'vnt:cotizacion_form' %}" class="btn btn-info">Nuevo</a>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+
+        {% if not obj%}
+
+        <div class="alert alert-info">
+            No hay Cotizaciones
+        </div>
+
+        {% else %}
+
+        <table style="border: 1px solid #ccc;" id="table-p" class="table table-hover display shadow rounded">
+
+            <caption>Lista de Cotizaciones</caption>
+
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="border: 0px;">Fecha</th>
+                    <th scope="col" style="border: 0px;">Referencia</th>
+                    <th scope="col" style="border: 0px;">Cliente</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px;">Estado</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for o in obj %}
+
+                <tr>
+                    <td>{{ o.fc|date:"d/m/Y H:i" }}</td>
+                    <td>{{ o.nota }}</td>
+                    <td>{{ o.cliente }}</td>
+                    <td>$ {{ o.total }}</td>
+
+                    {% if o.estado_cotizacion == 'Enviado' %}
+                    <td>
+                        <span class="status-success">{{ o.estado_cotizacion }}</span>
+                    </td>
+                    {% elif o.estado_cotizacion == 'Pendiente' %}
+                    <td>
+                        <span class="status-warning">{{ o.estado_cotizacion }}</span>
+                    </td>
+                    {% endif %}
+
+                    <td>
+                        <div class="dropdowns">
+                            <button class="btn btn-info btn-circle btn-sm">
+                              <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            </button>
+                            <div class="dropdowns-content shadow" style="width: min-content; border-radius: 10px;">
+                                <a href="{% url 'vnt:detalle_cotizacion' o.id%}">
+                                    <i style="color: steelblue;" class="fa fa-eye m-2" aria-hidden="true"></i>Detalles
+                                </a>
+                                <a href="#">
+                                    <i style="color: orange;" class="fas fa-edit m-2" aria-hidden="true"></i>Editar
+                                </a>
+                                <a href="{% url 'vnt:cotizacion_print' o.id %}">
+                                    <i style="color: gray;" class="fa fa-download m-2" aria-hidden="true"></i>Descargar
+                                </a>
+                                <a href="{% url 'vnt:delete_cotizacion' o.id %}">
+                                    <i style="color: tomato;" class="fa fa-trash m-2" aria-hidden="true"></i>Eliminar
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+<dialog id="dialogDelete" class="dialog">
+    <form method="dialog">
+        <p>Seguro que desea eliminar esta cotización</p>
+        <button class="btn btn-success text-white">Confirmar</button>
+        <button class="btn btn-danger text-white">Cancelar</button>
+    </form>
+</dialog>
+
+{% endblock %} {% block js_page %}
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+    });
+    $(function() {
+        $("#btnDelete").click(function() {
+            var dialogo = document.getElementById('dialogDelete');
+            dialogo.show();
+        });
+    });
+</script>
+{% endblock %}

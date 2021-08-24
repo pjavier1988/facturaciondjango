@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Proveedor</h6>
+        <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400" aria-hidden="true"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Acciones:</div>
+                <a class="dropdown-item" onclick="return abrir_modal('{% url 'cmp:proveedor_new' %}')" href="#">
+                    <i class="far fa-calendar-plus" aria-hidden="true"></i> Nuevo
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+        {% if not obj %}
+        <div class="alert alert-info">No Proveedores</div>
+        {% endif %}
+        <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow-lg display rounded">
+            <caption>Lista de Proovedores</caption>
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="border: 0px;">Id</th>
+                    <th scope="col" style="border: 0px;">Descripcion</th>
+                    <th scope="col" style="border: 0px;">Dirección</th>
+                    <th scope="col" style="border: 0px;">Contacto</th>
+                    <th scope="col" style="border: 0px;">Teléfono</th>
+                    <th scope="col" style="border: 0px;">Correo</th>
+                    <th scope="col" style="border: 0px;">Estado</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in obj%}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.descripcion }}</td>
+                    <td>{{ item.direccion }}</td>
+                    <td>{{ item.contacto }}</td>
+                    <td>{{ item.telefono }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>
+                        {% if item.estado %}
+                        <span class="status-success">Activo</span>
+                        {% else %}
+                        <span class="status-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'cmp:proveedor_edit' item.id %}')">
+                            <i class="far fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-danger btn-circle" onclick="return abrir_modal('{% url 'cmp:proveedor_inactivar' item.id %}')">
+                            <i class="far fa-thumbs-down" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} {% block js_page %}
+<script>
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+        $('.table').DataTable();
+    });
+</script>
+{% endblock %}

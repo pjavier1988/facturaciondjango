@@ -1,0 +1,174 @@
+{% extends 'base/base.html' %}
+<div></div>
+{% load static %}
+<div></div>
+{% block page_content %}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.css" rel="stylesheet"></link>
+
+<style>
+    .nopag, .pag, .par {
+        border-radius: 5px; font-size: .8rem;
+        padding: 2px;
+    }
+    .nopag {
+        color: orange;
+        border: 1px solid orange;
+    }
+    .pag {
+        color: green;
+        border: 1px solid green;
+    }
+    .par {
+        color: blueviolet;
+        border: 1px solid blueviolet;
+    }
+</style>
+
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Devolución de Compras</h6>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+
+        <form action="{% url 'cmp:devolucion_compras' %}" method="POST">
+
+            {% csrf_token %}
+
+            <div class="input-group text-center" style="display: flex; align-items: center; justify-content: center;">
+
+                <fieldset class="px-3 py-3 mx-1">
+                    <legend>Fecha Inicio</legend>
+                    <div>
+                        <input type="date" name="fecha-min" class="form-control is-valid" aria-describedby="date-feedback">
+                        <div id="OrderTax-feedback" class="invalid-feedback"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="px-3 py-3 mx-1">
+                    <legend>Fecha Fin</legend>
+                    <div>
+                        <input type="date" name="fecha-max" class="form-control is-valid" aria-describedby="date-feedback">
+                        <div id="OrderTax-feedback" class="invalid-feedback"></div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="px-3 py-3 mx-1">
+
+                    <legend>Proveedor</legend>
+
+                    <select id="proveedores-devolucion" name="proveedor" style="width: 300px;" required>
+                    
+                        <option value="">-- Selecionar --</option>
+                
+                        {% for p in proveedores %}
+
+                        <option value={{ p.id }}>{{ p }}</option>
+                            
+                        {% endfor %}
+                    
+                    </select>
+
+                </fieldset>
+            </div>
+
+            <div class="text-center">
+                <button style="width: 200px;" type="submit" class="btn btn-info">
+                    <i class="fa fa-search mx-1" aria-hidden="true"></i>
+                    Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mx-3 my-2">
+        
+        {% if not compras%}
+
+        <div class="alert alert-info">
+            No hay compras
+        </div>
+
+        {% else %}
+
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover display shadow rounded">
+
+            <caption>Lista de Compras</caption>
+
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="border: 0px;">Proveedor</th>
+                    <th scope="col" style="border: 0px;">Fecha</th>
+                    <th scope="col" style="border: 0px;">Observación</th>
+                    <th scope="col" style="border: 0px;">Sub Total</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px;">Estado Pago</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for o in compras %}
+
+                <tr>
+                    <td>{{ o.proveedor }}</td>
+                    <td>{{ o.fecha }}</td>
+                    <td>{{ o.observacion }}</td>
+                    <td>{{ o.sub_total }}</td>
+                    <td>{{ o.total }}</td>
+
+                    {% if o.estado_pago == 'No Pagado' %}
+                    <td>
+                        <span class="nopag">{{ o.estado_pago }}</span>
+                    </td>
+                    {% elif o.estado_pago == 'Pagado' %}
+                    <td>
+                        <span class="pag">{{ o.estado_pago }}</span>
+                    </td>
+                    {% elif o.estado_pago == 'Parcial' %}
+                    <td>
+                        <span class="par">{{ o.estado_pago }}</span>
+                    </td>
+                    {% endif %}                    
+
+                    <td>
+                        {% if o.estado_pago == 'No Pagado' %}
+                        <a href="{% url 'cmp:pago' o.id 'cmp:devolucion_compras' %}" class="btn btn-success">Pagar</a>
+                        {% elif o.estado_pago == 'Pagado' or o.estado_pago == 'Parcial' %}
+                        <a href="{% url 'cmp:devolucion' o.id 'cmp:devolucion_compras' %}" class="btn btn-warning">Devolver</a>
+                        {% endif %}
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.js"></script>
+<script>
+    //http://slimselectjs.com/options
+    $(document).ready(function() {
+        new SlimSelect({
+            select: '#proveedores-devolucion',
+            limit: 20,
+        })
+    });
+</script>
+<script>
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+        $('.table').DataTable();
+    });
+</script>
+
+{% endblock %}

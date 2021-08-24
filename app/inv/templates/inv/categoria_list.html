@@ -1,0 +1,73 @@
+ {% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Categorías</h6>
+        <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400" aria-hidden="true"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Acciones</div>
+                <a class="dropdown-item" href="{% url 'inv:categoria_new'%}">
+                    <i class="far fa-calendar-plus" aria-hidden="true"></i> Nuevo
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+        {% if not obj%}
+        <div class="alert alert-info">
+            No hay categorías
+        </div>
+        {% else %}
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display rounded">
+            <caption>Lista de Categorías</caption>
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="border: 0px;">Id</th>
+                    <th scope="col" style="border: 0px;">Categoria</th>
+                    <th scope="col" style="border: 0px;">Estado</th>
+                    <th scope="col" style="border: 0px;">F. Creado</th>
+                    <th scope="col" style="border: 0px;">F. Modifi.</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in obj %}
+                <tr>
+                    <td>{{item.id}}</td>
+                    <td>{{item.descripcion}}</td>
+                    <td>
+                        {% if item.estado %}
+                        <span class="status-success">Activo</span>
+                        {% else %}
+                        <span class="status-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>{{item.fc|date:"d/m/Y H:i" }}</td>
+                    <td>{{item.fm|date:"d/m/Y H:i"}}</td>
+                    <td>
+                        <a href="{% url 'inv:categoria_update' item.id %}" class="btn btn-warning btn-circle" role="button">
+                            <i class="far fa-edit" aria-hidden="true"></i>
+                        </a>
+                        <a href="{% url 'inv:categoria_del' item.id %}" class="btn btn-danger btn-circle" role="button">
+                            <i class="far fa-trash-alt" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} {% block js_page %}
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable();
+    });
+</script>
+
+{% endblock %}

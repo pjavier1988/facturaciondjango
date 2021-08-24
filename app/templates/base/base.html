@@ -1,0 +1,573 @@
+{% load static %}
+{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Sistema Compras e Inventario {{ user.company.nombre }}</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{% static  'base/vendor/fontawesome-free-5.15.4/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="{% static  'base/css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <!-- Custom styles for this page -->
+    <link href="{% static 'base/vendor/datatables/dataTables.bootstrap4.min.css'%}" rel="stylesheet">
+    <!-- jQuery Confirm -->
+    <link rel="stylesheet" href="{% static 'base/vendor/jquery_confirm/jquery-confirm.min.css' %}">
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
+    
+    <!-- Static CSS -->
+    <link rel="stylesheet" href="{% static 'base/css/global-status.css' %}">
+    <link rel="stylesheet" href="{% static 'base/css/empresa_det.css' %}">
+    <link rel="stylesheet" href="{% static 'base/css/product-card.css' %}">
+    <link rel="stylesheet" href="{% static 'base/css/carousel.css' %}">
+
+    <!-- Datatable Buttons -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+</head>
+
+<body id="page-top" class="bg-gradient-primary">
+
+    {% block side_bar %}
+    <!-- Sidebar *************************************************************************************************************************** -->
+    <div id="wrapper">
+
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{% url 'bases:home' %}">
+                {% if user.company %}
+                <div class="sidebar-brand-icon">
+                  <img width="50px" src="{{ user.company.logo.url }}" alt="">
+                </div>
+                <div class="sidebar-brand-text mx-3">{{ user.company.nombre }}</div>
+                {% else %}
+                <div class="sidebar-brand-text mx-3">ROSTIK</div>
+                {% endif %}
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                {% if perms.inv.view_categoria %}
+                <a class="nav-link" href="{% url 'bases:home' %}">
+                    <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="nav-link" href="{% if user.company %}
+                                            {% url 'param:administracion_empresa' %}
+                                          {% else %}
+                                            {% url 'param:empresa_new' %}
+                                          {% endif %}">
+                    <i class="fa fa-university" aria-hidden="true"></i>
+                    <span>Administración</span>
+                </a>
+                {% endif %}
+                <a class="nav-link" href="{% url 'vnt:home' %}">
+                    <i class="fa fa-home" aria-hidden="true"></i>
+                    <span>Home</span>
+                </a>
+                <a class="nav-link" href="{% url 'vnt:productos_oferta' %}">
+                    <i class="fa fa-home" aria-hidden="true"></i>
+                    <span>Ofertas</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Opciones de Menú {{request.path}}
+            </div>
+
+            {% url 'inv:categoria_list' as cat_url %} {% url 'inv:subcategoria_list' as s_cat_url %} {% url 'cmp:compras_list' as cmp_url %}
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item {% if cat_url in request.path or s_cat_url in request.path  %} active {% endif %}">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog" aria-hidden="true"></i>
+                    <span>Catálogos</span>
+                </a>
+                <div id="collapseTwo" class="collapse {% if cat_url in request.path or s_cat_url in request.path %} show {% endif %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+
+                        <h6 class="collapse-header">Catálogos de Inventario</h6>
+
+                        {% if perms.inv.view_categoria %}
+                        <a class="collapse-item {% if cat_url in request.path %} active {% endif %}" href="{{cat_url}}">Categorias</a> {% endif %} {% if perms.inv.view_subcategoria %}
+                        <a class="collapse-item {% if s_cat_url in request.path %} active {% endif %}" href="{{s_cat_url}}">Sub Categorias</a> {% endif %} {% if perms.inv.view_marca %}
+                        <a class="collapse-item" href="{% url 'inv:marca_list' %}">Marca</a> {% endif %} {% if perms.inv.view_unidadmedida %}
+                        <a class="collapse-item" href="{% url 'inv:unidadmedida_list' %}">Unidad Medida</a> {% endif %} {% if perms.inv.view_producto %}
+                        <a class="collapse-item" href="{% url 'inv:producto_list' %}">Producto</a> {% endif %}
+
+                        <h6 class="collapse-header">Catálogos de Compras:</h6>
+
+                        {% if perms.cmp.view_proveedor %}
+                        <a class="collapse-item" href="{% url 'cmp:proveedor_list' %}">Proveedores</a> {% endif %}
+
+                        <h6 class="collapse-header">Catálogos de Facturación:</h6>
+
+                        {% if perms.fac.view_cliente %}
+                        <a class="collapse-item" href="{% url 'fac:cliente_list' %}">Clientes</a> {% endif %}
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item {% if cmp_url in request.path  %} active {% endif %}">
+
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCompras" aria-expanded="true" aria-controls="collapseCompras">
+                    <i class="fas fa-fw fa-truck" aria-hidden="true"></i>
+                    <span>Movimientos</span>
+                </a>
+
+                <div id="collapseCompras" class="collapse {% if cmp_url in request.path  %} show {% endif %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Entradas</h6>
+                        <a class="collapse-item {% if cmp_url in request.path  %} active {% endif %}" href="{% url 'cmp:compras_list' %}">
+                            Compras
+                        </a>
+                        <a class="collapse-item" href="{% url 'cmp:devolucion_compras' %}">
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            Devolución Compras
+                        </a>
+
+                        <h6 class="collapse-header">Salidas</h6>
+                        <a class="collapse-item" href="{% url 'fac:factura_list' %}">
+                            Facturas
+                        </a>
+                        <a class="collapse-item" href="{% url 'fac:devolucion_facturas' %}">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                            Devolución Facturas
+                        </a>
+                        <h6 class="collapse-header">Cotización</h6>
+                        <a class="collapse-item" href="{% url 'vnt:cotizacion_list' %}">Ver Cotizaciones</a>
+                        <h6 class="collapse-header">Todos</h6>
+                        <a class="collapse-item" href="{% url 'fac:transacciones_list' %}">Todos los movimientos</a>
+                    </div>
+                </div>
+
+            </li>
+
+            <!-- Informes -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-chart-area" aria-hidden="true"></i>
+                    <span>Informes</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Pagos</h6>
+                        <a class="collapse-item" href="{% url 'param:compras_list' %}">Compras</a>
+                        <a class="collapse-item" href="{% url 'param:ventas_list' %}">Ventas</a>
+                        <a class="collapse-item" href="{% url 'param:devolucion_compras_list' %}">Devolución de Compras</a>
+                        <a class="collapse-item" href="{% url 'param:devolucion_facturas_list' %}">Devolución de Ventas</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Inventario</h6>
+                        <a class="collapse-item" href="{% url 'param:alerta_cantidad_list' %}">Alertas de Cantidad</a>
+                        <a class="collapse-item" href="{% url 'param:almacen_list' %}">Informe de Almacen</a>
+                        <h6 class="collapse-header">Entidades</h6>
+                        <a class="collapse-item" href="{% url 'param:clientes_list' %}">Informe de Clientes</a>
+                        <a class="collapse-item" href="{% url 'param:proveedores_list' %}">Informe de Proveedores</a>
+                    </div>
+                </div>
+            </li>
+
+            </li>
+
+            <!-- Categorias -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fa fa-bars" aria-hidden="true"></i>
+                    <span>Categorías</span>
+                </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                    <div id="menu-categorias" class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Categorías Productos:</h6>
+                    </div>
+                </div>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+
+        {% endblock side_bar %}
+        <!-- End of Sidebar ****************************************************************************************************************** -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar ******************************************************************************************************************* -->
+                {% block top_bar %}
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                      <i class="fa fa-bars" aria-hidden="true"></i>
+                    </button>
+
+                    <!-- Topbar Search -->
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">
+                                  <i class="fas fa-search fa-sm" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bell fa-fw" aria-hidden="true"></i>
+                                <!-- Counter - Alerts -->
+                                <span id="count-alerts" class="badge badge-danger badge-counter">0</span>
+                            </a>
+
+                            <!-- Dropdown - Alerts -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">
+                                    Notificaciones
+                                </h6>
+                                <div id="c-alerts">
+                                    {% if not user.company %}
+                                    <a class="dropdown-item d-flex align-items-center" href="{% url 'param:empresa_new' %}">
+                                        <div class="mr-3">
+                                            <div class="icon-circle">
+                                                <img width="40px" src="{% static 'base/img/advertencia-rojo.png' %}" alt="img">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="font-weight-bold">No tiene registrado una empresa</span>
+                                            <div class="small text-gray-500">¡Click aquí! para registrar una empresa</div>
+                                        </div>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            </div>
+
+                        </li>
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                            </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Carrito de Compras -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+
+                                <!-- Counter - Messages -->
+                                <span class="badge badge-danger badge-counter">{{ request.session.cart.items|length }}</span>
+                            </a>
+
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+                                <h6 class="dropdown-header">
+                                    Carrito de Compras
+                                </h6>
+                                {% for key, value in request.session.cart.items %}
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-0" src="{{ value.imagen }}" alt="">
+                                        <div class="status-indicator bg-success"></div>
+                                    </div>
+                                    <div class="font-weight-bold">
+                                        <div class="text-truncate">{{ value.name }}</div>
+                                        <div class="small text-gray-500">Cantidad: {{ value.cantidad }} - Total: {{ value.precio|mul:value.cantidad }}</div>
+                                    </div>
+                                </a>
+                                {% endfor %}
+                                <a class="dropdown-item text-center small text-gray-500" href="#">$ {{ get_total_cart }}</a>
+                            </div>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.username }}</span>
+                                <img class="img-profile rounded-circle" src="{% static 'base/img/user.png' %}" alt="">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400" aria-hidden="true"></i> Profile
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400" aria-hidden="true"></i> Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400" aria-hidden="true"></i> Logout
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+
+                {% endblock top_bar %}
+                <!-- End of Topbar *********************************************************************************************************** -->
+
+                <!-- Begin Page Content ****************************************************************************************************** -->
+                {% block page_content %}
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
+
+                </div>
+
+                {% endblock page_content %}
+
+                <!-- /.container-fluid -->
+
+                {% block footer %}
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2019</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    {% endblock footer %}
+
+    <!-- End of Page Wrapper -->
+    {% block login %} {% endblock %}
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up" aria-hidden="true"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">¿Cerrar Sesión para <mark> {{ user.username}} </mark>?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+                </div>
+                <div class="modal-body">Al dar click en el botón Salir, cerrará la sesión para <mark> {{ user.username}} </mark> </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <a class="btn btn-primary" href="{% url 'bases:logout' %}">Salir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="popup"></div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static  'base/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static  'base/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="{% static  'base/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="{% static  'base/js/sb-admin-2.min.js' %}"></script>
+    <!-- Page level plugins -->
+    <script src="{% static 'base/vendor/datatables/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'base/vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'base/vendor/jquery_confirm/jquery-confirm.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table-locale-all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
+    <script src="{% static  'base/js/jquery.chained.min.js' %}"></script>
+    <!-- Page level plugins -->
+    <script src="{% static 'base/vendor/chart.js/Chart.min.js' %}"></script>
+    <!-- Page level custom scripts -->
+
+    <!-- DataTable Buttons -->
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            jQuery.datetimepicker.setLocale('es');
+        });
+    </script>
+
+    {% block control_modal %}
+    <script>
+        function abrir_modal(url) {
+
+            $("#popup").load(url, function() {
+                $(this).modal({
+                    backdrop: 'static',
+                    keyboard: false
+                })
+                $(this).modal('show');
+            });
+            return false;
+        }
+
+        function cerrar_modal() {
+            $('#popup').modal('hide');
+            return false;
+        }
+
+        function mensaje(msg, color = 'green') {
+            if (color == "success") {
+                color = "green";
+            }
+            if (color == "error") {
+                color = "red";
+            }
+            $.alert({
+                title: '',
+                theme: 'material',
+                type: color,
+                content: msg
+            });
+        }
+
+        {% if messages %}
+            {% for message in messages %}
+                mensaje("{{ message }}", "{{ message.tags }}");
+            {% endfor %}
+        {% endif %}
+    </script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "{% url 'api:producto_agotado' %}",
+                dataType: 'JSON',
+                success: function(data) {
+
+                    if (data.length > 0) {
+                        document.getElementById('count-alerts').innerHTML = `${data.length}`;
+                    }
+
+                    for (let d of data) {
+
+                        var alert;
+
+                        if (d.existencia <= 0) {
+                            alert = $(`<a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="mr-3">
+                                            <div class="icon-circle">
+                                                <img width="40px" src="{% static 'base/img/advertencia-rojo.png' %}" alt="img">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="font-weight-bold">${d.descripcion} está agotado</span>
+                                            <div class="small text-gray-500">${d.existencia} en stock / ${d.min_stock} como mínimo</div>
+                                        </div>`)
+                        } else {
+                            alert = $(`<a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="mr-3">
+                                            <div class="icon-circle">
+                                                <img width="40px" src="{% static 'base/img/advertencia-amarillo.png' %}" alt="img">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="font-weight-bold">${d.descripcion} próximo a agotar</span>
+                                            <div class="small text-gray-500">${d.existencia} en stock / ${d.min_stock} como mínimo</div>
+                                        </div>`)
+                        }
+                        $('#c-alerts').append(alert)
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url: "{% url 'api:categoria_list' %}",
+                async: false,
+                dataType: 'JSON',
+                success: function(data) {
+                    data.forEach(element => {
+                        let desc = element.descripcion.trim().toLowerCase().replace(/\w\S*/g, (w) => (w.replace(/^\w/, (c) => c.toUpperCase())));
+                        const URL_MASK = "{% url 'vnt:productos_categoria' 12345 %}".replace(/12345/, element.id);
+                        const categoria_item = $(`<a class="collapse-item" href="${URL_MASK}">${desc}</a>`)
+                        $('#menu-categorias').append(categoria_item);
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        function reload(id) {
+            var container = document.getElementById(id);
+            var content = container.innerHTML;
+            container.innerHTML = content;
+            console.log("Refreshed");
+        }
+    </script>
+
+    {% endblock %}
+
+    <div></div>
+
+    {% block js_page %} {% endblock js_page %}
+</body>
+
+</html>

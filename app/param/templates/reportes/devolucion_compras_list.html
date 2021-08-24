@@ -1,0 +1,105 @@
+{% extends 'base/base.html' %} {% block page_content %}
+
+<style>
+    .nopag, .pag, .par {
+        border-radius: 5px; font-size: .8rem;
+        padding: 2px;
+    }
+    .nopag {
+        color: orange;
+        border: 1px solid orange;
+    }
+    .pag {
+        color: green;
+        border: 1px solid green;
+    }
+    .par {
+        color: blueviolet;
+        border: 1px solid blueviolet;
+    }
+</style>
+
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Informe de Devolución de Compras</h6>
+        <div class="dropdown no-arrow">
+            <a href="{% url 'param:compras_list_report' %}" class="btn btn-danger text-white">PDF</a>
+            <a href="" class="btn btn-success text-white">EXCEL</a>
+        </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+
+        {% if not compras%}
+
+        <div class="alert alert-info">
+            No hay compras
+        </div>
+
+        {% else %}
+
+        <table style="border: 1px solid #ccc;" class="table table-striped table-hover display shadow">
+
+            <caption>Lista de Compras</caption>
+
+            <thead>
+                <tr>
+                    <th scope="col" style="border: 0px;">Proveedor</th>
+                    <th scope="col" style="border: 0px;">Fecha</th>
+                    <th scope="col" style="border: 0px;">Observación</th>
+                    <th scope="col" style="border: 0px;">Sub Total</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px;">Estado Pago</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for o in compras %}
+
+                <tr>
+                    <td>{{ o.proveedor }}</td>
+                    <td>{{ o.fecha }}</td>
+                    <td>{{ o.observacion }}</td>
+                    <td>{{ o.sub_total }}</td>
+                    <td>{{ o.total }}</td>
+
+                    {% if o.estado_pago == 'No Pagado' %}
+                    <td>
+                        <span class="nopag">{{ o.estado_pago }}</span>
+                    </td>
+                    {% elif o.estado_pago == 'Pagado' %}
+                    <td>
+                        <span class="pag">{{ o.estado_pago }}</span>
+                    </td>
+                    {% elif o.estado_pago == 'Parcial' %}
+                    <td>
+                        <span class="par">{{ o.estado_pago }}</span>
+                    </td>
+                    {% endif %} 
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+    });
+</script>
+
+{% endblock %}

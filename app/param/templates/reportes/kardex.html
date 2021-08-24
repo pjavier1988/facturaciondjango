@@ -1,0 +1,148 @@
+{% extends 'base/base.html' %}
+<div></div>
+{% load mathfilters %}
+<div></div>
+{% block page_content %}
+
+<style>
+    .span-info {
+    }
+</style>
+
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">
+            Kardex de <i aria-hidden="true">"{{ producto }}"</i>
+        </h6>
+        <div class="dropdown no-arrow">
+        </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+
+        <div class="mb-3 text-center">
+            <div class="m-1 d-inline">
+                <i class="fas fa-circle" aria-hidden="true" style="color: #cdd8f6;"></i>
+                <span class="status-primary mx-2">Entradas</span>
+            </div>
+            <div class="m-1 d-inline">
+                <i class="fas fa-circle" aria-hidden="true" style="color: #bff0de;"></i>
+                <span class="status-success mx-2">Salidas</span>
+            </div>
+            <div class="m-1 d-inline">
+                <i class="fas fa-circle" aria-hidden="true" style="color: #fceec9;"></i>
+                <span class="status-warning mx-2">Saldo</span>
+            </div>
+        </div>
+
+        {% if not facturas %}
+
+        <div class="alert alert-info">
+            No hay facturas
+        </div>
+
+        {% else %}
+
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover display display shadow rounded">
+
+            <caption>
+                <div class="bg-light p-3 text-center">
+                    <span class="font-weight-bold">Total: $ {{ total }}</span>
+                </div>
+            </caption>
+
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="border: 0px;">Fecha</th>
+                    <th scope="col" style="border: 0px;">Tipo</th>
+                    <th scope="col" style="border: 0px;">N. Fac</th>
+                    <th scope="col" style="border: 0px;">Cantidad</th>
+                    <th scope="col" style="border: 0px;">Valor U.</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px;">Cantidad</th>
+                    <th scope="col" style="border: 0px;">Valor U.</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px;">Cantidad</th>
+                    <th scope="col" style="border: 0px;">Valor U.</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for f in facturas %}
+
+                <tr>
+                    <td>{{ f.fm|date:'Y/m/d' }}</td>
+                    <td>
+                        {% if f.factura.tipo == 'factura' %}
+                        <span class="status-primary">{{ f.factura.tipo|title }}</span>
+                        {% else %}
+                        <span class="status-success">{{ f.factura.tipo|title }}</span>                            
+                        {% endif %}
+                    </td>
+                    <td>{{ f.factura.no_factura }}</td>
+
+                    <!-- Entradas -->
+                    <td class="table-primary">
+                        {% if f.factura.tipo == 'compra' %}
+                            {{ f.cantidad }}
+                        {% endif %}
+                    </td>
+                    <td class="table-primary">
+                        {% if f.factura.tipo == 'compra' %}
+                            {{ f.producto.precio }}
+                        {% endif %}
+                    </td>
+                    <td class="table-primary">
+                        {% if f.factura.tipo == 'compra' %}
+                            {{ f.producto.precio|mul:f.cantidad }}
+                        {% endif %}
+                    </td>
+
+                    <!-- Salidas -->
+                    <td class="table-success">
+                        {% if f.factura.tipo == 'factura' %}
+                            {{ f.cantidad }}
+                        {% endif %}
+                    </td>
+                    <td class="table-success">
+                        {% if f.factura.tipo == 'factura' %}
+                            {{ f.producto.precio }}
+                        {% endif %}
+                    </td>
+                    <td class="table-success">
+                        {% if f.factura.tipo == 'factura' %}
+                            {{ f.producto.precio|mul:f.cantidad }}
+                        {% endif %}
+                    </td>
+
+                    <td class="table-warning">{{ f.cantidad }}</td>
+                    <td class="table-warning">{{ f.total }}</td>
+                    <td class="table-warning">{{ f.cantidad }}</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+    });
+</script>
+
+{% endblock %}

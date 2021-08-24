@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Listado de Compras</title>
+
+    <style type="text/css">
+        @page {
+            size: letter;
+            margin: 1cm;
+        }
+        
+        .table {
+            margin: 5px auto;
+            padding: 5px;
+        }
+        
+        th {
+            border-top: 1px solid green;
+            border-bottom: 1px solid green;
+            padding: 3px 0px;
+            background-color: rgb(119, 167, 119);
+        }
+        
+        .empresa,
+        .cliente {
+            padding: 0px 25px;
+        }
+        
+        caption {
+            text-align: center;
+            display: block;
+            width: 100%;
+        }
+        
+        .factura-info {
+            text-align: right;
+        }
+        
+        h3,
+        h6 {
+            margin: 0%;
+        }
+        
+        h1,
+        h2 {
+            color: green;
+        }
+        
+        i {
+            font-weight: 100;
+        }
+        
+        .gb-teme-ligth {
+            background-color: rgb(149, 199, 149);
+        }
+        
+        .center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body style="padding: 0px 50px;">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+
+                <img style="width: 50px;" src="{{ request.user.company.logo.url }}" alt="">
+                <h1 style="text-align: center;">{{ request.user.company.nombre_completo }}</h1>
+                <h4 style="text-align: center;">Sistema de Compras {{ request.user.company.nombre }}</h4>
+
+                <div class="factura-info">
+                    <p style="margin: 0px;">
+                        Fecha: <i aria-hidden="true">{{ today|date:"d/m/Y" }}</i>
+                    </p>
+                    <p style="margin: 0px;">
+                        Factura Nro. <i aria-hidden="true">{{ enc.no_factura }}</i>
+                    </p>
+                </div>
+
+                <table>
+                    <tr>
+                        <td class="empresa">
+                            <h2>Empresa</h2>
+
+                            <h3>
+                                Dirección: <i aria-hidden="true">{{ request.user.company.direccion }}</i>
+                            </h3>
+                            <h3>
+                                Email: <i aria-hidden="true">{{ request.user.company.correo }}</i>
+                            </h3>
+                            <h3>
+                                NIT: <i aria-hidden="true">{{ request.user.company.ruc }}</i>
+                            </h3>
+                        </td>
+
+                        <td class="cliente">
+                            <h2>Cliente</h2>
+
+                            <h3>
+                                Nombre: <i aria-hidden="true">{{ enc.cliente }}</i>
+                            </h3>
+                            <h3>
+                                CI/RUC: <i aria-hidden="true">{{ enc.cliente.identificacion }}</i>
+                            </h3>
+                            <h3>
+                                Email: <i aria-hidden="true"> cliente@gmail.com </i>
+                            </h3>
+                            <h3>
+                                Teléfono: <i aria-hidden="true">{{ enc.cliente.celular }}</i>
+                            </h3>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="center">
+                <table class="table">
+
+                    <caption>Lista de Compras</caption>
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Código</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Precio U.</th>
+                            <th scope="col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in det %}
+                        <tr style="text-align: center;">
+                            <td>{{ item.producto.codigo }}</td>
+                            <td>{{ item.producto }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>{{ item.producto.precio }}</td>
+                            <td>$ {{ item.total }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr style="padding: 2px;">
+                            <td colspan="5"></td>
+                            <td class="gb-teme-ligth">IVA</td>
+                            <td class="gb-teme-ligth">$ {{ enc.faciva|floatformat:2 }}</td>
+                        </tr>
+                        <tr style="padding: 2px;">
+                            <td colspan="5"></td>
+                            <td>Descuento</td>
+                            <td>$ {{ enc.descuento }}</td>
+                        </tr>
+                        <tr style="padding: 2px;">
+                            <td colspan="5"></td>
+                            <td class="gb-teme-ligth">Sub Total</td>
+                            <td class="gb-teme-ligth">$ {{ enc.sub_total }}</td>
+                        </tr>
+                        <tr style="padding: 2px;">
+                            <td colspan="5"></td>
+                            <td>Total</td>
+                            <td>$ {{ enc.total }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="nota">
+                <h2>Nota:</h2>
+                <p style="text-align: justify;">
+                    <i aria-hidden="true">
+                        Este documento no reemplaza ni es una factura de venta electrónica ya que no somos responsables de IVA y por lo tanto no estamos obligados a expedirla según lo dispuesto en el articulo 511 del Estatuto Tributario; pero si eres responsable de IVA recuerda que este archivo puedes usarlo para respaldar "el documento soporte en compras con no obligados a facturar "para la aceptación fiscal de costos, deducciones o impuestos descontables; según la resolución 000012 del 9 de febrero del 2021.
+                    </i>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

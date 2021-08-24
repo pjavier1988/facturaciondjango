@@ -1,0 +1,386 @@
+{% extends 'base/base.html' %}
+<div></div>
+{% load static %}
+<div></div>
+{% block page_content %}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.css" rel="stylesheet"></link>
+
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h2 class="h3 mb-0 text-gray-800">Resumen</h2>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Ventas (Mensual)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ventas_mes}}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Ventas (Anual)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ventas_anual}}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Ganancias (Mensual)</div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ganancias_mensual}}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Pending Requests Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Ganancias (Anual)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ganancias_anual}}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h2 class="h3 mb-0 text-gray-800">Productos próximos a agotar</h2>
+    </div>
+
+    <div class="row">
+
+        <div class="col">
+
+            <div class="card shadow">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Listado de Productos</h6>
+
+                </div>
+                <!-- Card Body -->
+                <div class="card-body block">
+
+                    <table style="border: 1px solid #ccc;" class="table table-hover table-responsive shadow display rounded" aria-hidden="true">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" style="border: 0px;">Sub. Cat.</th>
+                                <th scope="col" style="border: 0px;">Código</th>
+                                <th scope="col" style="border: 0px;">Barras</th>
+                                <th scope="col" style="border: 0px;">Descripción</th>
+                                <th scope="col" style="border: 0px;">Stock</th>
+                                <th scope="col" style="border: 0px;">IVA</th>
+                                <th scope="col" style="border: 0px;">Marca</th>
+                                <th scope="col" style="border: 0px;">Estado</th>
+                                <th scope="col" style="border: 0px;">Tipo</th>
+                                <th scope="col" style="border: 0px;">Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in obj %}
+                            <tr>
+                                <td>{{item.subcategoria}}</td>
+                                <td>{{item.codigo}}</td>
+                                <td>{{item.codigo_barras}}</td>
+                                <td>{{item.descripcion}}</td>
+                                <td>{{item.existencia}}</td>
+                                <td>{{item.tiene_iva|yesno:"✔️ , ❌"}}</td>
+                                <td>{{item.marca}}</td>
+                                <td>
+                                    {% if item.estado %}
+                                    <span class="status-success">Activo</span>
+                                    {% else %}
+                                    <span class="status-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{item.es_servicio|yesno:"Servicio , Producto"}}</td>
+                                {% if item.existencia > 0 %}
+                                <td>
+                                    <span class="status-warning">Próximo a agotar</span>
+                                </td>
+                                {% else %}
+                                <td >
+                                    <span class="status-danger">Agotado</span>
+                                </td>
+                                {% endif %}
+                            </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h2 class="h3 mb-0 text-gray-800">Estadísticas</h2>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+        <div class="col">
+
+            <!-- Area Chart GANANCIAS -->
+            <div id="area-chart" class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h4 class="text-center">
+                        Estadísticas de las Ganancias
+                    </h4>
+                    <h6 class="m-0 font-weight-bold text-primary" id="container-select">
+                        <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
+
+                        <select id="select-years-ganancias" required class="form-control d-inline-block" style="width: fit-content;" name="select-years-ganancias" onchange="reloadData()">
+                            <option value="" selected>-- Año --</option>
+                        </select>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadData()" id="select-months-ganancias">
+                            <option value="" selected>-- Mes --</option>
+                        </select>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="asd" class="chart-area">
+                        <canvas id="myAreaChart"></canvas>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <span>Estadisticas de las ganancias</span>
+                </div>
+            </div>
+
+            <!-- Bar Chart VENTAS -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h4 class="text-center">
+                        Estadísticas de las Ventas
+                    </h4>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="display-data-ventas" title="Visualización de los datos">
+                            <option value="valor" selected>Valor</option>
+                            <option value="cantidad">Cantidad</option>
+                        </select>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="select-years-ventas">
+                            <option value="" selected>-- Año --</option>
+                        </select>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="select-months-ventas">
+                            <option value="" selected>-- Mes --</option>
+                        </select>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="myBarChart"></canvas>
+                    </div>
+                    <div class="card-footer">
+                        <span>Estadisticas de las ventas de los últimos 12 meses</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bar Chart PRODUCTOS -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h4 class="text-center">
+                        Estadísticas de los Productos
+                    </h4>
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataProductos()" id="select-years-productos">
+                            <option value="" selected>-- Año --</option>
+                        </select>
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataProductos()" id="select-months-productos">
+                            <option value="" selected>-- Mes --</option>
+                        </select>
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="myBarChartProductos"></canvas>
+                    </div>
+                    <div class="card-footer">
+                        <span>Estadisticas de las ventas de los últimos 12 meses</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donut Chart -->
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">
+
+                        <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
+
+                        <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataProductosPie()" id="select-years-productos-pie">
+                                <option value="" selected>-- Año --</option>
+                            </select>
+
+                        <spam class="ml-3"><i class="fa fa-random" aria-hidden="true"></i> Comparación</spam>
+
+                        <select id="products-compare" style="width: 300px;" multiple onchange="reloadDataProductosPie()">
+
+                            {% for categoria, productos in categorias_productos.items %}
+
+                            <optgroup label="{{ categoria }}">
+
+                                {% for p in productos %}
+
+                                <option value={{ p.id }}>{{ p|title }}</option>
+                            
+                                {% endfor %}
+
+                            </optgroup>
+
+                            {% endfor %}
+
+                        </select>
+                    </h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-pie my-4">
+                        <canvas id="myPieChart"></canvas>
+                    </div>
+                    <div class="card-footer">
+                        <span>Pendiente</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.container-fluid -->
+
+    {% block js_page %}
+    <script>
+        $(document).ready(function() {
+            $('.table').DataTable();
+        });
+    </script>
+    {% endblock %}
+    <script src="{% static  'base/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'base/vendor/chart.js/Chart.min.js' %}"></script>
+    <script src="{% static 'base/js/demo/chart-area-demo.js' %}"></script>
+    <script src="{% static 'base/js/demo/chart-bar-demo.js' %}"></script>
+    <script src="{% static 'base/js/demo/chart-bar-productos.js' %}"></script>
+    <script src="{% static 'base/js/demo/chart-pie-demo.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/1.27.0/slimselect.min.js"></script>
+    <script>
+        //http://slimselectjs.com/options
+        $(document).ready(function() {
+            new SlimSelect({
+                select: '#products-compare',
+                limit: 10,
+            })
+        });
+    </script>
+    <script>
+        const loadMonthOptions = () => {
+
+            const meses = {
+                'Enero': 1,
+                'Febrero': 2,
+                'Marzo': 3,
+                'Abril': 4,
+                'Mayo': 5,
+                'Junio': 6,
+                'Julio': 7,
+                'Agosto': 8,
+                'Septiembre': 9,
+                'Octubre': 10,
+                'Noviembre': 11,
+                'Diciembre': 12,
+            }
+
+            for (let m in meses) {
+                const option = $(`<option value="${meses[m]}">${m}</option>`);
+                $('#select-months-ganancias').append(option);
+            }
+            for (let m in meses) {
+                const option = $(`<option value="${meses[m]}">${m}</option>`);
+                $('#select-months-ventas').append(option);
+            }
+            for (let m in meses) {
+                const option = $(`<option value="${meses[m]}">${m}</option>`);
+                $('#select-months-productos').append(option);
+            }
+        }
+
+        const loadYearOptions = () => {
+
+            const year = new Date().getFullYear();
+            const years = [year, year - 1, year - 2, year - 3, year - 4, year - 5, year - 6, year - 7, year - 8, year - 9];
+
+            for (let y of years) {
+                const option = $(`<option value="${y}">${y}</option>`);
+                $('#select-years-ganancias').append(option);
+            }
+            for (let y of years) {
+                const option = $(`<option value="${y}">${y}</option>`);
+                $('#select-years-ventas').append(option);
+            }
+            for (let y of years) {
+                const option = $(`<option value="${y}">${y}</option>`);
+                $('#select-years-productos').append(option);
+            }
+            for (let y of years) {
+                const option = $(`<option value="${y}">${y}</option>`);
+                $('#select-years-productos-pie').append(option);
+            }
+        }
+        loadYearOptions();
+        loadMonthOptions();
+    </script>
+</div>
+{% endblock %}

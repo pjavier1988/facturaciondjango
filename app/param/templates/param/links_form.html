@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<form method="POST" class="form-inline" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="col-xl-6 col-md-10 col-sm-12 mb-6">
+        {% if obj %}
+        <div class="card border-left-success shadow h-100 py-2">
+            {% else %}
+            <div class="card border-left-success shadow h-100 py-2">
+                {% endif %}
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                {% if obj %} Editar {% else %} Nueva {% endif %} Categoría
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="row">
+                                {{ form.as_p }}
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="row">
+                                <div class="col">
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fa fa-save" aria-hidden="true"></i>Guardar
+                                    </button>
+                                    <a href="{% url 'param:administracion_empresa'%}" class="btn btn-danger"><span class="fa fa-undo"></span>Cancelar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
+{% endblock %} {% block js_page %} {% endblock %}

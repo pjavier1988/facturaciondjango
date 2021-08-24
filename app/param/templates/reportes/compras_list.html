@@ -1,0 +1,108 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Informe de Compras</h6>
+        <div class="dropdown no-arrow">
+            <a href="{% url 'param:compras_list_report' %}" class="btn btn-danger text-white">PDF</a>
+            <a href="" class="btn btn-success text-white">EXCEL</a>
+        </div>
+    </div>
+
+    <!-- Card Body -->
+    <div class="card-body">
+
+        {% if not obj%}
+
+        <div class="alert alert-info">
+            No hay Compras
+        </div>
+
+        {% else %}
+
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover display shadow rounded">
+
+            <caption>
+                <div class="bg-light p-3 text-center">
+                    <span class="font-weight-bold">Total:{{total}}</span>
+                </div>
+            </caption>
+
+            <thead class="thead-ligth">
+                <tr>
+                    <th scope="col" style="border: 0px;">Proveedor</th>
+                    <th scope="col" style="border: 0px;">Fecha</th>
+                    <th scope="col" style="border: 0px;">Observación</th>
+                    <th scope="col" style="border: 0px;">Nro. Factura</th>
+                    <th scope="col" style="border: 0px;">Sub Total</th>
+                    <th scope="col" style="border: 0px;">Descuento</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for o in obj %}
+
+                <tr>
+                    <td>{{ o.proveedor }}</td>
+                    <td>{{ o.fecha }}</td>
+                    <td>{{ o.observacion }}</td>
+                    <td>{{ o.no_factura }}</td>
+                    <td>{{ o.sub_total }}</td>
+                    <td>{{ o.descuento }}</td>
+                    <td>{{ o.total }}</td>
+                    <td>
+                        <a class="btn btn-outline-primary btn-circle btn-sm" role="button" href="{% url 'param:compra_detail' o.id %}">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [{
+                extend: 'excel',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                }
+            }, {
+                extend: 'csv',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                }
+            }, {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                }
+            }, {
+                extend: 'print',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                }
+            }, {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4]
+                }
+            }, ]
+        });
+    });
+</script>
+
+{% endblock %}

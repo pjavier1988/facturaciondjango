@@ -1,0 +1,115 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Transacciones</h6>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" class="form-class" name="f1" id="f1" readonly>
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-class" name="f2" id="f2" readonly>
+            </div>
+            <div class="col-md-4 text-right">
+                <button class="btn btn-warning" type="button" id="btnPrint">Imprimir</button>
+            </div>
+        </div>
+        <hr> {% if not obj %}
+        <div class="alert alert-info">No Hay Transacciones</div>
+        {% endif %}
+
+        <table style="border: 1px solid #ccc;" class="table table-responsive-lg  table-hover shadow display" id="table" data-toggle="table" data-pagination="true" data-search="true" data-show-columns="true" data-show-toggle="true" data-show-fullscreen="true" data-toolbar=".buttons-toolbar"
+            data-locale="es-NI">
+            <caption>Lista de Transacciones</caption>
+            <thead class="thead-light">
+                <th scope="col" data-sortable="true" data-field="id">No.</th>
+                <th scope="col" data-sortable="true" data-field="nombres">Cliente/ Proveedor</th>
+                <th scope="col" data-sortable="true" data-field="total-compras">Ventas</th>
+                <th scope="col" data-sortable="true" data-field="total-ventas">Compras</th>
+                <th scope="col" data-sortable="true" data-field="estado">Estado</th>
+                <th scope="col" data-sortable="true" data-field="estado pago">Estado Pago</th>
+            </thead>
+            <tbody>
+                {% for item in obj%}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    {% if item.cliente %}
+                    <td>{{ item.cliente }}</td>
+                    {% else %}
+                    <td>{{ item.proveedor }}</td>
+                    {% endif %} {% if item.tipo == 'factura' %}
+                    <td>{{ item.total }}</td>
+                    {% else %}
+                    <td>0.0</td>
+                    {% endif %} {% if item.tipo == 'compra' %}
+                    <td>{{ item.total }}</td>
+                    {% else %}
+                    <td>0.0</td>
+                    {% endif %}
+                    <td>
+                        {% if item.estado %}
+                        <span class="status-success">Activo</span>
+                        {% else %}
+                        <span class="status-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    {% if item.estado_pago == 'No Pagado' %}
+                    <td>
+                        <span class="status-warning">{{ item.estado_pago }}</span>
+                    </td>
+                    {% elif item.estado_pago == 'Pagado' %}
+                    <td>
+                        <span class="status-success">{{ item.estado_pago }}</span>
+                    </td>
+                    {% elif item.estado_pago == 'Parcial' %}
+                    <td>
+                        <span class="status-info">{{ item.estado_pago }}</span>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td><b>Total</b></td>
+                    <td></td>
+                    <td>{{total_ventas}}</td>
+                    <td>{{total_compras}}</td>
+                    <td><b>Balance: </b>{{balance}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {{item.total | default:0 }}<br>
+    </div>
+</div>
+{% endblock %} {% block js_page %}
+<script>
+    $(function() {
+        $("#f1, #f2").datetimepicker({
+            format: 'Y-m-d',
+            timepicker: false
+        });
+
+        $("#btnPrint").click(function(e) {
+            e.preventDefault();
+            var f1, f2;
+            f1 = $("#f1").val();
+            f2 = $("#f2").val();
+            if (f1 == "" || f1 == null) {
+                f1 = "2019-06-01";
+            }
+            if (f2 == "" || f2 == null) {
+                var d = new Date();
+                var f2 = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+            }
+
+            var url = "imprimir-todas/" + f1 + "/" + f2;
+
+            window.open(url, 'facturas');
+
+        });
+    });
+</script>
+{% endblock %}

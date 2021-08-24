@@ -1,0 +1,82 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Listado de Productos</h6>
+        <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400" aria-hidden="true"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Acciones</div>
+                <a class="dropdown-item" onclick="return abrir_modal('{% url 'inv:producto_new' %}')" href="#">
+                    <i class="far fa-calendar-plus" aria-hidden="true"></i>
+                     Nuevo
+                </a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+        {% if not obj%}
+        <div class="alert alert-info">
+            No hay productos
+        </div>
+        {% else %}
+        <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded">
+            <caption>Lista de Productos</caption>
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="border: 0px;">Sub. Cat.</th>
+                    <th scope="col" style="border: 0px;">Barras</th>
+                    <th scope="col" style="border: 0px;">Descripción</th>
+                    <th scope="col" style="border: 0px;">Stock</th>
+                    <th scope="col" style="border: 0px;">IVA</th>
+                    <th scope="col" style="border: 0px;">Marca</th>
+                    <th scope="col" style="border: 0px;">Estado</th>
+                    <th scope="col" style="border: 0px;">Tipo</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in obj %}
+                <tr>
+                    <td>{{item.subcategoria}}</td>
+                    <td>{{item.codigo_barras}}</td>
+                    <td>{{item.descripcion}}</td>
+                    <td>{{item.existencia}}</td>
+                    <td>{{item.tiene_iva|yesno:"✔,❌"}}</td>
+                    <td>{{item.marca}}</td>
+                    <td>
+                        {% if item.estado %}
+                        <span class="status-success">Activo</span>
+                        {% else %}
+                        <span class="status-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td>{{item.es_servicio|yesno:"Servicio , Producto"}}</td>
+
+                    <td>
+                        <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'inv:producto_update' item.id %}')">
+                        <i class="far fa-edit" aria-hidden="true"></i></button>
+                        <a href="{% url 'inv:producto_inactivar' item.id %}" class="btn btn-danger btn-circle" role="button"><i class="far fa-thumbs-down" aria-hidden="true"></i></a>
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} {% block js_page %}
+<script>
+    $(document).ready(function() {
+        $('.table').DataTable();
+    });
+</script>
+
+{% endblock %}

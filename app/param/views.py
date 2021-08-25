@@ -389,6 +389,7 @@ def kardex(request, producto_id):
 
     _catidad = 0
     _total = 0
+    _facturas = {}
 
     for f in facturas:
 
@@ -399,12 +400,15 @@ def kardex(request, producto_id):
             _catidad = _catidad - f.cantidad
             _total = _total - f.total
 
-        print(_catidad)
-        print(_total)
+        _facturas[str(f.id) + '_c'] = _catidad
+        _facturas[str(f.id) + '_t'] = _total
+
+        print(_facturas)
 
     context = {
         'producto': producto,
         'facturas': facturas,
+        'factura_data': _facturas,
     }
 
     return render(request, template_name, context)
@@ -430,6 +434,22 @@ def set_user_company(user_id, company):
             return True
         else:
             return False
+
+# Custom Filters
+#https://stackoverflow.com/questions/8000022/django-template-how-to-look-up-a-dictionary-value-with-a-variable
+from django.template.defaulttags import register
+
+@register.filter
+def get_factura_cantidad(dictionary, id):
+    return dictionary.get(f'{id}_c')
+
+@register.filter
+def get_factura_total(dictionary, id):
+    return dictionary.get(f'{id}_t')
+
+@register.filter
+def addstr(arg1, arg2):
+    return str(arg1) + str(arg2)
 
 # Methods
 

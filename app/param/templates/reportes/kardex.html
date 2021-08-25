@@ -91,12 +91,12 @@
                     </td>
                     <td class="table-primary">
                         {% if f.factura.tipo == 'compra' %}
-                            {{ f.producto.precio }}
+                            {{ f.producto.precio|floatformat:2 }}
                         {% endif %}
                     </td>
                     <td class="table-primary">
                         {% if f.factura.tipo == 'compra' %}
-                            {{ f.producto.precio|mul:f.cantidad }}
+                            {{ f.producto.precio|mul:f.cantidad|floatformat:2 }}
                         {% endif %}
                     </td>
 
@@ -108,18 +108,18 @@
                     </td>
                     <td class="table-success">
                         {% if f.factura.tipo == 'factura' %}
-                            {{ f.producto.precio }}
+                            {{ f.producto.precio|floatformat:2 }}
                         {% endif %}
                     </td>
                     <td class="table-success">
                         {% if f.factura.tipo == 'factura' %}
-                            {{ f.producto.precio|mul:f.cantidad }}
+                            {{ f.producto.precio|mul:f.cantidad|floatformat:2 }}
                         {% endif %}
                     </td>
 
-                    <td class="table-warning">{{ f.cantidad }}</td>
-                    <td class="table-warning">{{ f.total }}</td>
-                    <td class="table-warning">{{ f.cantidad }}</td>
+                    <td class="table-warning">{{ factura_data|get_factura_cantidad:f.id }}</td>
+                    <td class="table-warning">{{ f.id }}</td>
+                    <td class="table-warning">{{ factura_data|get_factura_cantidad:f.id }}</td>
                 </tr>
 
                 {% endfor %}

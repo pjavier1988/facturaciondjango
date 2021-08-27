@@ -143,7 +143,47 @@ var myBarChart = new Chart(ctx, {
 
 const reloadDataVentas = () => {
 
+    const display = document.getElementById('display-data-ventas').value;
+
     loadVentas();
-    removeData(myBarChart);
-    addData(myBarChart, meses, ventas);
+    removeDataVentas(myBarChart);
+    addDataVentas(myBarChart, meses, ventas, display);
+}
+
+function addDataVentas(chart, label, data, display) {
+
+    chart.data.labels = label;
+
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data = data;
+    });
+
+    chart.options.scales.yAxes.forEach((yAxes) => {
+        yAxes.ticks.max = Math.max(...data);
+        yAxes.ticks.callback = function(value, index, values) {
+            return `${(display == 'valor' ? '$' : '#')}` + number_format(value);
+        }
+    });
+
+    chart.options.tooltips.callbacks.label = function(tooltipItem, chart) {
+        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+        return datasetLabel + `${(display == 'valor' ? ': $' : ': #')}` + number_format(tooltipItem.yLabel);
+    }
+
+    chart.update();
+}
+
+function removeDataVentas(chart) {
+
+    chart.data.labels = [];
+
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data = [];
+    });
+
+    chart.options.scales.yAxes.forEach((yAxes) => {
+        yAxes.ticks.max = 0;
+    });
+
+    chart.update();
 }

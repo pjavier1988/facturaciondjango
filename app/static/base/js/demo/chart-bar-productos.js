@@ -8,6 +8,7 @@ const loadProductos = () => {
 
     let year = document.getElementById('select-years-productos').value;
     let month = document.getElementById('select-months-productos').value;
+    let display = document.getElementById('display-data-productos').value;
     
     $.ajax({
         url: `/api/v1/productos/mas/vendidos?year=${year}&month=${month}`,
@@ -17,8 +18,14 @@ const loadProductos = () => {
         success: function(datos) {
 
             for (let d in datos) {
-                productos.push(datos[d])
-                meses_p.push(d)
+
+                if (display == 'valor') {
+                    productos.push(datos[d].valor);
+                } else if (display == 'cantidad') {
+                    productos.push(datos[d].cantidad);
+                }
+
+                meses_p.push(d);
             }
         }
     });
@@ -136,7 +143,9 @@ var myBarChartProductos = new Chart(ctx, {
 
 const reloadDataProductos = () => {
 
+    const display = document.getElementById('display-data-productos').value;
+
     loadProductos();
-    removeData(myBarChartProductos);
-    addData(myBarChartProductos, meses_p, productos);
+    removeDataVentas(myBarChartProductos);
+    addDataVentas(myBarChartProductos, meses_p, productos, display);
 }

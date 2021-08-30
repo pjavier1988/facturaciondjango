@@ -6,14 +6,16 @@ class EmpresaForm(forms.ModelForm):
     
     class Meta:
         model = Empresa
-        fields = ['logo','nombre','nombre_completo', 'telefono', 'direccion', 'correo', 'ruc']
+        fields = ['logo','nombre','nombre_completo', 'telefono', 'direccion', 'correo', 'ruc', 'tributa', 'pais']
         labels = {
             "nombre" : "Nombre",
             "nombre_completo" : "Nombre Completo",
             'telefono': 'Teléfono',
             'direccion': 'Dirección',
             'correo': 'Correo',
-            'ruc': 'RUC'
+            'ruc': 'RUC',
+            'tributa': 'Tributa',
+            'pais': 'País',
         }
         widgets={
             "nombre_completo":forms.TextInput,

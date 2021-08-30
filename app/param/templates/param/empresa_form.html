@@ -26,13 +26,15 @@
 
                                                 <legend>Logo</legend>
 
+                                                {% if request.user.company.logo.url %}
+                                                <div class="col text-center pb-3">
+                                                    <img style="width: 100px;" src="{{ request.user.company.logo.url }}" alt="">
+                                                </div>
+                                                {% endif %}
+
                                                 <label class="pb-3 d-block">
                                                     Logo:
                                                     {{ form.logo }}
-                                                </label>
-                                                <label class="pb-3 d-block">
-                                                    Declarante:
-                                                    {{ form.tributa }}
                                                 </label>
 
                                             </fieldset>
@@ -77,9 +79,29 @@
                                                     Teléfono:
                                                     {{ form.telefono }}
                                                 </label>
+
                                                 <label class="pb-3 d-block">
                                                     Dirección:
                                                     {{ form.direccion }}
+                                                </label>
+
+                                            </fieldset>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <fieldset class="border px-3 py-3">
+
+                                                <legend>Ajustes</legend>
+
+                                                <label class="pb-3 d-block">
+                                                    País / Nacionalidad:
+                                                    {{ form.pais }}
+                                                </label>
+
+                                                <label class="pb-3 d-block">
+                                                    Declarante de IVA:
+                                                    {{ form.tributa }}
                                                 </label>
 
                                             </fieldset>

@@ -6,6 +6,14 @@ from django.core.files.base import ContentFile
 
 class Empresa(ClaseModelo):
 
+    COL = 'Colombia'
+    ECU = 'Ecuador'
+
+    PAISES = [
+        (COL, 'Colombia'),
+        (ECU, 'Ecuador'),
+    ]
+
     nombre = models.CharField(max_length=20, null=False, blank=False)
     nombre_completo = models.CharField(max_length=100, null=True)
     telefono = models.CharField(max_length=15, null=False, blank=False)
@@ -14,6 +22,7 @@ class Empresa(ClaseModelo):
     logo = models.FileField(upload_to='img/empresa', null=True)
     ruc = models.CharField(max_length=100, null=True)
     tributa = models.BooleanField(default=True, null=False)
+    pais = models.CharField(max_length=20, null=False, choices=PAISES, default=COL)
 
     def __str__(self):
         return f'{self.nombre}'

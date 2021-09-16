@@ -40,8 +40,11 @@
 
 <body id="page-top" class="bg-gradient-primary">
 
+    <!-- URLs -->
+    {% url 'inv:categoria_list' as cat_url %} {% url 'inv:subcategoria_list' as s_cat_url %} {% url 'cmp:compras_list' as cmp_url %}
+
     {% block side_bar %}
-    <!-- Sidebar *************************************************************************************************************************** -->
+    <!-- Sidebar ******************************************************************************************************************** -->
     <div id="wrapper">
 
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -68,66 +71,106 @@
                     <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i>
                     <span>Dashboard</span>
                 </a>
-                <a class="nav-link" href="{% if user.company %}
-                                            {% url 'param:administracion_empresa' %}
-                                          {% else %}
-                                            {% url 'param:empresa_new' %}
-                                          {% endif %}">
-                    <i class="fa fa-university" aria-hidden="true"></i>
-                    <span>Administración</span>
-                </a>
                 {% endif %}
-                <a class="nav-link" href="{% url 'vnt:home' %}">
-                    <i class="fa fa-home" aria-hidden="true"></i>
-                    <span>Home</span>
-                </a>
-                <a class="nav-link" href="{% url 'vnt:productos_oferta' %}">
-                    <i class="fa fa-home" aria-hidden="true"></i>
-                    <span>Ofertas</span>
-                </a>
             </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
             <div class="sidebar-heading">
-                Opciones de Menú {{request.path}}
+                Menú
             </div>
 
-            {% url 'inv:categoria_list' as cat_url %} {% url 'inv:subcategoria_list' as s_cat_url %} {% url 'cmp:compras_list' as cmp_url %}
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item {% if cat_url in request.path or s_cat_url in request.path  %} active {% endif %}">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog" aria-hidden="true"></i>
-                    <span>Catálogos</span>
+            <!-- Menu - Administración -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#administracion-menu"
+                    aria-expanded="true" aria-controls="administracion-menu">
+                    <i class="fas fa-users-cog" aria-hidden="true"></i>
+                    <span>Administración</span>
                 </a>
-                <div id="collapseTwo" class="collapse {% if cat_url in request.path or s_cat_url in request.path %} show {% endif %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="administracion-menu" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
 
-                        <h6 class="collapse-header">Catálogos de Inventario</h6>
+                        <h6 class="collapse-header">Empresa:</h6>
+
+                        <a class="collapse-item" href="{% if user.company %} {% url 'param:administracion_empresa' %} {% else %} {% url 'param:empresa_new' %} {% endif %}">
+                            <i class="fa fa-building" aria-hidden="true"></i> <span>Empresa</span>
+                        </a>
 
                         {% if perms.inv.view_categoria %}
-                        <a class="collapse-item {% if cat_url in request.path %} active {% endif %}" href="{{cat_url}}">Categorias</a> {% endif %} {% if perms.inv.view_subcategoria %}
-                        <a class="collapse-item {% if s_cat_url in request.path %} active {% endif %}" href="{{s_cat_url}}">Sub Categorias</a> {% endif %} {% if perms.inv.view_marca %}
-                        <a class="collapse-item" href="{% url 'inv:marca_list' %}">Marca</a> {% endif %} {% if perms.inv.view_unidadmedida %}
-                        <a class="collapse-item" href="{% url 'inv:unidadmedida_list' %}">Unidad Medida</a> {% endif %} {% if perms.inv.view_producto %}
-                        <a class="collapse-item" href="{% url 'inv:producto_list' %}">Producto</a> {% endif %}
+                        <a class="collapse-item {% if cat_url in request.path %} active {% endif %}" href="{{cat_url}}">Categorias</a>
+                        {% endif %} 
 
-                        <h6 class="collapse-header">Catálogos de Compras:</h6>
+                        {% if perms.inv.view_subcategoria %}
+                        <a class="collapse-item {% if s_cat_url in request.path %} active {% endif %}" href="{{s_cat_url}}">Sub Categorias</a> {% endif %} 
+                        
+                        {% if perms.inv.view_marca %}
+                        <a class="collapse-item" href="{% url 'inv:marca_list' %}">Marca</a>
+                        {% endif %} 
+                        
+                        {% if perms.inv.view_unidadmedida %}
+                        <a class="collapse-item" href="{% url 'inv:unidadmedida_list' %}">Unidad Medida</a>
+                        {% endif %} 
+
+                        <h6 class="collapse-header">Inventario</h6>
+                        
+                        {% if perms.inv.view_producto %}
+                        <a class="collapse-item" href="{% url 'inv:producto_list' %}">
+                            <i class="fab fa-product-hunt" aria-hidden="true"></i>
+                            Producto
+                        </a>
+                        {% endif %}
+
+                        <h6 class="collapse-header">Entidades</h6>
 
                         {% if perms.cmp.view_proveedor %}
-                        <a class="collapse-item" href="{% url 'cmp:proveedor_list' %}">Proveedores</a> {% endif %}
-
-                        <h6 class="collapse-header">Catálogos de Facturación:</h6>
+                        <a class="collapse-item" href="{% url 'cmp:proveedor_list' %}">
+                            <i class="fas fa-people-carry" aria-hidden="true"></i>
+                            Proveedores
+                        </a>
+                        {% endif %}
 
                         {% if perms.fac.view_cliente %}
-                        <a class="collapse-item" href="{% url 'fac:cliente_list' %}">Clientes</a> {% endif %}
+                        <a class="collapse-item" href="{% url 'fac:cliente_list' %}">
+                            <i class="fas fa-users" aria-hidden="true"></i>
+                            Clientes
+                        </a>
+                        {% endif %}
                     </div>
                 </div>
             </li>
 
+            <!-- Menu - Tienda -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#tienda-menu"
+                    aria-expanded="true" aria-controls="tienda-menu">
+                    <i class="fas fa-store" aria-hidden="true"></i>
+                    <span>Tienda</span>
+                </a>
+                <div id="tienda-menu" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Venta:</h6>
+
+                        <a class="collapse-item" href="{% url 'vnt:home' %}">
+                            <i class="fas fa-shopping-basket" aria-hidden="true"></i>
+                            <span>Tienda</span>
+                        </a>
+                        <a class="collapse-item" href="{% url 'vnt:productos_oferta' %}">
+                            <i class="fas fa-dollar-sign" aria-hidden="true"></i> 
+                            <span>Ofertas</span>
+                        </a>
+
+                        <ul class="submenu collapse">
+                            <li><a class="nav-link" href="#">Submenu item 4 </a></li>
+                            <li><a class="nav-link" href="#">Submenu item 5 </a></li>
+                            <li><a class="nav-link" href="#">Submenu item 6 </a></li>
+                            <li><a class="nav-link" href="#">Submenu item 7 </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Menu - Movimientos -->
             <li class="nav-item {% if cmp_url in request.path  %} active {% endif %}">
 
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCompras" aria-expanded="true" aria-controls="collapseCompras">
@@ -138,8 +181,11 @@
                 <div id="collapseCompras" class="collapse {% if cmp_url in request.path  %} show {% endif %}" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Entradas</h6>
+
+                        <h6 class="collapse-header">Compras</h6>
+
                         <a class="collapse-item {% if cmp_url in request.path  %} active {% endif %}" href="{% url 'cmp:compras_list' %}">
+                            <i class="fas fa-cart-arrow-down" aria-hidden="true"></i>
                             Compras
                         </a>
                         <a class="collapse-item" href="{% url 'cmp:devolucion_compras' %}">
@@ -147,21 +193,67 @@
                             Devolución Compras
                         </a>
 
-                        <h6 class="collapse-header">Salidas</h6>
+                        <h6 class="collapse-header">Facturas</h6>
+
                         <a class="collapse-item" href="{% url 'fac:factura_list' %}">
+                            <i class="fas fa-cash-register" aria-hidden="true"></i>
                             Facturas
                         </a>
                         <a class="collapse-item" href="{% url 'fac:devolucion_facturas' %}">
                             <i class="fa fa-arrow-left" aria-hidden="true"></i>
                             Devolución Facturas
                         </a>
+
                         <h6 class="collapse-header">Cotización</h6>
-                        <a class="collapse-item" href="{% url 'vnt:cotizacion_list' %}">Ver Cotizaciones</a>
-                        <h6 class="collapse-header">Todos</h6>
-                        <a class="collapse-item" href="{% url 'fac:transacciones_list' %}">Todos los movimientos</a>
+
+                        <a class="collapse-item" href="{% url 'vnt:cotizacion_list' %}">
+                            <i class="fas fa-file-invoice-dollar" aria-hidden="true"></i>
+                            Cotizaciones
+                        </a>
+
+                        <h6 class="collapse-header">Gastos</h6>
+                        
+                        <a class="collapse-item" href="{% url 'fac:transacciones_list' %}">
+                            <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
+                            Gastos
+                        </a>
                     </div>
                 </div>
 
+            </li>
+
+            <!-- Menu - Contable -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#contables-menu"
+                    aria-expanded="true" aria-controls="contables-menu">
+                    <i class="fas fa-store" aria-hidden="true"></i>
+                    <span>Contables</span>
+                </a>
+                <div id="contables-menu" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Venta:</h6>
+
+                        <a class="collapse-item" href="{% url 'vnt:home' %}">
+                            <i class="fas fa-book" aria-hidden="true"></i>
+                            <span>Libro Diario</span>
+                        </a>
+                        <a class="collapse-item" href="{% url 'vnt:productos_oferta' %}">
+                            <i class="fa fa-shopping-bag" aria-hidden="true"></i>
+                            <span>Cartera</span>
+                        </a>
+                        <!-- Nav Item - Inventario -->
+                        <a class="collapse-item" href="{% url 'param:almacen_list' %}">
+                            <i class="fas fa-clipboard-list" aria-hidden="true"></i>
+                            <span>Kardex</span>
+                        </a>
+
+                        <!-- Nav Item - Nomina -->
+                        <a class="collapse-item" href="{% url 'bases:home' %}">
+                            <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
+                            <span>Nómina</span>
+                        </a>
+                    </div>
+                </div>
             </li>
 
             <!-- Informes -->
@@ -172,6 +264,7 @@
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
+                        
                         <h6 class="collapse-header">Pagos</h6>
                         <a class="collapse-item" href="{% url 'param:compras_list' %}">Compras</a>
                         <a class="collapse-item" href="{% url 'param:ventas_list' %}">Ventas</a>
@@ -180,7 +273,6 @@
                         <div class="collapse-divider"></div>
                         <h6 class="collapse-header">Inventario</h6>
                         <a class="collapse-item" href="{% url 'param:alerta_cantidad_list' %}">Alertas de Cantidad</a>
-                        <a class="collapse-item" href="{% url 'param:almacen_list' %}">Informe de Almacen</a>
                         <h6 class="collapse-header">Entidades</h6>
                         <a class="collapse-item" href="{% url 'param:clientes_list' %}">Informe de Clientes</a>
                         <a class="collapse-item" href="{% url 'param:proveedores_list' %}">Informe de Proveedores</a>
@@ -202,8 +294,9 @@
                     </div>
                 </div>
             </li>
+
             <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+            <hr class="sidebar-divider d-none d-md-block mt-2">
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">

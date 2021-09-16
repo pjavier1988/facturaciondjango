@@ -141,7 +141,11 @@ var myLineChart = new Chart(ctx, {
     }
 });
 
+//Methods of update chart data
+
 const reloadData = () => {
+
+    handleGananciasInfo(); //Update info of this chart
 
     loadGanancias();
     removeData(myLineChart);
@@ -163,3 +167,48 @@ function removeData(chart) {
     });
     chart.update();
 }
+
+//Global Values
+
+const mesesList = {
+    'Enero': 1,
+    'Febrero': 2,
+    'Marzo': 3,
+    'Abril': 4,
+    'Mayo': 5,
+    'Junio': 6,
+    'Julio': 7,
+    'Agosto': 8,
+    'Septiembre': 9,
+    'Octubre': 10,
+    'Noviembre': 11,
+    'Diciembre': 12,
+}
+
+//Others methods
+
+const handleGananciasInfo = () => {
+
+    const today = new Date();
+    const infoYear = document.getElementById('year-ganancias-info');
+    const infoMonth = document.getElementById('month-ganancias-info');
+    const year = document.getElementById('select-years-ganancias').value;
+    const month = document.getElementById('select-months-ganancias').value;
+
+    if (year) infoYear.innerHTML = year;
+    else infoYear.innerHTML = today.getFullYear();
+
+    if (month) {
+        const textInfo = `del mes de <span class="font-weight-bold">${getKeyByValue(mesesList, parseInt(month))}</span>`;
+        infoMonth.innerHTML = textInfo;
+    } else {
+        infoMonth.innerHTML = '';
+    }
+}
+
+const getKeyByValue = (object, value) => {
+    return Object.keys(object).find(key => object[key] === value);
+}
+
+//RUN
+handleGananciasInfo();

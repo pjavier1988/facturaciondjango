@@ -106,15 +106,13 @@
                 <!-- Card Body -->
                 <div class="card-body block">
 
-                    <table style="border: 1px solid #ccc;" class="table table-hover table-responsive shadow display rounded" aria-hidden="true">
+                    <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded" aria-hidden="true">
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col" style="border: 0px;">Sub. Cat.</th>
                                 <th scope="col" style="border: 0px;">Código</th>
-                                <th scope="col" style="border: 0px;">Barras</th>
                                 <th scope="col" style="border: 0px;">Descripción</th>
                                 <th scope="col" style="border: 0px;">Stock</th>
-                                <th scope="col" style="border: 0px;">IVA</th>
                                 <th scope="col" style="border: 0px;">Marca</th>
                                 <th scope="col" style="border: 0px;">Estado</th>
                                 <th scope="col" style="border: 0px;">Tipo</th>
@@ -126,10 +124,8 @@
                             <tr>
                                 <td>{{item.subcategoria}}</td>
                                 <td>{{item.codigo}}</td>
-                                <td>{{item.codigo_barras}}</td>
                                 <td>{{item.descripcion}}</td>
                                 <td>{{item.existencia}}</td>
-                                <td>{{item.tiene_iva|yesno:"✔️ , ❌"}}</td>
                                 <td>{{item.marca}}</td>
                                 <td>
                                     {% if item.estado %}
@@ -174,9 +170,14 @@
                     <h4 class="text-center">
                         Ganancias / Pérdidas
                     </h4>
+
+                    <!-- Text Info -->
                     <div class="alert alert-info">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nulla voluptatem odio pariatur velit? Corporis dicta quaerat, quae, molestias repudiandae atque alias inventore cum temporibus enim doloribus beatae totam mollitia velit?
+                        Gráfico de las estadísticas de las ganancias y pérdidas
+                        <span id="month-ganancias-info"></span> del año
+                        <span id="year-ganancias-info" class="font-weight-bold"></span>.
                     </div>
+
                     <h6 class="m-0 font-weight-bold text-primary" id="container-select">
                         <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
 
@@ -206,14 +207,17 @@
                         Ventas
                     </h4>
                     <div class="alert alert-info">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Perspiciatis quod nihil repellat, blanditiis est beatae. A libero soluta debitis assumenda! Voluptatem temporibus ducimus, molestiae labore accusantium nam molestias maiores hic.
+                        Gráfico de las estadísticas de las ventas
+                        <span id="month-ventas-info"></span> del año
+                        <span id="year-ventas-info" class="font-weight-bold"></span>,
+                        visualizado por <span id="display-ventas-info"></span>
                     </div>
                     <h6 class="m-0 font-weight-bold text-primary">
                         <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
 
                         <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="display-data-ventas" title="Visualización de los datos">
-                            <option value="valor" selected>Valor</option>
-                            <option value="cantidad">Cantidad</option>
+                            <option value="valor" selected>Valor ($)</option>
+                            <option value="cantidad">Cantidad (#)</option>
                         </select>
 
                         <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataVentas()" id="select-years-ventas">
@@ -242,14 +246,17 @@
                         Productos
                     </h4>
                     <div class="alert alert-info">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio modi odio nisi, explicabo natus, nesciunt aliquam mollitia dolores omnis perspiciatis voluptatem numquam, non saepe. Aliquid atque ab quidem tenetur itaque!
+                        Gráfico de las estadísticas de los productos 
+                        <span id="month-productos-info"></span> del año
+                        <span id="year-productos-info" class="font-weight-bold"></span>,
+                        visualizado por <span id="display-productos-info"></span>
                     </div>
                     <h6 class="m-0 font-weight-bold text-primary">
                         <spam><i class="fa fa-filter" aria-hidden="true"></i> Filtros</spam>
 
                         <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataProductos()" id="display-data-productos" title="Visualización de los Productos">
-                            <option value="valor" selected>Valor</option>
-                            <option value="cantidad">Cantidad</option>
+                            <option value="valor" selected>Valor ($)</option>
+                            <option value="cantidad">Cantidad ($)</option>
                         </select>
 
                         <select required class="form-control d-inline-block" style="width: fit-content;" name="" onchange="reloadDataProductos()" id="select-years-productos">
@@ -276,10 +283,11 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header">
                     <h4 class="text-center">
-                        Comparación de Productos
+                        Productos
                     </h4>
                     <div class="alert alert-info">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio modi odio nisi, explicabo natus, nesciunt aliquam mollitia dolores omnis perspiciatis voluptatem numquam, non saepe. Aliquid atque ab quidem tenetur itaque!
+                        Gráfico comparativo de las estadísticas entre las ventas de los diferentes productos del año
+                        <span id="year-productos-pie-info" class="font-weight-bold"></span>.
                     </div>
                     <h6 class="m-0 font-weight-bold text-primary">
 
@@ -350,31 +358,16 @@
     <script>
         const loadMonthOptions = () => {
 
-            const meses = {
-                'Enero': 1,
-                'Febrero': 2,
-                'Marzo': 3,
-                'Abril': 4,
-                'Mayo': 5,
-                'Junio': 6,
-                'Julio': 7,
-                'Agosto': 8,
-                'Septiembre': 9,
-                'Octubre': 10,
-                'Noviembre': 11,
-                'Diciembre': 12,
-            }
-
-            for (let m in meses) {
-                const option = $(`<option value="${meses[m]}">${m}</option>`);
+            for (let m in mesesList) {
+                const option = $(`<option value="${mesesList[m]}">${m}</option>`);
                 $('#select-months-ganancias').append(option);
             }
-            for (let m in meses) {
-                const option = $(`<option value="${meses[m]}">${m}</option>`);
+            for (let m in mesesList) {
+                const option = $(`<option value="${mesesList[m]}">${m}</option>`);
                 $('#select-months-ventas').append(option);
             }
-            for (let m in meses) {
-                const option = $(`<option value="${meses[m]}">${m}</option>`);
+            for (let m in mesesList) {
+                const option = $(`<option value="${mesesList[m]}">${m}</option>`);
                 $('#select-months-productos').append(option);
             }
         }
@@ -401,8 +394,10 @@
                 $('#select-years-productos-pie').append(option);
             }
         }
+
         loadYearOptions();
         loadMonthOptions();
+
     </script>
 </div>
 {% endblock %}

@@ -337,20 +337,30 @@ def get_productos_v_mes(request, year, month):
         facturas = FacturaDet.objects.filter(
             factura__fecha__year=year,
             factura__fecha__month=month,
-            factura__tipo="factura",
             factura__fecha__day=i,
-            empresa=request.user.company).values('producto__descripcion').order_by('-producto__count').annotate(Count('producto')).first()        
+            factura__tipo="factura",
+            empresa=request.user.company).values('producto__descripcion', 'producto__id').order_by('-producto__count').annotate(Count('producto')).first()
+
+        if facturas:
+            factura_valor = FacturaDet.objects.filter(
+                factura__fecha__year=year,
+                factura__fecha__month=month,
+                factura__fecha__day=i,
+                factura__tipo="factura",
+                producto__id=facturas.get('producto__id'),
+                empresa=request.user.company).aggregate(Sum('total'))    
 
         date = datetime.datetime(year, month, i)
         
         if facturas:
-            data[f'{date.day} - {facturas.get("producto__descripcion")}'] = facturas.get('producto__count')
+            data[f'{date.day} - {facturas.get("producto__descripcion")}'] = {
+                'cantidad': facturas.get('producto__count'),
+                'valor': get_total(factura_valor),
+            }
         else:
-            data[f'{str(date.strftime("%B"))} {date.day}'] = 0
+            data[f'{str(date.strftime("%B"))} {date.day}'] = {'cantidad': 0, 'valor': 0}
 
     return data
-
-
 
 def get_productos_anual(request, year):
 

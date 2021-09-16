@@ -143,6 +143,8 @@ var myBarChart = new Chart(ctx, {
 
 const reloadDataVentas = () => {
 
+    handleVentasInfo();
+
     const display = document.getElementById('display-data-ventas').value;
 
     loadVentas();
@@ -187,3 +189,39 @@ function removeDataVentas(chart) {
 
     chart.update();
 }
+
+//Others Methods
+
+const handleVentasInfo = () => {
+
+    const today = new Date();
+    const infoYear = document.getElementById('year-ventas-info');
+    const infoMonth = document.getElementById('month-ventas-info');
+    const infoDisplay = document.getElementById('display-ventas-info');
+    const year = document.getElementById('select-years-ventas').value;
+    const month = document.getElementById('select-months-ventas').value;
+    const display = document.getElementById('display-data-ventas').value;
+
+    if (year) infoYear.innerHTML = year;
+    else infoYear.innerHTML = today.getFullYear();
+
+    if (month) {
+        let txtInfo = `del mes de <span class="font-weight-bold">${getKeyByValue(mesesList, parseInt(month))}</span>`;
+        infoMonth.innerHTML = txtInfo;
+    } else {
+        infoMonth.innerHTML = '';
+    }
+
+    if (display == 'valor') {
+        let span = '<span class="font-weight-bold">valor</span>';
+        let txtInfo = `el ${span} total de las ventas`;
+        infoDisplay.innerHTML = txtInfo;
+    } else if (display == 'cantidad') {
+        let span = '<span class="font-weight-bold">cantidad</span>';
+        let txtInfo = `la ${span} total de las ventas.`;
+        infoDisplay.innerHTML = txtInfo;
+    }
+}
+
+//Run
+handleVentasInfo();

@@ -76,7 +76,24 @@ var myPieChart = new Chart(ctx, {
 
 const reloadDataProductosPie = () => {
 
+    handleProductosPieInfo();
+
     loadProductosPie();
     removeData(myPieChart);
     addData(myPieChart, meses_pie, productos_pie);
 }
+
+//Others methods
+
+const handleProductosPieInfo = () => {
+
+    const today = new Date();
+    const infoYear = document.getElementById('year-productos-pie-info');
+    const year = document.getElementById('select-years-productos-pie').value;
+
+    if (year) infoYear.innerHTML = year;
+    else infoYear.innerHTML = today.getFullYear();
+}
+
+//RUN
+handleProductosPieInfo();

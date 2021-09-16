@@ -143,9 +143,47 @@ var myBarChartProductos = new Chart(ctx, {
 
 const reloadDataProductos = () => {
 
+    handleProductosInfo();
+
     const display = document.getElementById('display-data-productos').value;
 
     loadProductos();
     removeDataVentas(myBarChartProductos);
     addDataVentas(myBarChartProductos, meses_p, productos, display);
 }
+
+//Others Methods
+
+const handleProductosInfo = () => {
+
+    const today = new Date();
+    const infoYear = document.getElementById('year-productos-info');
+    const infoMonth = document.getElementById('month-productos-info');
+    const infoDisplay = document.getElementById('display-productos-info');
+    const year = document.getElementById('select-years-productos').value;
+    const month = document.getElementById('select-months-productos').value;
+    const display = document.getElementById('display-data-productos').value;
+
+    if (year) infoYear.innerHTML = year;
+    else infoYear.innerHTML = today.getFullYear();
+
+    if (month) {
+        let txtInfo = `del mes de <span class="font-weight-bold">${getKeyByValue(mesesList, parseInt(month))}</span>`;
+        infoMonth.innerHTML = txtInfo;
+    } else {
+        infoMonth.innerHTML = '';
+    }
+
+    if (display == 'valor') {
+        let span = '<span class="font-weight-bold">valor</span>';
+        let txtInfo = `el ${span} total de los productos vendidos`;
+        infoDisplay.innerHTML = txtInfo;
+    } else if (display == 'cantidad') {
+        let span = '<span class="font-weight-bold">cantidad</span>';
+        let txtInfo = `la ${span} total de los productos vendidos.`;
+        infoDisplay.innerHTML = txtInfo;
+    }
+}
+
+//Run
+handleProductosInfo();

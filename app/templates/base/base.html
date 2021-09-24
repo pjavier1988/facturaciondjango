@@ -97,21 +97,6 @@
                             <i class="fa fa-building" aria-hidden="true"></i> <span>Empresa</span>
                         </a>
 
-                        {% if perms.inv.view_categoria %}
-                        <a class="collapse-item {% if cat_url in request.path %} active {% endif %}" href="{{cat_url}}">Categorias</a>
-                        {% endif %} 
-
-                        {% if perms.inv.view_subcategoria %}
-                        <a class="collapse-item {% if s_cat_url in request.path %} active {% endif %}" href="{{s_cat_url}}">Sub Categorias</a> {% endif %} 
-                        
-                        {% if perms.inv.view_marca %}
-                        <a class="collapse-item" href="{% url 'inv:marca_list' %}">Marca</a>
-                        {% endif %} 
-                        
-                        {% if perms.inv.view_unidadmedida %}
-                        <a class="collapse-item" href="{% url 'inv:unidadmedida_list' %}">Unidad Medida</a>
-                        {% endif %} 
-
                         <h6 class="collapse-header">Inventario</h6>
                         
                         {% if perms.inv.view_producto %}
@@ -160,12 +145,6 @@
                             <span>Ofertas</span>
                         </a>
 
-                        <ul class="submenu collapse">
-                            <li><a class="nav-link" href="#">Submenu item 4 </a></li>
-                            <li><a class="nav-link" href="#">Submenu item 5 </a></li>
-                            <li><a class="nav-link" href="#">Submenu item 6 </a></li>
-                            <li><a class="nav-link" href="#">Submenu item 7 </a></li>
-                        </ul>
                     </div>
                 </div>
             </li>
@@ -280,19 +259,6 @@
                 </div>
             </li>
 
-            </li>
-
-            <!-- Categorias -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fa fa-bars" aria-hidden="true"></i>
-                    <span>Categorías</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-                    <div id="menu-categorias" class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Categorías Productos:</h6>
-                    </div>
-                </div>
             </li>
 
             <!-- Divider -->

@@ -1,76 +1,382 @@
-{% extends 'base/base.html' %} {% block page_content %}
+{% extends 'base/base.html' %}
+<div></div>
+{% block page_content %}
+<div></div>
+{% load static %}
+<div></div>
+
+<!-- Static CSS -->
+<link rel="stylesheet" href="{% static 'base/css/tabs.css' %}">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.1.0/css/font-awesome.min.css" />
+
 <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Iventario</h6>
-        <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400" aria-hidden="true"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                <div class="dropdown-header">Acciones</div>
-                <a class="dropdown-item" onclick="return abrir_modal('{% url 'inv:producto_new' %}')" href="#">
-                    <i class="far fa-calendar-plus" aria-hidden="true"></i>
-                     Nuevo
-                </a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-        </div>
+        <h3 class="m-0 font-weight-bold text-primary">Inventario</h3>
     </div>
-    
-    <!-- Card Body -->
-    <div class="card-body">
-        {% if not obj%}
-        <div class="alert alert-info">
-            No hay productos
+
+    <!-- Tabs -->
+    <!-- https://codepen.io/axelaredz/pen/ipome -->
+    <div class="body p-3">
+
+        <div class="page">
+
+            <!-- tabs -->
+            <div class="pcss3t pcss3t-effect-scale pcss3t-theme-1">
+
+                <input type="radio" name="pcss3t" checked id="tab1" class="tab-content-first">
+                <label for="tab1"><i class="icon-truck" aria-hidden="true"></i>Productos</label>
+
+                <input type="radio" name="pcss3t" id="tab2" class="tab-content-2">
+                <label for="tab2"><i class="icon-list-ol" aria-hidden="true"></i>Categorias</label>
+
+                <input type="radio" name="pcss3t" id="tab3" class="tab-content-3">
+                <label for="tab3"><i class="icon-indent-right" aria-hidden="true"></i>Sub Categorías</label>
+
+                <input type="radio" name="pcss3t" id="tab4" class="tab-content-4">
+                <label for="tab4"><i class="icon-maxcdn" aria-hidden="true"></i>Marca</label>
+
+                <input type="radio" name="pcss3t" id="tab5" class="tab-content-last">
+                <label for="tab5"><i class="icon-superscript" aria-hidden="true"></i>Unidad de Medida</label>
+
+                <!-- PRODUCTOS **************************************************************************************************** -->
+                <ul>
+                    <li class="tab-content tab-content-first typography">
+
+                        <div class="container">
+                            <div class="row pl-0">
+                                <div class="col pl-0">
+                                    <h2>Productos</h2>
+                                </div>
+                                <div class="col text-right pr-0">
+                                    <a href onclick="return abrir_modal('{% url 'inv:producto_new' %}')" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {% if not productos %}
+                            <div class="alert alert-info">
+                                No hay productos
+                            </div>
+                            {% else %}
+                            <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded">
+                                <caption>Lista de Productos</caption>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" style="border: 0px;">Sub. Cat.</th>
+                                        <th scope="col" style="border: 0px;">Barras</th>
+                                        <th scope="col" style="border: 0px;">Descripción</th>
+                                        <th scope="col" style="border: 0px;">Stock</th>
+                                        <th scope="col" style="border: 0px;">IVA</th>
+                                        <th scope="col" style="border: 0px;">Marca</th>
+                                        <th scope="col" style="border: 0px;">Estado</th>
+                                        <th scope="col" style="border: 0px;">Tipo</th>
+                                        <th scope="col" style="border: 0px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in productos %}
+                                    <tr>
+                                        <td>{{item.subcategoria}}</td>
+                                        <td>{{item.codigo_barras}}</td>
+                                        <td>{{item.descripcion}}</td>
+                                        <td>{{item.existencia}}</td>
+                                        <td>{{item.tiene_iva|yesno:"✔️,❌"}}</td>
+                                        <td>{{item.marca}}</td>
+                                        <td>
+                                            {% if item.estado %}
+                                            <span class="status-success">Activo</span> {% else %}
+                                            <span class="status-danger">Inactivo</span> {% endif %}
+                                        </td>
+                                        <td>{{item.es_servicio|yesno:"Servicio , Producto"}}</td>
+
+                                        <td>
+                                            <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'inv:producto_update' item.id %}')">
+                                                <i class="far fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                            <a href="{% url 'inv:producto_inactivar' item.id %}" class="btn btn-danger btn-circle" role="button"><i class="far fa-thumbs-down" aria-hidden="true"></i></a>
+                                        </td>
+                                    </tr>
+
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-right"><em>Find out more about Nikola Tesla from <a href="http://en.wikipedia.org/wiki/Nikola_Tesla" target="_blank">Wikipedia</a>.</em></p>
+                    </li>
+
+                    <!-- CATEGORIAS ************************************************************************************************ -->
+                    <li class="tab-content tab-content-2 typography">
+
+                        <div class="container">
+                            <div class="row pl-0">
+                                <div class="col pl-0">
+                                    <h2>Categorías</h2>
+                                </div>
+                                <div class="col text-right pr-0">
+                                    <a href="{% url 'inv:categoria_new'%}" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {% if not categorias %}
+                            <div class="alert alert-info">
+                                No hay categorías
+                            </div>
+                            {% else %}
+                            <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display rounded">
+                                <caption>Lista de Categorías</caption>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" style="border: 0px;">Id</th>
+                                        <th scope="col" style="border: 0px;">Categoria</th>
+                                        <th scope="col" style="border: 0px;">Estado</th>
+                                        <th scope="col" style="border: 0px;">F. Creado</th>
+                                        <th scope="col" style="border: 0px;">F. Modifi.</th>
+                                        <th scope="col" style="border: 0px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in categorias %}
+                                    <tr>
+                                        <td>{{item.id}}</td>
+                                        <td>{{item.descripcion}}</td>
+                                        <td>
+                                            {% if item.estado %}
+                                            <span class="status-success">Activo</span> {% else %}
+                                            <span class="status-danger">Inactivo</span> {% endif %}
+                                        </td>
+                                        <td>{{item.fc|date:"d/m/Y H:i" }}</td>
+                                        <td>{{item.fm|date:"d/m/Y H:i"}}</td>
+                                        <td>
+                                            <a href="{% url 'inv:categoria_update' item.id %}" class="btn btn-warning btn-circle" role="button">
+                                                <i class="far fa-edit" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{% url 'inv:categoria_del' item.id %}" class="btn btn-danger btn-circle" role="button">
+                                                <i class="far fa-trash-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-right"><em>Find out more about Leonardo da Vinci from <a href="http://en.wikipedia.org/wiki/Leonardo_da_Vinci" target="_blank">Wikipedia</a>.</em></p>
+                    </li>
+
+                    <!-- SUB CATEGORIAS ******************************************************************************************** -->
+                    <li class="tab-content tab-content-3 typography">
+
+                        <div class="container">
+                            <div class="row pl-0">
+                                <div class="col pl-0">
+                                    <h2>Sub Categorías</h2>
+                                </div>
+                                <div class="col text-right pr-0">
+                                    <a href="{% url 'inv:subcategoria_new'%}" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div class="card-body">
+                            {% if not sub_categorias %}
+                            <div class="alert alert-info">
+                                No hay subcategorías
+                            </div>
+                            {% else %}
+                            <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display">
+
+                                <caption>Lista de SubCategorías</caption>
+
+                                <thead class="thead-light">
+                                    <th scope="col" style="border: 0px;">Id</th>
+                                    <th scope="col" style="border: 0px;">Categoría</th>
+                                    <th scope="col" style="border: 0px;">Subcategoria</th>
+                                    <th scope="col" style="border: 0px;">Estado</th>
+                                    <th scope="col" style="border: 0px;">F. Creado</th>
+                                    <th scope="col" style="border: 0px;">F. Modifi.</th>
+                                    <th scope="col" style="border: 0px;">Acciones</th>
+                                </thead>
+                                <tbody>
+                                    {% for item in sub_categorias %}
+                                    <tr>
+                                        <td>{{item.id}}</td>
+                                        <td>{{item.categoria}}</td>
+                                        <td>{{item.descripcion}}</td>
+                                        <td>
+                                            {% if item.estado %}
+                                            <span class="status-success">Activo</span> {% else %}
+                                            <span class="status-danger">Inactivo</span> {% endif %}
+                                        </td>
+                                        <td>{{item.fc|date:"d/m/Y H:i:s" }}</td>
+                                        <td>{{item.fm|date:"d/m/Y H:i:s"}}</td>
+                                        <td>
+                                            <a href="{% url 'inv:subcategoria_update' item.id %}" class="btn btn-warning btn-circle" role="button">
+                                                <i class="far fa-edit" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{% url 'inv:subcategoria_del' item.id %}" class="btn btn-danger btn-circle" role="button">
+                                                <i class="far fa-trash-alt" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-right"><em>Find out more about Albert Einstein from <a href="http://en.wikipedia.org/wiki/Albert_Einstein" target="_blank">Wikipedia</a>.</em></p>
+                    </li>
+
+                    <!-- MARCAS **************************************************************************************************** -->
+                    <li class="tab-content tab-content-4 typography">
+                        <div class="typography">
+
+                            <div class="container">
+                                <div class="row pl-0">
+                                    <div class="col pl-0">
+                                        <h2>Marcas</h2>
+                                    </div>
+                                    <div class="col text-right pr-0">
+                                        <a href="{% url 'inv:marca_new'%}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                {% if not marcas %}
+                                <div class="alert alert-info">
+                                    No hay marcas
+                                </div>
+                                {% else %}
+                                <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded">
+                                    <caption>Lista de Marcas</caption>
+                                    <thead class="thead-light">
+                                        <th scope="col" style="border: 0px;">Id</th>
+                                        <th scope="col" style="border: 0px;">Marca</th>
+                                        <th scope="col" style="border: 0px;">Estado</th>
+                                        <th scope="col" style="border: 0px;">F. Creado</th>
+                                        <th scope="col" style="border: 0px;">F. Modifi.</th>
+                                        <th scope="col" style="border: 0px;">Acciones</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in marcas %}
+                                        <tr>
+                                            <td>{{item.id}}</td>
+                                            <td>{{item.descripcion}}</td>
+                                            <td>
+                                                {% if item.estado %}
+                                                <span class="status-success">Activo</span> {% else %}
+                                                <span class="status-danger">Inactivo</span> {% endif %}
+                                            </td>
+                                            <td>{{item.fc|date:"d/m/Y H:i:s" }}</td>
+                                            <td>{{item.fm|date:"d/m/Y H:i:s"}}</td>
+                                            <td>
+                                                <a href="{% url 'inv:marca_update' item.id %}" class="btn btn-warning btn-circle" role="button">
+                                                    <i class="far fa-edit" aria-hidden="true"></i>
+                                                </a>
+                                                <a href="{% url 'inv:marca_inactivar' item.id %}" class="btn btn-danger btn-circle" role="button">
+                                                    <i class="far fa-thumbs-down" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% endif %}
+                            </div>
+
+                            <p class="text-right"><em>Find out more about Isaac Newton from <a href="http://en.wikipedia.org/wiki/Isaac_Newton" target="_blank">Wikipedia</a>.</em></p>
+                        </div>
+                    </li>
+
+                    <!-- UNIDADES DE MEDIDAS **************************************************************************************** -->
+                    <li class="tab-content tab-content-last typography">
+                        <div class="typography">
+
+                            <div class="container">
+                                <div class="row pl-0">
+                                    <div class="col pl-0">
+                                        <h2>Unidad de Medida</h2>
+                                    </div>
+                                    <div class="col text-right pr-0">
+                                        <a href="{% url 'inv:unidadmedida_new'%}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                {% if not unidades_medida %}
+                                <div class="alert alert-info">
+                                    No hay unidades de medida
+                                </div>
+                                {% else %}
+                                <table class="table table-hover table-responsive-lg shadow display rounded">
+                                    <caption>Lista de Unidades de Medidas</caption>
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col" style="border: 0px;">Id</th>
+                                            <th scope="col" style="border: 0px;">Unidad de Medida</th>
+                                            <th scope="col" style="border: 0px;">Estado</th>
+                                            <th scope="col" style="border: 0px;">F. Creado</th>
+                                            <th scope="col" style="border: 0px;">F. Modifi.</th>
+                                            <th class="all" scope="col" style="border: 0px;">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in unidades_medida %}
+                                        <tr>
+                                            <td>{{item.id}}</td>
+                                            <td>{{item.descripcion}}</td>
+                                            <td>
+                                                {% if item.estado %}
+                                                <span class="status-success">Activo</span> {% else %}
+                                                <span class="status-danger">Inactivo</span> {% endif %}
+                                            </td>
+                                            <td>{{item.fc|date:"d/m/Y H:i:s" }}</td>
+                                            <td>{{item.fm|date:"d/m/Y H:i:s"}}</td>
+                                            <td>
+                                                <a href="{% url 'inv:unidadmedida_update' item.id %}" class="btn btn-warning btn-circle" role="button">
+                                                    <i class="far fa-edit" aria-hidden="true"></i>
+                                                </a>
+                                                <a href="{% url 'inv:unidadmedida_inactivar' item.id %}" class="btn btn-danger btn-circle" role="button">
+                                                    <i class="far fa-thumbs-down" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% endif %}
+                            </div>
+
+                            <p class="text-right"><em>Find out more about Isaac Newton from <a href="http://en.wikipedia.org/wiki/Isaac_Newton" target="_blank">Wikipedia</a>.</em></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <!--/ tabs -->
         </div>
-        {% else %}
-        <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded">
-            <caption>Lista de Productos</caption>
-            <thead class="thead-light">
-                <tr>
-                    <th scope="col" style="border: 0px;">Sub. Cat.</th>
-                    <th scope="col" style="border: 0px;">Barras</th>
-                    <th scope="col" style="border: 0px;">Descripción</th>
-                    <th scope="col" style="border: 0px;">Stock</th>
-                    <th scope="col" style="border: 0px;">IVA</th>
-                    <th scope="col" style="border: 0px;">Marca</th>
-                    <th scope="col" style="border: 0px;">Estado</th>
-                    <th scope="col" style="border: 0px;">Tipo</th>
-                    <th scope="col" style="border: 0px;">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in obj %}
-                <tr>
-                    <td>{{item.subcategoria}}</td>
-                    <td>{{item.codigo_barras}}</td>
-                    <td>{{item.descripcion}}</td>
-                    <td>{{item.existencia}}</td>
-                    <td>{{item.tiene_iva|yesno:"✔,❌"}}</td>
-                    <td>{{item.marca}}</td>
-                    <td>
-                        {% if item.estado %}
-                        <span class="status-success">Activo</span>
-                        {% else %}
-                        <span class="status-danger">Inactivo</span>
-                        {% endif %}
-                    </td>
-                    <td>{{item.es_servicio|yesno:"Servicio , Producto"}}</td>
-
-                    <td>
-                        <button class="btn btn-warning btn-circle" onclick="return abrir_modal('{% url 'inv:producto_update' item.id %}')">
-                        <i class="far fa-edit" aria-hidden="true"></i></button>
-                        <a href="{% url 'inv:producto_inactivar' item.id %}" class="btn btn-danger btn-circle" role="button"><i class="far fa-thumbs-down" aria-hidden="true"></i></a>
-                    </td>
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
     </div>
 </div>
 {% endblock %} {% block js_page %}

@@ -17,7 +17,6 @@ django-mathfilters==1.0.0
 django-storages==1.11.1
 django-userforeignkey==0.3.0
 djangorestframework==3.12.2
-dropbox==11.10.0
 future==0.18.2
 gunicorn==20.0.4
 html5lib==1.0.1

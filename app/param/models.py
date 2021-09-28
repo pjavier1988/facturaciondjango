@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from bases.models import AUDUsers, ClaseModelo
-from dropbox.files import UploadError
 from django.core.files.base import ContentFile
 
 class Empresa(ClaseModelo):

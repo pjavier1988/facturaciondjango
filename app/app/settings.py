@@ -36,6 +36,7 @@ LOCAL_APPS = [
     'param',
     'api',
     'vnt',
+    'conta',
 ]
 
 THIRD_APPS = [

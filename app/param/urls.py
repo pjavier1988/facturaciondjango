@@ -9,8 +9,6 @@ urlpatterns = [
 
     path('links/new', views.LinksNew.as_view(), name="links_new"),
 
-    path('nomina/2', views.nomina2, name="nomina2"),
-
     path('reportes/vista/compra/detail/<int:factura_id>', views.compra_detail, name = 'compra_detail'),
     path('reportes/vista/compras', views.compras_list, name='compras_list'),
     path('reportes/vista/ventas', views.ventas_list, name='ventas_list'),
@@ -29,5 +27,4 @@ urlpatterns = [
     path('reportes/reporte/ventas', reportes.ventas_list, name='ventas_list_report'),
     path('reportes/reporte/factura/venta/<int:factura_id>', reportes.facura_venta, name='factura_venta'),
     path('reportes/reporte/libro_diario', views.libro_diario, name='libro_diario'),
-    path('reportes/reporte/nomina', views.nomina_list, name='nomina_list'),
 ]

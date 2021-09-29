@@ -316,6 +316,11 @@ def devolucion_facturas_list(request):
 
     return render(request, template_name, context)
 
+
+def libro_diario(request):
+    template_name = 'reportes/libro_diario.html'
+    return render(request, template_name)
+
 def almacen_list(request):
 
     template_name = 'reportes/almacen_list.html'
@@ -412,6 +417,9 @@ def kardex(request, producto_id):
     }
 
     return render(request, template_name, context)
+def nomina_list(request):
+    template_name = 'reportes/nomina_list.html'
+    return render(request, template_name)
 
 def nomina2(request):
 

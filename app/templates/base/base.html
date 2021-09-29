@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
-    
+
     <!-- Static CSS -->
     <link rel="stylesheet" href="{% static 'base/css/global-status.css' %}">
     <link rel="stylesheet" href="{% static 'base/css/empresa_det.css' %}">
@@ -98,7 +98,7 @@
                         </a>
 
                         <h6 class="collapse-header">Inventario</h6>
-                        
+
                         {% if perms.inv.view_producto %}
                         <a class="collapse-item" href="{% url 'inv:producto_list' %}">
                             <i class="fab fa-product-hunt" aria-hidden="true"></i>
@@ -141,7 +141,7 @@
                             <span>Tienda</span>
                         </a>
                         <a class="collapse-item" href="{% url 'vnt:productos_oferta' %}">
-                            <i class="fas fa-dollar-sign" aria-hidden="true"></i> 
+                            <i class="fas fa-dollar-sign" aria-hidden="true"></i>
                             <span>Ofertas</span>
                         </a>
 
@@ -191,10 +191,17 @@
                         </a>
 
                         <h6 class="collapse-header">Gastos</h6>
-                        
+
                         <a class="collapse-item" href="{% url 'fac:transacciones_list' %}">
                             <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
                             Gastos
+                        </a>
+
+                        <h6 class="collapse-header">Salidas</h6>
+
+                        <a class="collapse-item" href="{% url 'inv:perdidas'%}">
+                            <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
+                            Perdidas
                         </a>
                     </div>
                 </div>
@@ -212,7 +219,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Venta:</h6>
 
-                        <a class="collapse-item" href="{% url 'vnt:home' %}">
+                        <a class="collapse-item" href="{% url 'param:libro_diario' %}">
                             <i class="fas fa-book" aria-hidden="true"></i>
                             <span>Libro Diario</span>
                         </a>
@@ -227,7 +234,7 @@
                         </a>
 
                         <!-- Nav Item - Nomina -->
-                        <a class="collapse-item" href="{% url 'param:nomina2' %}">
+                        <a class="collapse-item" href="{% url 'param:nomina_list' %}">
                             <i class="fas fa-hand-holding-usd" aria-hidden="true"></i>
                             <span>Nómina</span>
                         </a>
@@ -243,7 +250,7 @@
                 </a>
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        
+
                         <h6 class="collapse-header">Pagos</h6>
                         <a class="collapse-item" href="{% url 'param:compras_list' %}">Compras</a>
                         <a class="collapse-item" href="{% url 'param:ventas_list' %}">Ventas</a>
@@ -288,18 +295,6 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                       <i class="fa fa-bars" aria-hidden="true"></i>
                     </button>
-
-                    <!-- Topbar Search -->
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                  <i class="fas fa-search fa-sm" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -438,7 +433,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2019</span>
+                        <span>Copyright &copy; Your Website 2021</span>
                     </div>
                 </div>
             </footer>

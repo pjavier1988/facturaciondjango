@@ -12,7 +12,7 @@ class Categoria(ClaseModelo):
 
     def save(self):
         self.descripcion = self.descripcion.upper()
-        super(Categoria,self).save()    
+        super(Categoria,self).save()
 
     class Meta:
         verbose_name_plural = "Categorías"
@@ -25,11 +25,11 @@ class SubCategoria(ClaseModelo):
 
     def __str__(self) :
         return '{}:{}'.format(self.categoria.descripcion,self.descripcion)
-    
+
     def save(self):
         self.descripcion = self.descripcion.upper()
-        super(SubCategoria,self).save() 
-    
+        super(SubCategoria,self).save()
+
     class Meta:
         verbose_name_plural = "Sub Categorías"
         unique_together = ("categoria","descripcion")
@@ -44,7 +44,7 @@ class Marca(ClaseModelo):
 
     def save(self):
         self.descripcion = self.descripcion.upper()
-        super(Marca,self).save()    
+        super(Marca,self).save()
 
     class Meta:
         verbose_name_plural = "Marcas"
@@ -59,11 +59,11 @@ class UnidadMedida(ClaseModelo):
 
     def save(self):
         self.descripcion = self.descripcion.upper()
-        super(UnidadMedida,self).save()    
+        super(UnidadMedida,self).save()
 
     class Meta:
         verbose_name_plural = "Unidades de medida"
-    
+
 class Producto(ClaseModelo):
 
     codigo = models.CharField(max_length =20, unique = True)
@@ -87,7 +87,7 @@ class Producto(ClaseModelo):
     def save(self):
         self.descripcion = self.descripcion.upper()
         super(Producto,self).save()
-    
+
     @property
     def imagen_url(self):
         if self.imagen and hasattr(self.imagen, 'url'):
@@ -96,3 +96,9 @@ class Producto(ClaseModelo):
     class Meta:
         verbose_name_plural = "Productos"
         unique_together = ("codigo","codigo_barras")
+
+class Perdidas(ClaseModelo):
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE, null=False, blank=False)
+    cantidad = models.IntegerField(default=0)
+    descripcion = models.CharField(max_length=1000)
+    fecha=models.DateTimeField(auto_now_add=True)

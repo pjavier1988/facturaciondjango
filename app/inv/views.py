@@ -4,7 +4,7 @@ from django.shortcuts import render,redirect,HttpResponseRedirect
 from django.views import generic
 from django.urls import reverse_lazy,reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from .models import Categoria, Producto,SubCategoria,Marca,UnidadMedida
+from .models import Categoria, Producto,SubCategoria,Marca,UnidadMedida, Perdidas
 from .forms import CategoriaForm, ProductoForm,SubCategoriaForm,MarcaForm,UnidadMedidaForm
 
 #Categorias ************************************************************************************************************************************
@@ -15,10 +15,10 @@ class CategoriaView(LoginRequiredMixin, PermissionRequiredMixin, generic.ListVie
     model = Categoria
     template_name = "inv/categoria_list.html"
     context_object_name = "obj"
-    login_url = "bases:login"   
+    login_url = "bases:login"
 
     def get_queryset(self):
-        
+
         if self.request.user.company:
             return Categoria.objects.filter(empresa = self.request.user.company)
         else:
@@ -31,9 +31,9 @@ class CategoriaNew(SuccessMessageMixin, LoginRequiredMixin,generic.CreateView):
     context_object_name = "obj"
     form_class = CategoriaForm
     success_url = reverse_lazy("inv:producto_list")
-    login_url = "bases:login" 
+    login_url = "bases:login"
     success_message = "Categoría creada exitosamente"
-    
+
     def form_valid(self, form):
         form.instance.uc = self.request.user
         form.instance.empresa = self.request.user.company
@@ -46,9 +46,9 @@ class CategoriaEdit(SuccessMessageMixin, LoginRequiredMixin,generic.UpdateView):
     context_object_name = "obj"
     form_class = CategoriaForm
     success_url = reverse_lazy("inv:producto_list")
-    login_url = "bases:login" 
+    login_url = "bases:login"
     success_message = "Categoría editada existosamente"
-    
+
     def form_valid(self, form):
         form.instance.um = self.request.user.id
         return super().form_valid(form)
@@ -68,10 +68,10 @@ class SubCategoriaView(LoginRequiredMixin, generic.ListView):
     model = SubCategoria
     template_name = "inv/subcategoria_list.html"
     context_object_name = "obj"
-    login_url = "bases:login" 
+    login_url = "bases:login"
 
     def get_queryset(self):
-        
+
         if self.request.user.company:
             return SubCategoria.objects.filter(empresa = self.request.user.company)
         else:
@@ -101,7 +101,7 @@ class SubCategoriaEdit(LoginRequiredMixin,generic.UpdateView):
     context_object_name = "obj"
     success_url = reverse_lazy("inv:producto_list")
     login_url = "bases:login"
-    
+
     def form_valid(self, form):
         form.instance.um = self.request.user.id
         return super().form_valid(form)
@@ -127,7 +127,7 @@ class MarcaView(LoginRequiredMixin, generic.ListView):
     login_url = "bases:login"
 
     def get_queryset(self):
-        
+
         if self.request.user.company:
             return Marca.objects.filter(empresa = self.request.user.company)
         else:
@@ -141,30 +141,30 @@ class MarcaNew(LoginRequiredMixin,generic.CreateView):
     context_object_name = "obj"
     form_class = MarcaForm
     success_url = reverse_lazy("inv:producto_list")
-    login_url = "bases:login" 
-    
+    login_url = "bases:login"
+
     def form_valid(self, form):
         form.instance.uc = self.request.user
         form.instance.empresa = self.request.user.company
         return super().form_valid(form)
 
-    
+
 class MarcaEdit(LoginRequiredMixin,generic.UpdateView):
-    
+
     model = Marca
     template_name = "inv/marca_form.html"
     context_object_name = "obj"
     form_class = MarcaForm
     success_url = reverse_lazy("inv:producto_list")
-    login_url = "bases:login" 
-    
+    login_url = "bases:login"
+
     def form_valid(self, form):
         form.instance.um = self.request.user.id
         return super().form_valid(form)
 
 
 def marca_inactivar(request,id):
-    
+
     marca = Marca.objects.filter(pk=id).first()
     contexto = {}
     template_name = "inv/catalogos_del.html"
@@ -194,7 +194,7 @@ class UnidadMedidaView(LoginRequiredMixin, generic.ListView):
     login_url = "bases:login"
 
     def get_queryset(self):
-        
+
         if self.request.user.company:
             return UnidadMedida.objects.filter(empresa = self.request.user.company)
         else:
@@ -208,14 +208,14 @@ class UnidadMedidaNew(LoginRequiredMixin,generic.CreateView):
     context_object_name = "obj"
     form_class = UnidadMedidaForm
     success_url = reverse_lazy("inv:producto_list")
-    login_url = "bases:login" 
-    
+    login_url = "bases:login"
+
     def form_valid(self, form):
         form.instance.uc = self.request.user
         form.instance.empresa = self.request.user.company
         return super().form_valid(form)
 
-    
+
 class UnidadMedidaEdit(LoginRequiredMixin,generic.UpdateView):
 
     model = UnidadMedida
@@ -223,8 +223,8 @@ class UnidadMedidaEdit(LoginRequiredMixin,generic.UpdateView):
     context_object_name = "obj"
     form_class = UnidadMedidaForm
     success_url = reverse_lazy("inv:producto_list")
-    login_url = "bases:login" 
-        
+    login_url = "bases:login"
+
     def form_valid(self, form):
         form.instance.um = self.request.user.id
         return super().form_valid(form)
@@ -244,7 +244,7 @@ def unidadmedida_inactivar(request,id):
     if request.method == 'POST':
         unidad.estado = False
         unidad.save()
-        
+
         return HttpResponseRedirect(reverse('inv:producto_list'))
         #redirect("inv/marca_list")
 
@@ -260,7 +260,7 @@ class ProductoView(LoginRequiredMixin, generic.ListView):
     login_url = "bases:login"
 
     def get_queryset(self):
-        
+
         if self.request.user.company:
             return Producto.objects.filter(empresa = self.request.user.company)
         else:
@@ -281,7 +281,7 @@ class ProductoView(LoginRequiredMixin, generic.ListView):
         context['unidades_medida'] = UnidadMedida.objects.filter( # add extra field to the context
             empresa=self.request.user.company,
         )
-        
+
         return context
 
 class ProductoNew(LoginRequiredMixin, generic.CreateView):
@@ -293,19 +293,19 @@ class ProductoNew(LoginRequiredMixin, generic.CreateView):
 
     def get_form(self, form_class=None):
         return ProductoForm(self.request.user, **self.get_form_kwargs())
-    
+
     def form_valid(self, form):
         form.instance.uc = self.request.user
         form.instance.empresa = self.request.user.company
         return super().form_valid(form)
-    
+
     def get_context_data(self, **kwargs):
 
         context = super(ProductoNew, self).get_context_data(**kwargs)
         context["categorias"] = Categoria.objects.filter(empresa=self.request.user.company)
         context["subcategorias"] = SubCategoria.objects.filter(empresa=self.request.user.company)
         return context
-    
+
 class ProductoEdit(LoginRequiredMixin,generic.UpdateView):
 
     model = Producto
@@ -316,14 +316,14 @@ class ProductoEdit(LoginRequiredMixin,generic.UpdateView):
 
     def get_form(self, form_class=None):
         return ProductoForm(self.request.user, **self.get_form_kwargs())
-        
+
     def form_valid(self, form):
         form.instance.um = self.request.user.id
         return super().form_valid(form)
 
 
 def producto_inactivar(request,id):
-    
+
     producto = Producto.objects.filter(pk=id).first()
     contexto = {}
     template_name = "inv/catalogos_del.html"
@@ -336,8 +336,16 @@ def producto_inactivar(request,id):
     if request.method == 'POST':
         producto.estado = False
         producto.save()
-        
+
         return HttpResponseRedirect(reverse('inv:producto_list'))
         #redirect("inv/marca_list")
 
     return render(request,template_name,contexto)
+def perdidas(request):
+    template_name='inv/perdidas.html'
+    perdida = Perdidas.objects.all()
+
+    context ={
+        'obj':perdida,
+    }
+    return render(request, template_name, context)

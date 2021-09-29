@@ -1,0 +1,116 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Informe de Perdidas</h6>
+        <div class="dropdown no-arrow">
+          <a href="#" class="btn btn-success text-white">Nuevo</a>
+        </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+
+        {% if not obj%}
+
+        <div class="alert alert-info">
+            No hay Perdidas
+        </div>
+
+        {% else %}
+
+        <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded">
+
+            <caption>
+              <div class="bg-light p-3 text-center">
+                <span class="font-weight-bold">Total:{{total}}</span>
+              </div>
+            </caption>
+
+            <thead class="thead-ligth">
+                <tr>
+                    <th scope="col" style="border: 0px;">Producto</th>
+                    <th scope="col" style="border: 0px;">Fecha</th>
+                    <th scope="col" style="border: 0px;">Observación</th>
+                    <th scope="col" style="border: 0px;">Precio</th>
+                    <th scope="col" style="border: 0px;">Cantidad</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for o in obj %}
+
+                <tr>
+                    <td>{{ o.producto }}</td>
+                    <td>{{ o.fecha }}</td>
+                    <td>{{ o.descripcion }}</td>
+                    <td id="precio">{{o.producto.precio}}</td>
+                    <td id="cantidad">{{o.cantidad}}</td>
+                    <td id="totalP">$0.00</td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script>
+  $(document).ready(function() {
+      $('.table').DataTable({
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'excel',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+              {
+                  extend: 'csv',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+              {
+                  extend: 'pdf',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+              {
+                  extend: 'print',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+              {
+                  extend: 'copy',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+          ]
+      });
+  });
+</script>
+<script>
+  let total = 0.00;
+  const calcularTotal = () =>{
+    const cantidad = parseInt(document.getElementById('cantidad').value);
+    const precio = parseInt(document.getElementById('precio').value);
+    total = cantidad*precio;
+    totalP.innerHTML = `$ ${total}`´;
+  }
+  $(document).ready(function(){
+    calcularTotal();
+  });
+</script>
+
+{% endblock %}

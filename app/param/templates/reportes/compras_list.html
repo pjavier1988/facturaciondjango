@@ -32,11 +32,11 @@
                 <tr>
                     <th scope="col" style="border: 0px;">Proveedor</th>
                     <th scope="col" style="border: 0px;">Fecha</th>
-                    <th scope="col" style="border: 0px;">Observación</th>
                     <th scope="col" style="border: 0px;">Nro. Factura</th>
                     <th scope="col" style="border: 0px;">Sub Total</th>
                     <th scope="col" style="border: 0px;">Descuento</th>
                     <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px">Estado</th>
                     <th scope="col" style="border: 0px;">Acciones</th>
                 </tr>
             </thead>
@@ -47,11 +47,17 @@
                 <tr>
                     <td>{{ o.proveedor }}</td>
                     <td>{{ o.fecha }}</td>
-                    <td>{{ o.observacion }}</td>
                     <td>{{ o.no_factura }}</td>
                     <td>{{ o.sub_total }}</td>
                     <td>{{ o.descuento }}</td>
                     <td>{{ o.total }}</td>
+                    <td>
+                        {% if o.estado_pago == 'Pagado' %}
+                        <span class="status-success">{{o.estado_pago}}</span>
+                        {% else %}
+                        <span class="status-danger">{{o.estado_pago}}</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <a class="btn btn-outline-primary btn-circle btn-sm" role="button" href="{% url 'param:compra_detail' o.id %}">
                             <i class="fa fa-eye" aria-hidden="true"></i>

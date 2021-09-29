@@ -1,0 +1,109 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Libro Diario</h6>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+
+
+
+        <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded">
+
+            <caption>
+                <span class="font-weight-bold">Libro Diario</span>
+            </caption>
+
+            <thead class="thead-ligth">
+                <tr>
+                    <th scope="col" style="border: 0px;">Fecha</th>
+                    <th scope="col" style='border: 0px;'>Clase</th>
+                    <th scope="col" style="border: 0px;">Descripcion</th>
+                    <th scope="col" style="border: 0px;">Entradas</th>
+                    <th scope="col" style="border: 0px;">Salidas</th>
+                    <th scope="col" style="border: 0px;">Total</th>
+                    <th scope="col" style="border: 0px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+                <tr>
+                    <td>21/08/2000</td>
+                    <td>Gasto</td>
+                    <td>Pago de hojas</td>
+                    <td class="table-success">0.0</td>
+                    <td class="table-warning">1000</td>
+                    <td>1000</td>
+                    <td>
+                        <a class="btn btn-outline-primary btn-circle btn-sm" role="button" href="">
+                            <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>21/08/2000</td>
+                    <td>Gasto</td>
+                    <td>Pago de hojas</td>
+                    <td class="table-success">0.0</td>
+                    <td class="table-warning">1000</td>
+                    <td>1000</td>
+                    <td>
+                        <a class="btn btn-outline-primary btn-circle btn-sm" role="button" href="">
+                            <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script>
+  $(document).ready(function() {
+      $('.table').DataTable({
+          dom: 'Bfrtip',
+          buttons: [
+              {
+                  extend: 'excel',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+              {
+                  extend: 'csv',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+              {
+                  extend: 'pdf',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+              {
+                  extend: 'print',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+              {
+                  extend: 'copy',
+                  exportOptions: {
+                      columns: [ 0, 1, 2, 3, 4 ]
+                  }
+              },
+          ]
+      });
+  });
+</script>
+
+{% endblock %}

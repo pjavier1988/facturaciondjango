@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import CategoriaView,CategoriaNew,CategoriaEdit,CategoriaDelete, ProductoEdit, ProductoNew, ProductoView, SubCategoriaView,\
-    SubCategoriaNew,SubCategoriaEdit,SubCategoriaDelete,MarcaView,MarcaNew,MarcaEdit, UnidadMedidaEdit, UnidadMedidaNew, UnidadMedidaView,marca_inactivar, producto_inactivar, unidadmedida_inactivar
+    SubCategoriaNew,SubCategoriaEdit,SubCategoriaDelete,MarcaView,MarcaNew,MarcaEdit, UnidadMedidaEdit, UnidadMedidaNew, UnidadMedidaView,marca_inactivar, producto_inactivar, unidadmedida_inactivar, perdidas
 
 urlpatterns = [
     path('categorias/new',CategoriaNew.as_view(),name="categoria_new"),
@@ -27,4 +27,5 @@ urlpatterns = [
     path('productos/new',ProductoNew.as_view(),name="producto_new"),
     path('productos/edit/<int:pk>',ProductoEdit.as_view(),name="producto_update"),
     path('productos/inactivar/<int:id>',producto_inactivar,name="producto_inactivar"),
+    path('perdidas/', perdidas, name='perdidas'),
 ]

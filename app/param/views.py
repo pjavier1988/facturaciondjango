@@ -413,6 +413,15 @@ def kardex(request, producto_id):
 
     return render(request, template_name, context)
 
+def nomina2(request):
+
+    template_name = 'param/nomina2.html'
+
+    context = {
+    }
+
+    return render(request, template_name, context)
+
 #Funciones
 
 def get_total(data):

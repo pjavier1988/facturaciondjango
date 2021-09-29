@@ -1,0 +1,147 @@
+{% extends 'base/base.html' %} {% block page_content %}
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Nómina</h6>
+    </div>
+
+    <div class="card-body">
+
+        <!-- Seguridad Social -->
+        <div class="col">
+
+            <h5 class="my-3 font-weight-bold text-primary">Seguridad Social</h5>
+
+            <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow-lg display rounded">
+
+                <caption style="caption-side: bottom;">Total: 1298312937</caption>
+
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" style="border: 0px;">Concepto</th>
+                        <th scope="col" style="border: 0px;">Base</th>
+                        <th scope="col" style="border: 0px;">Porcentaje (%)</th>
+                        <th scope="col" style="border: 0px;">Provición Mensual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SALUD</td>
+                        <td></td>
+                        <td>8.5%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>PENSIÓN</td>
+                        <td></td>
+                        <td>12%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ARL</td>
+                        <td></td>
+                        <td>0.52%</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Aportes Parafiscales -->
+        <div class="col">
+
+            <h5 class="my-3 font-weight-bold text-primary">Aportes Parafiscales</h5>
+
+            <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow-lg display rounded">
+
+                <caption style="caption-side: bottom;">Total: 1298312937</caption>
+
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" style="border: 0px;">Concepto</th>
+                        <th scope="col" style="border: 0px;">Base</th>
+                        <th scope="col" style="border: 0px;">Porcentaje (%)</th>
+                        <th scope="col" style="border: 0px;">Provición Mensual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>COMFENALCO</td>
+                        <td></td>
+                        <td>8.5%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>ICBF</td>
+                        <td></td>
+                        <td>12%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>SENA</td>
+                        <td></td>
+                        <td>0.52%</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Prestaciones Fiscales -->
+        <div class="col">
+
+            <h5 class="my-3 font-weight-bold text-primary">Prestaciones Fiscales</h5>
+
+            <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow-lg display rounded">
+
+                <caption style="caption-side: bottom;">Total: 1298312937</caption>
+
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" style="border: 0px;">Concepto</th>
+                        <th scope="col" style="border: 0px;">Base</th>
+                        <th scope="col" style="border: 0px;">Porcentaje (%)</th>
+                        <th scope="col" style="border: 0px;">Provición Mensual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CESANTIAS</td>
+                        <td></td>
+                        <td>8.5%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>INTERESES CESANTIAS</td>
+                        <td></td>
+                        <td>12%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>PRIMA DE SERVICIOS</td>
+                        <td></td>
+                        <td>0.52%</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>VACIONES</td>
+                        <td></td>
+                        <td>0.52%</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %} {% block js_page %}
+
+<script>
+    // Call the dataTables jQuery plugin
+    $(document).ready(function() {
+        $('.table').DataTable();
+    });
+</script>
+
+{% endblock %}

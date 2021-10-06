@@ -2,6 +2,18 @@ from django.db import models
 from bases.models import ClaseModelo
 from param.models import Empresa
 
+class Rol(ClaseModelo):
+
+    rol = models.CharField(max_length=100, help_text='Rol')
+    salario = models.FloatField(default=0)
+    dias_laborales = models.IntegerField(default=30)
+
+    def __str__(self) :
+        return '{}'.format(self.rol)
+
+    class Meta:
+        verbose_name_plural = "Roles"
+
 class Empleado(ClaseModelo):
     
     identificacion = models.CharField(max_length=20, help_text='Identificación', unique=True)
@@ -18,15 +30,3 @@ class Empleado(ClaseModelo):
 
     class Meta:
         verbose_name_plural = "Empleados"
-
-class Rol(ClaseModelo):
-
-    rol = models.CharField(max_length=100, help_text='Rol')
-    salario = models.FloatField(default=0)
-    dias_laborales = models.IntegerField(default=30)
-
-    def __str__(self) :
-        return '{}'.format(self.rol)
-
-    class Meta:
-        verbose_name_plural = "Roles"

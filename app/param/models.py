@@ -68,21 +68,22 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, username, email, name,last_name, password=None, **extra_fields):
-        return self._create_user(username, email, name,last_name, password, False, False, **extra_fields)
+        return self._create_user(username, email, name, last_name, password, False, False, **extra_fields)
 
     def create_superuser(self, username, email, name,last_name, password=None, **extra_fields):
-        return self._create_user(username, email, name,last_name, password, True, True, **extra_fields)
+        return self._create_user(username, email, name, last_name, password, True, True, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin, AUDUsers):
 
-    username = models.CharField(max_length = 255, unique = True)
+    username = models.CharField('Username', max_length = 255, unique = True)
     email = models.EmailField('Correo Electrónico',max_length = 255, unique = True,)
     name = models.CharField('Nombres', max_length = 255, blank = True, null = True)
     last_name = models.CharField('Apellidos', max_length = 255, blank = True, null = True)
     image = models.CharField('Imagen de perfil', max_length=255, null=True, blank = True)
-    is_active = models.BooleanField(default = True)
-    is_staff = models.BooleanField(default = False)
+    is_active = models.BooleanField('¿Activo?', default = True)
+    is_staff = models.BooleanField('¿Staff?', default = False)
     company = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True, blank=True)
+
     objects = UserManager()
 
     USERNAME_FIELD = 'username'

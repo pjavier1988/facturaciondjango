@@ -341,6 +341,7 @@ def producto_inactivar(request,id):
         #redirect("inv/marca_list")
 
     return render(request,template_name,contexto)
+    
 def perdidas(request):
     template_name='inv/perdidas.html'
     perdida = Perdidas.objects.all()

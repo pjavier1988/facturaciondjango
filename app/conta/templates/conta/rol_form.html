@@ -1,10 +1,11 @@
 <div class="modal-dialog modal-lg">
+
     <div class="modal-content">
 
         {% if obj %}
-        <form role="form" id="frmCliente" action="{% url 'fac:cliente_edit' obj.pk %}" method="post"  class="form-inline" aria-label="Editar">
+        <form role="form" id="frmRol" action="{% url 'conta:rol_edit' obj.pk %}" method="post"  class="form-inline" aria-label="Editar">
         {% else %}
-        <form role="form"  id="frmCliente" action="{% url 'fac:cliente_new' %}" method="post"  class="form-inline" aria-label="Nuevo">
+        <form role="form"  id="frmRol" action="{% url 'conta:rol_new' %}" method="post"  class="form-inline" aria-label="Nuevo">
         {% endif %}
 
             <div class="col-xl-12 col-md-12 mb-12">
@@ -19,15 +20,19 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                {% if obj %} Editar {% else %} Nuevo {% endif %} Cliente
-                                {% if t %} En Factura {% endif %}
+                                {% if obj %} Editar {% else %} Nuevo {% endif %} Rol
                             </div>
+
                             <div class="dropdown-divider"></div>
+
                             {% csrf_token %}
+                            
                             <div class="row">
                                 {{ form.as_p }}
                             </div>
+
                             <div class="dropdown-divider"></div>
+
                             <div class="row">
                                 <div class="col">
                                     <button type="submit" class="btn btn-danger"><span class="fa fa-save"></span> Guardar</button>
@@ -46,26 +51,4 @@
             </div>
         </form>
     </div>
-</div> 
-
-{% if t %}
-<script>
-$("#frmCliente").submit(function( e ) {
-    var frm = $('#frmCliente');
-    $.ajax({
-            type: frm.attr('method'),
-            url: frm.attr('action'),
-            data: frm.serialize(),
-            success: function (data) {
-                // alert(data);
-                window.location.reload(true);
-            },
-            error: function(data) {
-                alert(data);
-            }
-        });
-        return false;
-});
-
-</script>
-{% endif %}
+</div>

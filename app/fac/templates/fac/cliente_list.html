@@ -9,7 +9,7 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                 <div class="dropdown-header">Acciones:</div>
-                <a class="dropdown-item" onclick="return abrir_modal('{% url 'fac:cliente_new' %}')" href="#">
+                <a class="dropdown-item" onclick="return abrir_modal('{% url 'fac:cliente_new' %}')" >
                     <i class="far fa-calendar-plus" aria-hidden="true"></i> Nuevo
                 </a>
             </div>
@@ -98,41 +98,7 @@
     }
 
     $(document).ready(function() {
-        $('.table').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend: 'excel',
-                    exportOptions: {
-                        columns: [ 0, 1, 2, 3, 4 ]
-                    }
-                },
-                {
-                    extend: 'csv',
-                    exportOptions: {
-                        columns: [ 0, 1, 2, 3, 4 ]
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    exportOptions: {
-                        columns: [ 0, 1, 2, 3, 4 ]
-                    }
-                },
-                {
-                    extend: 'print',
-                    exportOptions: {
-                        columns: [ 0, 1, 2, 3, 4 ]
-                    }
-                },
-                {
-                    extend: 'copy',
-                    exportOptions: {
-                        columns: [ 0, 1, 2, 3, 4 ]
-                    }
-                },
-            ]
-        });
+        $('.table').DataTable();
     });
 </script>
 

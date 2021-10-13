@@ -17,7 +17,7 @@ from inv.models import Producto
 class VistaBaseCreate(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
 
     context_object_name = 'obj'
-    success_message="Registro Agregado Satisfactoriamente"
+    success_message="Registro Agregado"
 
     def form_valid(self, form):
         form.instance.uc = self.request.user
@@ -27,7 +27,7 @@ class VistaBaseCreate(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
 class VistaBaseEdit(SuccessMessageMixin, SinPrivilegios, generic.UpdateView):
 
     context_object_name = 'obj'
-    success_message="Registro Actualizado Satisfactoriamente"
+    success_message="Registro Actualizado"
 
     def form_valid(self, form):
         form.instance.um = self.request.user.id
@@ -63,8 +63,6 @@ class ClienteNew(VistaBaseCreate):
             t = request.GET["t"]
         except:
             t = None
-
-        print(t)
         
         form = self.form_class(initial=self.initial)
         return render(request, self.template_name, {'form': form, 't':t})
@@ -84,27 +82,29 @@ class ClienteEdit(VistaBaseEdit):
         except:
             t = None
 
-        print(t)
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         context = self.get_context_data(object=self.object, form=form,t=t)
-        print(form_class,form,context)
+
         return self.render_to_response(context)
 
 
 @login_required(login_url="/login/")
 @permission_required("fac.change_cliente",login_url="/login/")
-def clienteInactivar(request,id):
-    cliente = Cliente.objects.filter(pk=id).first()
+def cliente_inactivar(request,id):
+
+    cliente = Cliente.objects.filter(pk=id, empresa=request.user.company).first()
 
     if request.method=="POST":
+
         if cliente:
+
             cliente.estado = not cliente.estado
             cliente.save()
             return HttpResponse("OK")
+
         return HttpResponse("FAIL")
-    
     return HttpResponse("FAIL")
 
 #Factura ***************************************************************************************************************************************

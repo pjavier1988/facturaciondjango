@@ -1,0 +1,428 @@
+{% extends 'base/base.html' %}
+<div></div>
+{% block page_content %}
+<div></div>
+{% load static %}
+<div></div>
+
+<!-- Static CSS -->
+<link rel="stylesheet" href="{% static 'base/css/tabs.css' %}">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/3.1.0/css/font-awesome.min.css" />
+
+<div class="card shadow mb-4">
+    <!-- Card Header - Dropdown -->
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h3 class="m-0 font-weight-bold text-primary">Personas</h3>
+    </div>
+
+    <!-- Tabs -->
+    <!-- https://codepen.io/axelaredz/pen/ipome -->
+    <div class="body p-3">
+
+        <div class="page">
+
+            <!-- tabs -->
+            <div class="pcss3t pcss3t-effect-scale pcss3t-theme-1">
+
+                <input type="radio" name="pcss3t" checked id="tab1" class="tab-content-first">
+                <label for="tab1"><i class="icon-user" aria-hidden="true"></i>Clientes</label>
+
+                <input type="radio" name="pcss3t" id="tab2" class="tab-content-2">
+                <label for="tab2"><i class="icon-sitemap" aria-hidden="true"></i>Proveedores</label>
+
+                <input type="radio" name="pcss3t" id="tab3" class="tab-content-3">
+                <label for="tab3"><i class="icon-suitcase" aria-hidden="true"></i>Empleados</label>
+
+                <input type="radio" name="pcss3t" id="tab4" class="tab-content-4">
+                <label for="tab4"><i class="icon-sitemap" aria-hidden="true"></i>Roles (Empleados)</label>
+
+                <!-- Clientes **************************************************************************************************** -->
+                <ul>
+                    <li class="tab-content tab-content-first typography">
+
+                        <div class="container">
+                            <div class="row pl-0">
+                                <div class="col pl-0">
+                                    <h2>Clientes</h2>
+                                </div>
+                                <div class="col text-right pr-0">
+                                    <a href onclick="return abrir_modal('{% url 'fac:cliente_new' %}')" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {% if not clientes %}
+                            <div class="alert alert-info">
+                                No hay clientes
+                            </div>
+                            {% else %}
+                            <table style="border: 1px solid #ccc;" class="table table-hover table-responsive-lg shadow display rounded">
+                                <caption>Lista de Clientes</caption>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" style="border: 0px;">Identificación</th>
+                                        <th scope="col" style="border: 0px;">Cliente</th>
+                                        <th scope="col" style="border: 0px;">Tipo</th>
+                                        <th scope="col" style="border: 0px;">Celular/Tel.</th>
+                                        <th scope="col" style="border: 0px;">Estado</th>
+                                        <th scope="col" style="border: 0px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in clientes %}
+                                    <tr>
+                                        <td>{{item.identificacion}}</td>
+                                        <td>{{item.apellidos}} {{item.nombres}}</td>
+                                        <td>{{item.tipo}}</td>
+                                        <td>{{item.celular}}</td>
+                                        <td>
+                                            {% if item.estado %}
+                                            <span class="status-success">Activo</span> {% else %}
+                                            <span class="status-danger">Inactivo</span> {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-circle btn-sm" onclick="return abrir_modal('{% url 'fac:cliente_edit' item.id %}')">
+                                                <i class="far fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-circle btn-sm" onclick="inactivar({{ item.id }})">
+                                                {% if item.estado %}
+                                                <i title="Inactivar" class="fas fa-trash-alt" aria-hidden="true"></i>
+                                                {% else %}
+                                                <i title="Activar" class="fas fa-trash-restore-alt" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-right"><em>Find out more about Nikola Tesla from <a href="http://en.wikipedia.org/wiki/Nikola_Tesla" target="_blank">Wikipedia</a>.</em></p>
+                    </li>
+
+                    <!-- PROVEEDORES ************************************************************************************************ -->
+
+                    <li class="tab-content tab-content-2 typography">
+
+                        <div class="container">
+                            <div class="row pl-0">
+                                <div class="col pl-0">
+                                    <h2>Proveedores</h2>
+                                </div>
+                                <div class="col text-right pr-0">
+                                    <a onclick="return abrir_modal('{% url 'cmp:proveedor_new' %}')" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {% if not proveedores %}
+                            <div class="alert alert-info">
+                                No hay proveedores
+                            </div>
+                            {% else %}
+                            <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display rounded">
+                                <caption>Lista de Proveedores</caption>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" style="border: 0px;">Descripcion</th>
+                                        <th scope="col" style="border: 0px;">Dirección</th>
+                                        <th scope="col" style="border: 0px;">Contacto</th>
+                                        <th scope="col" style="border: 0px;">Teléfono</th>
+                                        <th scope="col" style="border: 0px;">Correo</th>
+                                        <th scope="col" style="border: 0px;">Estado</th>
+                                        <th scope="col" style="border: 0px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in proveedores %}
+                                    <tr>
+                                        <td>{{ item.descripcion }}</td>
+                                        <td>{{ item.direccion }}</td>
+                                        <td>{{ item.contacto }}</td>
+                                        <td>{{ item.telefono }}</td>
+                                        <td>{{ item.email }}</td>
+                                        <td>
+                                            {% if item.estado %}
+                                            <span class="status-success">Activo</span>
+                                            {% else %}
+                                            <span class="status-danger">Inactivo</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-circle btn-sm" onclick="return abrir_modal('{% url 'cmp:proveedor_edit' item.id %}')">
+                                                <i class="far fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-circle btn-sm" onclick="return abrir_modal('{% url 'cmp:proveedor_inactivar' item.id %}')">
+                                                {% if item.estado %}
+                                                <i title="Inactivar" class="fas fa-trash-alt" aria-hidden="true"></i>
+                                                {% else %}
+                                                <i title="Activar" class="fas fa-trash-restore-alt" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-right"><em>Find out more about Leonardo da Vinci from <a href="http://en.wikipedia.org/wiki/Leonardo_da_Vinci" target="_blank">Wikipedia</a>.</em></p>
+                    </li>
+
+                    <!-- EMPLEADOS ************************************************************************************************ -->
+
+                    <li class="tab-content tab-content-3 typography">
+
+                        <div class="container">
+                            <div class="row pl-0">
+                                <div class="col pl-0">
+                                    <h2>Empleados</h2>
+                                </div>
+                                <div class="col text-right pr-0">
+                                    <a href onclick="return abrir_modal('{% url 'conta:empleado_new' %}')" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {% if not empleados %}
+                            <div class="alert alert-info">
+                                No hay empleados
+                            </div>
+                            {% else %}
+                            <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display rounded">
+                                <caption>Lista de Empleados</caption>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" style="border: 0px;">Identificación</th>
+                                        <th scope="col" style="border: 0px;">Empleado</th>
+                                        <th scope="col" style="border: 0px;">Celular/Tel.</th>
+                                        <th scope="col" style="border: 0px;">Correo</th>
+                                        <th scope="col" style="border: 0px;">Rol</th>
+                                        <th scope="col" style="border: 0px;">Estado</th>
+                                        <th scope="col" style="border: 0px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in empleados %}
+                                    <tr>
+                                        <td>{{item.identificacion}}</td>
+                                        <td>{{item.apellidos}} {{item.nombres}}</td>
+                                        <td>{{item.celular}}</td>
+                                        <td>{{item.correo}}</td>
+                                        <td>{{item.rol}}</td>
+                                        <td>
+                                            {% if item.estado %}
+                                            <span class="status-success">Activo</span> {% else %}
+                                            <span class="status-danger">Inactivo</span> {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-circle btn-sm" onclick="return abrir_modal('{% url 'conta:empleado_edit' item.id %}')">
+                                                <i class="far fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-circle btn-sm" onclick="inactivarEmpleado({{ item.id }})">
+                                                {% if item.estado %}
+                                                <i title="Inactivar" class="fas fa-trash-alt" aria-hidden="true"></i>
+                                                {% else %}
+                                                <i title="Activar" class="fas fa-trash-restore-alt" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-right"><em>Find out more about Leonardo da Vinci from <a href="http://en.wikipedia.org/wiki/Leonardo_da_Vinci" target="_blank">Wikipedia</a>.</em></p>
+                    </li>
+
+                    <!-- Roles ******************************************************************************************** -->
+
+                    <li class="tab-content tab-content-4 typography">
+
+                        <div class="container">
+                            <div class="row pl-0">
+                                <div class="col pl-0">
+                                    <h2>Roles</h2>
+                                </div>
+                                <div class="col text-right pr-0">
+                                    <a href onclick="return abrir_modal('{% url 'conta:rol_new' %}')" class="btn btn-success btn-sm">
+                                        <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {% if not roles %}
+                            <div class="alert alert-info">
+                                No hay roles
+                            </div>
+                            {% else %}
+                            <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display rounded">
+                                <caption>Lista de Roles</caption>
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col" style="border: 0px;">Rol/Cargo</th>
+                                        <th scope="col" style="border: 0px;">Salario</th>
+                                        <th scope="col" style="border: 0px;">Días laborales</th>
+                                        <th scope="col" style="border: 0px;">Estado</th>
+                                        <th scope="col" style="border: 0px;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in roles %}
+                                    <tr>
+                                        <td>{{item.rol}}</td>
+                                        <td>{{item.salario}}</td>
+                                        <td>{{item.dias_laborales}} días</td>
+                                        <td>
+                                            {% if item.estado %}
+                                            <span class="status-success">Activo</span> {% else %}
+                                            <span class="status-danger">Inactivo</span> {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-circle btn-sm" onclick="return abrir_modal('{% url 'conta:rol_edit' item.id %}')">
+                                                <i class="far fa-edit" aria-hidden="true"></i>
+                                            </button>
+                                            <button class="btn btn-danger btn-circle btn-sm" onclick="inactivarRol({{ item.id }})">
+                                                {% if item.estado %}
+                                                <i title="Inactivar" class="fas fa-trash-alt" aria-hidden="true"></i>
+                                                {% else %}
+                                                <i title="Activar" class="fas fa-trash-restore-alt" aria-hidden="true"></i>
+                                                {% endif %}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-right"><em>Find out more about Leonardo da Vinci from <a href="http://en.wikipedia.org/wiki/Leonardo_da_Vinci" target="_blank">Wikipedia</a>.</em></p>
+                    </li>
+                </ul>
+            </div>
+            <!--/ tabs -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_page %}
+<script>
+
+    function inactivar(id) {
+
+        var data = {
+            id: id
+        };
+
+        data = JSON.stringify(data);
+        var token = '{{csrf_token}}';
+
+        $.ajax({
+            headers: {
+                "X-CSRFToken": token
+            },
+            type: "POST",
+            url: "/fac/clientes/status/" + id,
+            data: data,
+            success: function(response) {
+                if (response === "OK") {
+                    location.reload(true);
+                } else {
+                    mensaje("Error Intentado Cambiar Estado al Empleado");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
+    function inactivarEmpleado(id) {
+
+        var data = {
+            id: id
+        };
+
+        data = JSON.stringify(data);
+        var token = '{{csrf_token}}';
+
+        $.ajax({
+            headers: {
+                "X-CSRFToken": token
+            },
+            type: "POST",
+            url: "/conta/empleados/status/" + id,
+            data: data,
+            success: function(response) {
+                if (response === "OK") {
+                    location.reload(true);
+                } else {
+                    mensaje("Error Intentado Cambiar Estado a Cliente");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
+    function inactivarRol(id) {
+
+        var data = {
+            id: id
+        };
+
+        data = JSON.stringify(data);
+        var token = '{{csrf_token}}';
+
+        $.ajax({
+            headers: {
+                "X-CSRFToken": token
+            },
+            type: "POST",
+            url: "/conta/roles/status/" + id,
+            data: data,
+            success: function(response) {
+                if (response === "OK") {
+                    location.reload(true);
+                } else {
+                    mensaje("Error Intentado Cambiar Estado a Cliente");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrow) {
+                console.log(textStatus, errorThrow);
+                mensaje(errorThrow, 'red');
+                cerrar_modal();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('.table').DataTable();
+    });
+</script>
+
+{% endblock %}

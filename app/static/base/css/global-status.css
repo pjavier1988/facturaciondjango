@@ -55,3 +55,9 @@
     color: #6f42c1;
     border: 1px solid #6f42c1;
 }
+
+/* Others */
+
+.dropdown-item > .mr-3 > .icon-circle:before {
+    content: none !important;
+}

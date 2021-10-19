@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('nomina/list/', views.nomina_list, name='nomina_list'),
+    path('nomina/', views.nomina, name='nomina'),
     path('personas/', views.EmpleadoView.as_view(), name='personas'), #Main URL
 
     path('roles/new/',views.RolNew.as_view(), name="rol_new"),

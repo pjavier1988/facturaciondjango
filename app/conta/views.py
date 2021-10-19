@@ -178,3 +178,15 @@ def nomina_list(request):
     }
 
     return render(request, template_name, context)
+
+def nomina(request):
+
+    template_name = 'conta/nomina.html'
+
+    empleados = Empleado.objects.filter(empresa=request.user.company)
+
+    context = {
+        'empleados': empleados,
+    }
+
+    return render(request, template_name, context)

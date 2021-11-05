@@ -13,4 +13,6 @@ urlpatterns = [
     path('empleados/new/',views.EmpleadoNew.as_view(), name="empleado_new"),
     path('empleados/edit/<int:pk>',views.EmpleadoEdit.as_view(), name="empleado_edit"),
     path('empleados/status/<int:id>',views.empleado_inactivar, name="empleado_inactivar"),
+
+    path('empleado-hrex/new/',views.EmpleadoHoraExtraNew.as_view(), name="empleado_hrex_new"),
 ]

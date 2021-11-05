@@ -37,7 +37,7 @@
                 <input type="radio" name="pcss3t" id="tab4" class="tab-content-4">
                 <label for="tab4"><i class="icon-sitemap" aria-hidden="true"></i>...</label>
 
-                <!-- Clientes **************************************************************************************************** -->
+                <!-- Prenomina **************************************************************************************************** -->
                 <ul>
                     <li class="tab-content tab-content-first typography">
 
@@ -134,17 +134,17 @@
                         <p class="text-right"><em>Find out more about Nikola Tesla from <a href="http://en.wikipedia.org/wiki/Nikola_Tesla" target="_blank">Wikipedia</a>.</em></p>
                     </li>
 
-                    <!-- PROVEEDORES ************************************************************************************************ -->
+                    <!-- HORAS EXTRAS ************************************************************************************************ -->
 
                     <li class="tab-content tab-content-2 typography">
 
                         <div class="container">
                             <div class="row pl-0">
                                 <div class="col pl-0">
-                                    <h2>Proveedores</h2>
+                                    <h2>Horas Extras</h2>
                                 </div>
                                 <div class="col text-right pr-0">
-                                    <a onclick="return abrir_modal('{% url 'cmp:proveedor_new' %}')" class="btn btn-success btn-sm">
+                                    <a onclick="return abrir_modal('{% url 'conta:empleado_hrex_new' %}')" class="btn btn-success btn-sm">
                                         <i class="fas fa-plus" aria-hidden="true"></i> Nuevo
                                     </a>
                                 </div>
@@ -152,16 +152,16 @@
                         </div>
 
                         <div class="card-body">
-                            {% if not proveedores %}
+                            {% if not empleados_hrex %}
                             <div class="alert alert-info">
-                                No hay proveedores
+                                No hay horas extras
                             </div>
                             {% else %}
                             <table style="border: 1px solid #ccc;" class="table table-responsive-lg table-hover shadow display rounded">
-                                <caption>Lista de Proveedores</caption>
+                                <caption>Lista de Horas Extras/caption>
                                 <thead class="thead-light">
                                     <tr>
-                                        <th scope="col" style="border: 0px;">Descripcion</th>
+                                        <th scope="col" style="border: 0px;">Empleado</th>
                                         <th scope="col" style="border: 0px;">Dirección</th>
                                         <th scope="col" style="border: 0px;">Contacto</th>
                                         <th scope="col" style="border: 0px;">Teléfono</th>
@@ -173,7 +173,7 @@
                                 <tbody>
                                     {% for item in proveedores %}
                                     <tr>
-                                        <td>{{ item.descripcion }}</td>
+                                        <td>{{ item.empleado }}</td>
                                         <td>{{ item.direccion }}</td>
                                         <td>{{ item.contacto }}</td>
                                         <td>{{ item.telefono }}</td>

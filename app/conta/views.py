@@ -9,12 +9,15 @@ from django.views import generic
 from bases.views import SinPrivilegios
 from fac.models import Cliente
 from cmp.models import Proveedor
-from .models import Rol, Empleado
-from .forms import RolForm, EmpleadoForm
+from .models import Rol, Empleado, HoraExtra, EmpleadoHoraExtra
+from .forms import RolForm, EmpleadoForm, EmpleadoHoraExtraForm, HoraExtraForm
 
 MAIN_VIEW = 'conta:personas'
 EMPLEADO_FORM_TEMPLATE = 'conta/empleado_form.html'
 ROL_FORM_TEMPLATE = 'conta/rol_form.html'
+HORA_EXTRA_TEMPLATE = 'conta/hora_extra_form.html'
+EMPLEADO_HREX_FORM_TEMPLATE = 'conta/empleado_hrex_form.html'
+NOMINA_TEMPLATE = 'conta/nomina.html'
 
 class VistaBaseCreate(SuccessMessageMixin, SinPrivilegios, generic.CreateView):
 
@@ -58,10 +61,10 @@ class EmpleadoView(LoginRequiredMixin, generic.ListView):
         context['proveedores'] = Proveedor.objects.filter( # add extra field to the context
             empresa=self.request.user.company,
         )
-        context['clientes'] = Cliente.objects.filter( # add extra field to the context
+        context['clientes'] = Cliente.objects.filter(
             empresa=self.request.user.company,
         )
-        context['roles'] = Rol.objects.filter( # add extra field to the context
+        context['roles'] = Rol.objects.filter(
             empresa=self.request.user.company,
         )
 
@@ -168,6 +171,22 @@ def rol_inactivar(request, id):
         return HttpResponse("FAIL")
     return HttpResponse("FAIL")
 
+#Empleados - Hora Extra ************************************************************************************************************
+
+class EmpleadoHoraExtraNew(VistaBaseCreate):
+
+    model = EmpleadoHoraExtra
+    template_name = EMPLEADO_HREX_FORM_TEMPLATE
+    success_url = reverse_lazy(NOMINA_TEMPLATE)
+    permission_required = "conta.add_empleadohoraextra"
+
+    def get_form(self, form_class=None):
+        return EmpleadoHoraExtraForm(self.request.user, **self.get_form_kwargs())
+
+    def get(self, request, *args, **kwargs):
+        form = EmpleadoHoraExtraForm(self.request.user, **self.get_form_kwargs())
+        return render(request, self.template_name, {'form': form})
+
 #Nómina ***************************************************************************************************************************
 
 def nomina_list(request):
@@ -181,12 +200,14 @@ def nomina_list(request):
 
 def nomina(request):
 
-    template_name = 'conta/nomina.html'
+    template_name = NOMINA_TEMPLATE
 
     empleados = Empleado.objects.filter(empresa=request.user.company)
+    empleados_hrex = EmpleadoHoraExtra.objects.filter(empresa=request.user.company)
 
     context = {
         'empleados': empleados,
+        'empleados_hrex': empleados_hrex,
     }
 
     return render(request, template_name, context)
